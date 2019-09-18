@@ -10,7 +10,7 @@ gh-pages -d ./build
 sudo apt update
 sudo apt install python-pip
 pip install --upgrade --user awscli
-export PATH=~/.local/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 
 aws configure set default.region $AWS_REGION
 aws configure set default.output json
