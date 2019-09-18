@@ -1,8 +1,6 @@
 rm -rf ./build
 
-yarn build
-
-#echo "oasis.app/trade" > ./build/CNAME
+PUBLIC_URL='https://oasis.app/trade' yarn build
 
 cp ./build/200.html ./build/404.html
 
