@@ -8,8 +8,8 @@ gh-pages -d ./build
 
 # Deploy to AWS
 sudo apt update
-sudo apt install python-pip3
-pip3 install --upgrade --user awscli
+sudo apt install python-pip
+pip install --upgrade --user awscli
 export PATH=~/.local/bin:$PATH
 
 aws configure set default.region $AWS_REGION
