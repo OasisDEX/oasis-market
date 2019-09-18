@@ -26,6 +26,7 @@
     "storybook:screenshots": "storybook-chrome-screenshot -p 9001 --inject-files ./.storybook/disable-animations.js"
   },
   "dependencies": {
+    "@types/mixpanel-browser": "^2.23.1",
     "@types/ramda": "^0.25.38",
     "@types/react-responsive": "^3.0.2",
     "@types/react-tooltip": "^3.9.2",
@@ -38,6 +39,7 @@
     "d3": "^5.7.0",
     "lodash": "^4.17.10",
     "mathjs": "^5.2.0",
+    "mixpanel-browser": "^2.29.1",
     "moment": "^2.22.2",
     "normalize.css": "^8.0.1",
     "object-assign": "4.1.1",
@@ -68,7 +70,6 @@
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
-    "typecov": "^0.2.1",
     "@codechecks/build-size-watcher": "^0.1.0",
     "@codechecks/client": "^0.1.6",
     "@codechecks/commit-deployment": "^0.1.0",
@@ -138,6 +139,7 @@
     "tslint-config-airbnb": "^5.9.2",
     "tslint-config-prettier": "^1.10.0",
     "tslint-react": "^3.2.0",
+    "typecov": "^0.2.1",
     "typescript": "^3.0.1",
     "typestrict": "^1.0.0",
     "typings-for-css-modules-loader": "^1.7.0",
