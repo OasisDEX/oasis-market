@@ -14,7 +14,9 @@ import * as styles from './index.scss';
 import { InstantExchange } from './instant/InstantViewPanel';
 import { connect } from './utils/connect';
 
-const browserHistoryInstance = createBrowserHistory();
+const browserHistoryInstance = createBrowserHistory({
+  basename: process.env.REACT_APP_SUBDIR ? process.env.REACT_APP_SUBDIR : '/'
+});
 
 browserHistoryInstance.listen(location => {
   console.debug(`[Analytics] Tracked: ${location.pathname}`);
