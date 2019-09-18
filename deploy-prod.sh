@@ -2,7 +2,7 @@ rm -rf ./build
 
 yarn build
 
-echo "eth2dai.com" > ./build/CNAME
+echo "oasis.app/trade" > ./build/CNAME
 
 cp ./build/200.html ./build/404.html
 
