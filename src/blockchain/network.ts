@@ -1,6 +1,6 @@
 // tslint:disable:no-console
 import { BigNumber } from 'bignumber.js';
-import { bindNodeCallback, combineLatest, concat, interval, Observable } from 'rxjs';
+import { bindNodeCallback, combineLatest, concat, interval, Observable, of } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 import {
   catchError,
@@ -9,6 +9,7 @@ import {
   filter,
   first,
   map,
+  mergeMap,
   retryWhen,
   shareReplay,
   skip,
@@ -16,6 +17,8 @@ import {
   switchMap,
 } from 'rxjs/operators';
 
+import * as mixpanel from 'mixpanel-browser';
+import { mixpanelIdentify } from '../analytics';
 import * as dsValue from './abi/ds-value.abi.json';
 import { NetworkConfig, networks } from './config';
 import { amountFromWei } from './utils';
@@ -52,6 +55,20 @@ export const context$: Observable<NetworkConfig> = networkId$.pipe(
   map((id: string) => networks[id]),
   shareReplay(1)
 );
+
+combineLatest(account$, context$).pipe(
+  mergeMap(([account, network]) => {
+    return of([account, network.name]);
+  })
+).subscribe(([account, network]) => {
+  mixpanelIdentify(account!, { wallet: 'metamask' });
+  mixpanel.track('account-change', {
+    account,
+    network,
+    product: 'oasis-trade',
+    wallet: 'metamask'
+  });
+});
 
 export const onEveryBlock$ = combineLatest(every5Seconds$, context$).pipe(
   switchMap(() => bindNodeCallback(web3.eth.getBlockNumber)()),

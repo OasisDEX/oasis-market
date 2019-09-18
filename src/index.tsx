@@ -5,6 +5,7 @@ import * as ReactDOM from 'react-dom';
 import { combineLatest, Observable, of } from 'rxjs';
 import { distinctUntilChanged, startWith, switchMap, tap } from 'rxjs/internal/operators';
 import { map } from 'rxjs/operators';
+import { mixpanelInit } from './analytics';
 import { networks } from './blockchain/config';
 import { account$, networkId$ } from './blockchain/network';
 import { Web3Status, web3Status$ } from './blockchain/web3';
@@ -19,6 +20,8 @@ interface Props {
   tosAccepted?: boolean;
   hasSeenAnnouncement?: boolean;
 }
+
+mixpanelInit();
 
 class App extends React.Component<Props> {
 
