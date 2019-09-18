@@ -1,6 +1,6 @@
 {
-  "name": "Eth2Dai",
-  "version": "2.4.2",
+  "name": "Oasis-Market",
+  "version": "1.0.0",
   "private": true,
   "license": "AGPL-3.0-or-later",
   "scripts": {
@@ -14,10 +14,9 @@
     "tslint": "tslint --project . && tslint --project ./cypress/",
     "tslint:fix": "tslint --project . --format stylish --fix && tslint --project ./cypress/ --format stylish --fix",
     "postinstall": "rm -f node_modules/web3/index.d.ts",
-    "deploy:dev": "ENV=dev yarn build && surge --project ./build --domain http://eth2dai-dev.surge.sh/",
-    "deploy:stage": "yarn build && surge --project ./build --domain http://eth2dai-staging.surge.sh/",
+    "deploy:dev": "ENV=dev yarn build && surge --project ./build --domain https://oasis-market-dev.surge.sh/",
+    "deploy:stage": "yarn build && surge --project ./build --domain https://oasis-market-staging.surge.sh/",
     "deploy:prod": "sh ./deploy-prod.sh",
-    "deploy:beta": "rm -rf ./build && yarn build && echo 'beta.eth2dai.com' > ./build/CNAME && surge ./build -d https://beta.eth2dai.com",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "cypress:run": "rm -rf cypress/screenshots/* && cypress run",
