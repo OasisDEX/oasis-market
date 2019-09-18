@@ -163,7 +163,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "2d:ec:2f:f5:b6:10:8c:8a:e7:9f:f3:c9:77:25:b7:0b"
+            - "d2:4f:e3:c0:5d:8e:2b:14:6b:67:74:e2:2f:f2:a8:43"
       - checkout
       - restore_cache:
             keys:
