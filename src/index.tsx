@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash';
 import 'normalize.css';
+import * as Raven from 'raven-js';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -86,4 +87,11 @@ const AppTxRx = connect(App, props$);
 
 const root: HTMLElement = document.getElementById('root')!;
 
-ReactDOM.render(<AppTxRx/>, root);
+if (process.env.NODE_ENV === 'production') {
+  Raven.config(
+    'https://4bb7de4b582a448b9b65d164cda10013@sentry.io/1730755'
+  ).install();
+  Raven.context(() => ReactDOM.render(<AppTxRx/>, root));
+} else {
+  ReactDOM.render(<AppTxRx/>, root);
+}
