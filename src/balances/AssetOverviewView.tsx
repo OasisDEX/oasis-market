@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import * as React from 'react';
 import { Observable } from 'rxjs/internal/Observable';
 
+import * as mixpanel from 'mixpanel-browser';
 import { tokens } from '../blockchain/config';
 import { TxState } from '../blockchain/transactions';
 import { Authorizable } from '../utils/authorizable';
@@ -93,7 +94,15 @@ export class AssetsOverviewViewInternal
               size="sm"
               className={styles.wrapUnwrapBtn}
               block={true}
-              onClick={() => this.wrap()}
+              onClick={() => {
+                mixpanel.track('btn-click', {
+                  id: 'wrap-eth',
+                  product: 'oasis-trade',
+                  page: 'Account',
+                  section: 'asset-overview'
+                });
+                this.wrap();
+              }}
               disabled={this.props.etherBalance.eq(zero)}
             >
               Wrap
@@ -135,7 +144,15 @@ export class AssetsOverviewViewInternal
                 size="sm"
                 className={styles.wrapUnwrapBtn}
                 block={true}
-                onClick={() => this.unwrap()}
+                onClick={() => {
+                  mixpanel.track('btn-click', {
+                    id: 'unwrap-eth',
+                    product: 'oasis-trade',
+                    page: 'Account',
+                    section: 'asset-overview'
+                  });
+                  this.unwrap();
+                }}
                 disabled={combinedBalance.balance.eq(zero)}
               >
                 Unwrap

@@ -6,6 +6,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilKeyChanged, map, startWith } from 'rxjs/operators';
 
+import * as mixpanel from 'mixpanel-browser';
 import { FormChangeKind, PickOfferChange } from '../../utils/form';
 import { FormatAmount, FormatPriceOrder } from '../../utils/formatters/Formatters';
 import { Button } from '../../utils/forms/Buttons';
@@ -131,7 +132,15 @@ export class OrderbookView extends React.Component<Props> {
                 return <Button
                   disabled={isDisabled}
                   className={styles.switchBtn}
-                  onClick={this.changeChartListView}
+                  onClick={() => {
+                    mixpanel.track('btn-click', {
+                      id: 'change-orderbook-view',
+                      product: 'oasis-trade',
+                      page: 'Market',
+                      section: 'orderbook',
+                    });
+                    this.changeChartListView();
+                  }}
                   data-test-id="orderbook-type-list"
                 >
                   <SvgImage image={depthChartSvg}/>
