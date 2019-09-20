@@ -465,10 +465,6 @@ function applyChange(state: InstantFormState, change: InstantFormChange): Instan
       return {
         ...state,
         context: change.context,
-        slippageLimit: getSlippageLimit(
-          change.context,
-          getQuote(weth2eth(state.sellToken), weth2eth(state.buyToken))
-        )
       };
     case FormChangeKind.userChange:
       return {
