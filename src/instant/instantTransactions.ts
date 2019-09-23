@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js';
-import { combineLatest, Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { first, flatMap, map, startWith, switchMap } from 'rxjs/operators';
-import { Calls, ReadCalls } from '../blockchain/calls/calls';
-import { GetOffersAmountData, InstantOrderData } from '../blockchain/calls/instant';
-import { allowance$, maxGasPerBlock } from '../blockchain/network';
+import { Calls } from '../blockchain/calls/calls';
+import { InstantOrderData } from '../blockchain/calls/instant';
+import { allowance$ } from '../blockchain/network';
 import { getTxHash, isDone, isSuccess, TxState, TxStatus } from '../blockchain/transactions';
 import { amountFromWei } from '../blockchain/utils';
 import {
@@ -251,140 +251,20 @@ export function tradePayWithERC20(
 
 export function estimateTradePayWithETH(
   calls: Calls,
-  readCalls: ReadCalls,
   proxyAddress: string | undefined,
   state: InstantFormState
 ): Observable<number> {
-  if (state.message) {
-    return combineLatest(
-      simulateEstimateDoTradePayWithERC20(readCalls, state),
-      proxyAddress ? of(0) : simulateEstimateDoSetupProxy(state),
-    ).pipe(
-      map(([trade, proxy]) => trade + proxy),
-    );
-  }
-
   return proxyAddress ?
     calls.tradePayWithETHWithProxyEstimateGas({ ...state, proxyAddress } as InstantOrderData) :
     calls.tradePayWithETHNoProxyEstimateGas({ ...state } as InstantOrderData);
 }
 
-function estimateDoTradePayWithERC20(
-  calls: Calls,
-  proxyAddress: string | undefined,
-  state: InstantFormState,
-): Observable<number> {
-  return calls.tradePayWithERC20EstimateGas({
-    ...state,
-    proxyAddress,
-    gasEstimation: state.gasEstimation,
-    gasPrice: state.gasPrice
-  } as InstantOrderData);
-}
-
-function simulateEstimateDoTradePayWithERC20(
-  calls: ReadCalls,
-  { kind, buyAmount, buyToken, sellAmount, sellToken }: InstantFormState,
-): Observable<number> {
-  return calls.otcGetOffersAmount(
-    { kind, buyAmount, buyToken, sellAmount, sellToken } as GetOffersAmountData)
-    .pipe(
-      map(([offersCount, partial]) =>
-        141100 + offersCount.toNumber() * 136500 + (partial ? 70000 : 0)
-      ),
-      switchMap(gasAmount => gasAmount > maxGasPerBlock ?
-        throwError('block gas limit exceeded') :
-        of(gasAmount)
-      ),
-    );
-}
-
-function estimateDoApprove(
-  calls: Calls,
-  readCalls: ReadCalls,
-  state: InstantFormState,
-  proxyAddress: string,
-): Observable<number> {
-  return combineLatest(
-    calls.approveProxyEstimateGas({
-      proxyAddress,
-      token: state.sellToken,
-    }),
-    simulateEstimateDoTradePayWithERC20(readCalls, state),
-  ).pipe(
-    map(([approve, trade]) => approve + trade),
-  );
-}
-
-function simulateEstimateDoApprove(
-  _state: InstantFormState,
-): Observable<number> {
-  // for WETH and single-collateral DAI
-  return of(50000);
-}
-
-function estimateDoSetupProxy(
-  calls: Calls,
-  readCalls: ReadCalls,
-  state: InstantFormState,
-): Observable<number> {
-  return combineLatest(
-    calls.setupProxyEstimateGas({}),
-    simulateEstimateDoApprove(state),
-    simulateEstimateDoTradePayWithERC20(readCalls, state),
-  ).pipe(
-    map(([createProxy, approve, trade]) => createProxy + approve + trade),
-  );
-}
-
-function simulateEstimateDoSetupProxy(
-  _state: InstantFormState,
-) {
-  // based on sample transaction from main
-  return of(600000);
-}
-
 export function estimateTradePayWithERC20(
   calls: Calls,
-  readCalls: ReadCalls,
   proxyAddress: string | undefined,
-  state: InstantFormState
-): Observable<number> {
-
-  const sellAllowance$ = proxyAddress ?
-    allowance$(state.sellToken, proxyAddress).pipe(first()) :
-    of(false);
-
-  return sellAllowance$.pipe(
-    flatMap(sellAllowance => {
-      if (!proxyAddress) {
-        return estimateDoSetupProxy(calls, readCalls, state);
-      }
-      if (!sellAllowance) {
-        return estimateDoApprove(calls, readCalls, state, proxyAddress);
-      }
-
-      if (state.message) {
-        return simulateEstimateDoTradePayWithERC20(readCalls, state);
-      }
-
-      return estimateDoTradePayWithERC20(calls, proxyAddress, state);
-    }),
-  );
-
-}
-
-export function estimateTradeReadonly(
-  readCalls: ReadCalls,
   state: InstantFormState,
 ): Observable<number> {
-  return combineLatest(
-    simulateEstimateDoSetupProxy(state),
-    simulateEstimateDoApprove(state),
-    simulateEstimateDoTradePayWithERC20(readCalls, state)
-  ).pipe(
-    map(([createProxy, approve, trade]) => createProxy + approve + trade),
-  );
+  return calls.tradePayWithERC20EstimateGas({ ...state, proxyAddress } as InstantOrderData);
 }
 
 const extractTradeSummary = (logs: any): { sold: BigNumber, bought: BigNumber } => {

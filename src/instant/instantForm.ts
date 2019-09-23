@@ -53,7 +53,6 @@ import { pluginDevModeHelpers } from './instantDevModeHelpers';
 import {
   estimateTradePayWithERC20,
   estimateTradePayWithETH,
-  estimateTradeReadonly,
   tradePayWithERC20,
   tradePayWithETH,
 } from './instantTransactions';
@@ -572,21 +571,20 @@ function getBestPrice(
   );
 }
 
-function estimateGas(calls$_: Calls$, readCalls$: ReadCalls$, state: InstantFormState) {
-  return state.user && state.user.account ?
-    doGasEstimation(calls$_, readCalls$, state, gasEstimation) :
-    doGasEstimation(undefined, readCalls$, state, (_calls, readCalls, state_) =>
-      state.tradeEvaluationStatus !== TradeEvaluationStatus.calculated
-      || !state.buyAmount
-      || !state.sellAmount
-        ? undefined
-        : estimateTradeReadonly(readCalls, state_)
-    );
+function estimateGas(calls$_: Calls$, state: InstantFormState) {
+  return state.user &&
+    state.user.account &&
+    !state.message &&
+    (state.sellToken === 'ETH' ||
+      (!!state.proxyAddress && state.allowances && state.allowances[state.sellToken])
+    ) ?
+      doGasEstimation(calls$_, undefined, state, gasEstimation) :
+      of({ ...state, gasEstimationStatus: GasEstimationStatus.unknown });
 }
 
 function gasEstimation(
   calls: Calls,
-  readCalls: ReadCalls,
+  _readCalls: ReadCalls | undefined,
   state: InstantFormState
 ): Observable<number> | undefined {
   return state.tradeEvaluationStatus !== TradeEvaluationStatus.calculated
@@ -598,7 +596,7 @@ function gasEstimation(
         const sell = state.sellToken === 'ETH'
           ? estimateTradePayWithETH
           : estimateTradePayWithERC20;
-        return sell(calls, readCalls, proxyAddress, state);
+        return sell(calls, proxyAddress, state);
       })
     );
 }
@@ -1170,7 +1168,7 @@ export function createFormController$(
       mergeTradeEvaluation
     ),
     map(validate),
-    switchMap(curry(estimateGas)(params.calls$, params.readCalls$)),
+    switchMap(curry(estimateGas)(params.calls$)),
     map(calculatePriceAndImpact),
     map(isReadyToProceed),
     scan(freezeIfInProgress),

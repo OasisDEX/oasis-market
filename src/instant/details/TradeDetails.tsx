@@ -70,8 +70,8 @@ export class TradeDetails extends React.Component<TradeDetailsProps> {
         <TradeData label="Gas cost"
                    data-test-id="trade-gas-cost"
                    value={
-                     gasEstimationStatus === GasEstimationStatus.error ?
-                       'error' :
+                     gasEstimationStatus === GasEstimationStatus.error ? 'error' :
+                     gasEstimationStatus === GasEstimationStatus.unknown ? 'N/A' :
                        gasEstimationUsd
                          ? (
                            <Approximate data-vis-reg-hide={true}>
