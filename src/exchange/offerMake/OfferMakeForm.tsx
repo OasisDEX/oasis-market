@@ -12,7 +12,7 @@ import { formatAmount, formatPrice } from '../../utils/formatters/format';
 import { FormatAmount, FormatPercent } from '../../utils/formatters/Formatters';
 import { Button, ButtonGroup } from '../../utils/forms/Buttons';
 import { ErrorMessage } from '../../utils/forms/ErrorMessage';
-import { InputGroup, InputGroupAddon } from '../../utils/forms/InputGroup';
+import { InputGroup, InputGroupAddon, lessThanOrEqual } from '../../utils/forms/InputGroup';
 import { Radio } from '../../utils/forms/Radio';
 import { GasCost } from '../../utils/gasCost/GasCost';
 import { Hr } from '../../utils/layout/LayoutHelpers';
@@ -404,6 +404,9 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
             prefix: ''
           })}
           onChange={this.handleAmountChange}
+          pipe={
+            lessThanOrEqual(maxTokenValue(this.props.baseToken))
+          }
           value={
             (this.props.amount || null) &&
             formatAmount(this.props.amount as BigNumber, this.props.baseToken)
@@ -439,6 +442,9 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
               decimalLimit: this.props.quoteTokenDigits,
               prefix: ''
             })}
+            pipe={
+              lessThanOrEqual(maxTokenValue(this.props.quoteToken))
+            }
             onChange={this.handlePriceChange}
             value={
               (this.props.price || null) &&
@@ -528,6 +534,9 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
     );
   }
 }
+
+const maxTokenValue = (token: string) => new BigNumber(tokens[token].maxSell)
+  .minus(new BigNumber(1));
 
 const Error = ({ field, messages } : { field: string, messages?: Message[] }) => {
   const myMsg = (messages || [])
