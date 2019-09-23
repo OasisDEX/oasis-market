@@ -29,13 +29,13 @@ export class MyTrades extends React.Component<MyTradesPropsLoadable> {
           <ButtonGroup style={{ marginLeft: 'auto' }}>
             <Button
               size="sm"
-              color={kind === MyTradesKind.open ? 'whiteOutlined' : 'grey'}
+              color={kind === MyTradesKind.open ? 'primary' : 'dangerOutlined'}
               className={styles.orderTypeBtn}
               onClick={() => changeKind && changeKind(MyTradesKind.open)}
             >Open</Button>
             <Button
               size="sm"
-              color={kind === MyTradesKind.closed ? 'whiteOutlined' : 'grey'}
+              color={kind === MyTradesKind.closed ? 'danger' : 'primaryOutlined'}
               className={styles.orderTypeBtn}
               onClick={() => changeKind && changeKind(MyTradesKind.closed)}
             >Closed</Button>

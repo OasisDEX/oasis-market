@@ -9,6 +9,7 @@ export const hrMargin: string;
 export const inputHeader: string;
 export const inputTail: string;
 export const input: string;
+export const icon: string;
 export const inputCurrencyAddon: string;
 export const inputPercentAddon: string;
 export const errors: string;

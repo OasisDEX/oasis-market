@@ -90,7 +90,7 @@ export class AssetsOverviewViewInternal
           <td>
             <Button
               data-test-id="open-wrap-form"
-              color="grey"
+              color="secondary"
               size="sm"
               className={styles.wrapUnwrapBtn}
               block={true}
@@ -140,7 +140,7 @@ export class AssetsOverviewViewInternal
               { combinedBalance.name === 'WETH' &&
               <Button
                 data-test-id="open-unwrap-form"
-                color="grey"
+                color="secondary"
                 size="sm"
                 className={styles.wrapUnwrapBtn}
                 block={true}

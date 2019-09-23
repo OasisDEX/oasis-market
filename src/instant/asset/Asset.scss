@@ -7,7 +7,7 @@
   justify-content: space-evenly;
   align-items: center;
 
-  border: 1px solid $grey-light;
+  border: 1px solid $element-border;
   border-radius: .325rem;
 
   width: 100%;
@@ -15,7 +15,7 @@
 
   cursor: pointer;
 
-  color: white;
+  color: $nav-account-text;
   background: transparent;
 
   @include fontMontserratMedium;

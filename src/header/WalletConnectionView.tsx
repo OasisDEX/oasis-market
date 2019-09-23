@@ -31,8 +31,6 @@ const {
   inactive,
   selected,
   termsAndConditions,
-  btn,
-  connect,
   buttonPlaceholder,
 } = styles;
 
@@ -102,9 +100,9 @@ class SuggestedClients extends React.Component {
           }
         </ul>
         <div className={buttonPlaceholder}>
-          <Button size="lg"
-                  color="grey"
-                  className={classnames(btn, item)}
+          <Button size="md"
+                  color="secondaryOutlined"
+                  className={classnames(item)}
                   data-test-id="go-back"
                   onClick={this._goBack}
           >
@@ -166,8 +164,9 @@ class NotConnected extends React.Component<{}, { isChecked: boolean, selectedWal
         </a>
         </Checkbox>
         <div className={buttonPlaceholder}>
-          <Button size="lg"
-                  className={classnames(item, btn, connect)}
+          <Button size="md"
+                  color="primaryOutlined"
+                  className={item}
                   disabled={!this._canConnect()}
                   onClick={this._connect}
                   data-test-id="connect-wallet"
@@ -249,8 +248,9 @@ class NoClient extends React.Component<{}, { isChecked: boolean, selectedWallet:
         </a>
         </Checkbox>
         <div className={buttonPlaceholder}>
-          <Button size="lg"
-                  className={classnames(item, btn, connect)}
+          <Button size="md"
+                  color="primaryOutlined"
+                  className={classnames(item)}
                   disabled={!this._canConnect()}
                   onClick={this._connect}
                   data-test-id="connect-wallet"
@@ -336,8 +336,9 @@ const Connecting = (props: any) => {
         </div>
       </div>
       <div className={buttonPlaceholder}>
-        <Button size="lg"
-                className={classnames(item, btn)}
+        <Button size="md"
+                color="dangerOutlined"
+                className={classnames(item)}
                 onClick={props.close}
                 data-test-id="connect-wallet"
         >

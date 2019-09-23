@@ -3,12 +3,11 @@
 @import '../utils/forms/Buttons';
 
 .section {
-  border-color: $white;
-  color: $white;
+  border: 1px solid $element-border;
+  color: #48495F;
   width: 16rem;
   height: 100%;
-  background: $grey-darkest;
-  box-shadow: 0 0 .75rem rgba(0, 0, 0, 0.2);
+  background: white;
   border-radius: 8px;
 }
 
@@ -71,11 +70,11 @@
   }
 
   &.selected {
-    background-color: #373740;
+    background-color: #F5F5F5;
   }
 
   &:hover {
-    background-color: #33333C;
+    background-color: #F5F5F5;
   }
 
   &.inactive {
@@ -104,37 +103,15 @@
   }
 
   a {
-    color: white;
+    color: #828287;
     text-decoration: underline;
   }
 }
 
 .buttonPlaceholder {
   padding: 0.75rem 1rem;
-}
 
-.btn {
-  width: 100%;
-  border-radius: 4px;
-  font-size: 14px;
-  letter-spacing: 0.8px;
-
-  &.connect {
-    font-weight: 600;
-
-    @include button((
-      color: $very-pale-blue,
-      bg: $vivid-blue,
-      border-color: $vivid-blue,
-      color-hover: $very-pale-blue,
-      border-color-hover: $vivid-blue-hover,
-      bg-hover: $vivid-blue-hover
-    ));
-
-    &:disabled {
-      color: $grey-light;
-      background-color: transparent;
-      border-color: $button-border-disabled;
-    }
+  button {
+    width: 100%;
   }
 }

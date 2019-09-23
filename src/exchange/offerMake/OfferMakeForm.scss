@@ -34,22 +34,9 @@
 }
 
 .balanceBtn {
-  align-items: center;
-  display: flex;
-  @include fontLatoBold;
-  justify-content: center;
-  letter-spacing: 0.4px;
-  width: 150px;
   flex-basis: 150px;
   flex-grow: 1;
-
-  &:disabled,
-  &:disabled:hover {
-    background-color: transparent;
-    color: $font-color-base;
-    opacity: 1;
-    font-weight: 700;
-  }
+  font-size: 14px;
 
   &:first-child {
     margin-right: 10px;
@@ -57,20 +44,6 @@
 
   &:last-child {
     margin-left: 10px;
-  }
-
-  @include media-breakpoint-down(md){
-    max-height:38px;
-    width: 100%;
-
-    &:first-child {
-      margin-right: 0;
-      margin-bottom: 16px;
-    }
-
-    &:last-child {
-      margin-left: 0;
-    }
   }
 }
 
@@ -104,6 +77,7 @@
 
 // ---------- input group modifiers
 .inputHeader {
+  background: white;
   flex-basis: 94px;
   flex-grow: 2;
   flex-shrink: 0;
@@ -118,7 +92,7 @@
 
 .inputTail {
   display: inline-flex;
-  border-left: 1px solid $grey-light;
+  border-left: 1px solid $element-border;
   width: 100%;
 
   &:hover {
@@ -132,7 +106,14 @@
   flex-shrink: 1;
 }
 
+.icon {
+  height: 20px;
+  width: 20px;
+  margin-right: 4px;
+}
+
 .inputCurrencyAddon {
+  background: white;
   flex-basis: 82px;
   flex-grow: 1;
   flex-shrink: 0;
@@ -147,6 +128,7 @@
 }
 
 .inputPercentAddon {
+  background: white;
   flex-basis: 36px;
   flex-grow: 0;
   flex-shrink: 0;

@@ -9,7 +9,6 @@ $sm: 400px;
     align-items: center;
     z-index: 15;
     height: 48px;
-    border: 1px solid $grey-darken-darkest;
     border-top-right-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
     background: inherit;
@@ -19,7 +18,7 @@ $sm: 400px;
     @include media-breakpoint-down(md-lg) {
       border: 0;
       z-index: 0;
-      border-top: 1px solid $grey-darken-darkest;
+      border-top: 1px solid $panel-border;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
     }
@@ -62,8 +61,7 @@ $sm: 400px;
 
 .dropdownBtn {
     height: 48px;
-    border: 1px solid $grey-darken-darkest;
-    border-right: none;
+    border-right: 1px solid $element-border;
     border-top-left-radius: $border-radius;
     border-bottom-left-radius: $border-radius;
 
@@ -76,6 +74,7 @@ $sm: 400px;
 
     @include media-breakpoint-down(md-lg) {
       border: none;
+      border-right: 1px solid $element-border;
       width: 100%;
       border-radius: unset;
     }
@@ -94,10 +93,10 @@ $sm: 400px;
 }
 
 .dropdownBtnActive {
-    background-color: $grey-mid;
+    background-color: white;
     border-bottom-left-radius: unset;
     z-index: 15;
-    border-bottom-color: $grey-mid;
+    border-bottom-color: $element-border;
 
     .dropdownIcon {
       content: url("../../icons/chevron-up.svg");
@@ -114,7 +113,7 @@ $sm: 400px;
     top: 48px;
     z-index: 5;
     overflow: hidden;
-    box-shadow: 0 0px 4px  rgba(0, 0, 0, .25);
+    //box-shadow: 0 0px 4px  rgba(0, 0, 0, .25);
 
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
@@ -132,8 +131,8 @@ $sm: 400px;
     padding: 14px 0;
     margin: 0;
 
-    background-color: $grey-mid;
-    border: 1px solid $grey-darken-darkest;
+    background-color: white;
+    border: 1px solid $element-border;
     border-top: none;
 
     border-bottom-left-radius: $border-radius;

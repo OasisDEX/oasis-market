@@ -8,8 +8,19 @@ import * as styles from './Buttons.scss';
 export type ButtonProps =
   React.ButtonHTMLAttributes<HTMLButtonElement> &
   {
-    color?: 'green' | 'red' | 'grey' | 'white' | 'greyWhite' | 'whiteOutlined' | 'darkRed',
-    size?: 'xs' | 'md' | 'sm' | 'lg' | 'unsized' | 'full',
+    color?: 'primary'
+      | 'secondary'
+      | 'danger'
+      | 'grey'
+      | 'white'
+      | 'greyWhite'
+      | 'primaryOutlined'
+      | 'secondaryOutlined'
+      | 'dangerOutlined'
+      | 'greyOutlined'
+      | 'whiteOutlined'
+      | 'darkRed',
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'unsized' | 'full',
     block?: boolean,
     dataTestId?: string
   };
@@ -64,7 +75,7 @@ export const CloseButton = (props: any) => {
   switch (theme) {
     case 'danger':
       return (
-        <Button className={classnames(styles.darkRed, className)}
+        <Button className={classnames(styles.dangerOutlined, className)}
                 {...otherProps}
         >
           <SvgImage image={closeSvg}/>

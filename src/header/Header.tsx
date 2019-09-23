@@ -46,7 +46,7 @@ const {
   activeNavLink,
   arrowDown,
   dark,
-  light,
+  mild,
   walletConnection,
 } = styles;
 
@@ -184,8 +184,8 @@ class WalletConnectionStatus extends React.Component<WalletConnectionStatusProps
               )
               : (
 
-                <Button color="white"
-                        size="sm"
+                <Button color="secondaryOutlined"
+                        size="lg"
                         onClick={open}
                         data-test-id="new-connection"
                         className={classnames(styles.login, styles.connectWalletButton)}>
@@ -238,7 +238,7 @@ class Status extends React.Component<StatusProps> {
               {label}
             </span>
             <SvgImage image={chevronDownSvg}
-                      className={classnames(arrowDown, light)}/>
+                      className={classnames(arrowDown, mild)}/>
           </div>
         );
       }}

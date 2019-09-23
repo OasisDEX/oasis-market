@@ -12,14 +12,14 @@ stories.add('Colors', () => (
     <Button disabled={true}>Default disabled button</Button>
 
     <h3>Green button</h3>
-    <Button color="green">Green enabled button</Button>
+    <Button color="primary">Green enabled button</Button>
     <br/>
-    <Button color="green" disabled={true}>Green disabled button</Button>
+    <Button color="primary" disabled={true}>Green disabled button</Button>
 
     <h3>Red button</h3>
-    <Button color="red">Red enabled button</Button>
+    <Button color="danger">Red enabled button</Button>
     <br/>
-    <Button color="red" disabled={true}>Red disabled button</Button>
+    <Button color="danger" disabled={true}>Red disabled button</Button>
 
     <h3>White button</h3>
     <Button color="white">White enabled button</Button>
@@ -41,9 +41,9 @@ stories.add('Colors', () => (
 stories.add('Button group', () => (
   <div>
     <ButtonGroup>
-      <Button color="red">Pierwszy</Button>
-      <Button color="green">Drugi</Button>
-      <Button color="red">Trzeci</Button>
+      <Button color="danger">Pierwszy</Button>
+      <Button color="primary">Drugi</Button>
+      <Button color="danger">Trzeci</Button>
     </ButtonGroup>
     <br/>
     <ButtonGroup>
@@ -62,7 +62,6 @@ stories.add('Button size', () => (
     alignItems: 'flex-end',
   }}>
     <Button>Nosize</Button>
-    <Button size="xs">Extra small (size="xs")</Button>
     <Button size="sm">Small (size="sm")</Button>
     <Button size="md">Medium (size="md")</Button>
     <Button size="lg">Medium (size="lg")</Button>

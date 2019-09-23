@@ -2,7 +2,6 @@
 @import "../Mixins";
 
 .inputBase {
-  background: none;
   border: 0;
   color: $input-number-color;
   @include fontLatoBold;

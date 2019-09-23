@@ -8,5 +8,5 @@ export const unsized: string;
 export const inputGroupAddonBorderRight: string;
 export const inputGroupAddonBorderLeft: string;
 export const grey: string;
-export const red: string;
+export const danger: string;
 export const disabled: string;

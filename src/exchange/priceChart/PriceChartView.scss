@@ -14,8 +14,8 @@
 }
 
 .riseBar {
-  fill: #2c3d3f; // equals rgba($green, 0.1), but without opacity;
-  background-color: #2c3d3f; // equals rgba($green, 0.1), but without opacity;
+  fill: #E8F8F2; // equals rgba($green, 0.1), but without opacity;
+  background-color: #E8F8F2; // equals rgba($green, 0.1), but without opacity;
   stroke: $green;
   stroke-width: 1;
 }
@@ -26,8 +26,8 @@
 }
 
 .volume {
-  fill: $grey-dark;
-  background-color: $grey-dark;
+  fill: #ECF1F3;
+  background-color: #ECF1F3;
 }
 
 // bands
@@ -72,25 +72,25 @@
 // :global(.tick)
 .axisYMainLabel {
   @include fontLatoBold;
-  color: $grey-lightest;
+  color: $chart-label;
 }
 
 .axisYVolumeLabel {
   font-family: $font-additional; // Lato
-  color: $grey-lightest;
+  color: $chart-label;
   font-size: 12px;
   font-weight: 500;
 }
 
 .axisXMainLabel {
   @include fontMontserratMedium;
-  color: $white;
-  font-size: 13px;
+  color: $chart-label;
+  font-size: 15px;
 }
 
 .axisLineMain {
-  stroke: #636369;
-  stroke-width: 2px;
+  stroke: $chart-border;
+  stroke-width: 1px;
 }
 
 .axisYVolumeLineMain {
@@ -98,7 +98,7 @@
 }
 
 .axisLineGrid {
-  stroke: #383842;
+  stroke: $chart-border;
   stroke-width: 1px;
 }
 

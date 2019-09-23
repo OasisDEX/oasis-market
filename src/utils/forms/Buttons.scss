@@ -3,15 +3,15 @@
 @import "./Buttons.mixins";
 
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   @include fontMontserratMedium;
   background-color: transparent;
   border: 1px solid transparent;
-  border-radius: $border-radius/2;
+  border-radius: $border-radius;
   cursor: pointer;
-  font-size: 12px;
-  text-transform: uppercase;
-  padding: 5px 0.833em;
-  letter-spacing: .8px;
+  text-transform: capitalize;
 
   &:hover {
     cursor: pointer;
@@ -21,13 +21,6 @@
   &:hover.disabled {
     cursor: default;
   }
-
-  &[disabled],
-  &.disabled {
-    border-color: $button-border-disabled;
-    background: transparent;
-    font-weight: 500;
-  }
 }
 
 .buttonGroup {
@@ -36,36 +29,114 @@
     border-bottom-left-radius: 0;
     margin-left: -1px;
   }
+
   > .button:not(:last-child) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
 }
+
 // --------------- color -----------
 
 @mixin button($map) {
+  font-weight: 600;
 
   color: map-get($map, color);
   border-color: map-get($map, border-color);
   background-color: map-get($map, bg);
 
-  &:hover:enabled:not(.disabled),
-  &:focus:enabled:not(.disabled),
-  &:active:enabled:not(.disabled) {
+  &:disabled{
+    color: map_get($map, color-disabled);
+    background-color: map_get($map, bg-disabled);
+    border-color: map-get($map, border-color-disabled)
+  }
+
+  &:hover:enabled:not(.disabled) {
     color: map-get($map, color-hover);
     background-color: map-get($map, bg-hover);
     border-color: map-get($map, border-color-hover);
   }
-}
 
+  &:focus:enabled:not(.disabled) {
+    color: map-get($map, color-focus);
+    background-color: map-get($map, bg-focus);
+    border-color: map-get($map, border-color-hover);
+  }
+
+  &:active:enabled:not(.disabled) {
+    color: map-get($map, color-active);
+    background-color: map-get($map, bg-active);
+    border-color: map-get($map, border-color-active);
+  }
+}
 
 .grey {
   @include button((
-          color: $font-color-base,
-          bg: $grey-darkest,
-          border-color: $grey-light,
-          color-hover: $font-color-base,
+    color: $font-color-base,
+    bg: $grey-darkest,
+    border-color: $grey-light,
+    color-hover: $font-color-base,
     border-color-hover: lighten($button-border-hover, 2%),
+  ));
+}
+
+.primaryOutlined {
+  opacity: .99;
+
+  @include button((
+    color: #1AAB9B,
+    bg: transparent,
+    border-color: #1AAB9B,
+
+    color-disabled: #6EDBD0,
+    border-color-disabled: #6EDBD0,
+
+    bg-hover: #E7FCFA,
+
+    bg-active: #B6EDE7,
+  ));
+}
+
+.secondaryOutlined{
+  opacity: .99;
+
+  @include button((
+    color: #546978,
+    bg: transparent,
+    border-color: #9FAFB9,
+
+    color-disabled: #9FAFB9,
+    border-color-disabled: #9FAFB9,
+
+    bg-hover: #ECF1F3,
+
+    bg-active: #D1DEE6,
+  ));
+}
+
+.dangerOutlined {
+  opacity: .99;
+
+  @include button((
+    color: #F77249,
+    bg: transparent,
+    border-color: #F77249,
+
+    color-disabled: #FAB6A1,
+    border-color-disabled: #FAB6A1,
+
+    bg-hover: #FDEDE8,
+
+    bg-active: #FBE1D9,
+  ));
+}
+
+.greyOutlined {
+  @include button((
+    color: $button-content-color,
+    bg: white,
+    border-color: $element-border,
+    bg-hover: $button-hover-background
   ));
 }
 
@@ -74,40 +145,72 @@
   opacity: .99;
 
   @include button((
-          color: $font-color-base,
-          bg: $grey-darkest,
-          border-color: white,
-          color-hover: $font-color-base,
-          border-color-hover: white,
-          bg-hover: lighten($grey-light, 5%)
+    color: $font-color-base,
+    bg: $grey-darkest,
+    border-color: white,
+    color-hover: $font-color-base,
+    border-color-hover: white,
+    bg-hover: lighten($grey-light, 5%)
   ));
 }
 
-.green {
-  font-weight: 600;
+.primary {
   opacity: .99;
+
   @include button((
-          color: $font-color-base,
-          bg: $green,
-          border-color: $green,
-          color-hover: $font-color-base,
-          border-color-hover: darken($green, 5%),
-          bg-hover: darken($green, 5%)
+    color: $white,
+    bg: #1AAB9B,
+    border-color: #1AAB9B,
+
+    bg-disabled: #B6EDE7,
+    border-color-disabled: #B6EDE7,
+
+    bg-hover: #2DC1B1,
+    border-color-hover: #2DC1B1,
+
+    bg-active: #139D8D,
+    border-color-active: #139D8D,
+  ));
+}
+
+.secondary {
+  opacity: .99;
+
+  @include button((
+    color: #546978,
+    bg: #ECF1F3,
+    border-color: #ECF1F3,
+
+    color-disabled: #546978,
+    bg-disabled: #ECF1F3,
+    border-color-disabled: #ECF1F3,
+
+    bg-hover: #D1DEE6,
+    border-color-hover: #D1DEE6,
+
+    color-active: #31424E,
+    bg-active: #D1DEE6,
+    border-color-active: #D1DEE6,
   ));
 }
 
 
-.red {
-  font-weight: 600;
+.danger {
   opacity: .99;
 
   @include button((
-          color: $font-color-base,
-          bg: $red,
-          border-color: $red,
-          color-hover: $font-color-base,
-          border-color-hover: darken($red, 5%),
-          bg-hover: darken($red, 5%)
+    color: white,
+    bg: #F77249,
+    border-color: #F77249,
+
+    bg-disabled: #FAB6A1,
+    border-color-disabled: #FAB6A1,
+
+    bg-hover: #F75524,
+    border-color-hover: #F75524,
+
+    bg-active: #CB3A0D,
+    border-color-active: #CB3A0D,
   ));
 }
 
@@ -124,7 +227,7 @@
   font-weight: 600; //semibold
 }
 
-.greyWhite{
+.greyWhite {
 
 
   @include button((
@@ -138,11 +241,24 @@
 }
 
 // ----- size ------
-@include formInputSizes();
+.xs {
+  height: 22px;
+}
+
+.sm {
+  height: 30px;
+}
+
+.md {
+  height: 34px;
+}
+
+.lg {
+  height: 48px;
+}
 
 .unsized {
-  @include formInputSizes('unsized');
-  padding: 0;
+  height: auto;
 }
 
 .full {

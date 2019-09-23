@@ -62,10 +62,16 @@
 // Extend full width table to be even a bit wider
 // Stretches table by 1px to the left and 1px to the right
 // In Panel component it covers Panel's border
+//.extendOnBorders {
+//  margin-left: -1px;
+//  width: calc(100% + 2px);
+//}
+
 .extendOnBorders {
-  margin-left: -1px;
-  width: calc(100% + 2px);
+  margin-left: 0;
+  width: 100%;
 }
+
 
 // Align text
 //
@@ -83,10 +89,10 @@
 @include tableTextAlign(left);
 
 .trHighlighted {
-  background-color: $grey-dark;
+  background-color: white;
   th, td {
-    border-top: 1px solid $grey-darken-darkest;
-    border-bottom: 1px solid $grey-darken-darkest;
+    border-top: 1px solid $panel-border;
+    border-bottom: 1px solid $panel-border;
   }
 }
 
@@ -94,9 +100,9 @@
 .clickable {
   cursor: pointer;
   &:hover {
-    background-color: darken($grey-dark, 2.5%);
+    background-color: $button-hover-background;
   }
   &:active {
-    background-color: lighten($grey-dark, 2.5%);
+    background-color: $button-hover-background;
   }
 }

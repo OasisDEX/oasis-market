@@ -5,7 +5,7 @@ interface SvgImageProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 export function SvgImage({ image, ...props }: SvgImageProps) {
-  return <div dangerouslySetInnerHTML={{ __html: loadDataUrl(image) }} {...props} />;
+  return <span dangerouslySetInnerHTML={{ __html: loadDataUrl(image) }} {...props} />;
 }
 
 export function SvgImageSimple(image: string) {
