@@ -90,7 +90,7 @@ export class AccountView extends React.Component<InstantFormState> {
           </Button>
         </div>
       </>
-    )
+    );
   }
 
   private onMissingProxy = () => {
