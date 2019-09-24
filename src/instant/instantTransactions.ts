@@ -79,12 +79,19 @@ function doTradePayWithERC20(
   initialProgress: Progress
 ): Observable<Progress> {
 
-  const trade$ = calls.tradePayWithERC20({
+  const trade$ = calls.tradePayWithERC20EstimateGas({
     ...state,
     proxyAddress,
-    gasEstimation: state.gasEstimation,
-    gasPrice: state.gasPrice
-  } as InstantOrderData);
+  } as InstantOrderData).pipe(
+    switchMap(gasEstimation => {
+      return calls.tradePayWithERC20({
+        ...state,
+        proxyAddress,
+        gasEstimation,
+        gasPrice: state.gasPrice,
+      } as InstantOrderData);
+    })
+  );
 
   return trade$.pipe(
     flatMap((txState: TxState) => {
@@ -129,8 +136,8 @@ function doApprove(
       if (!proxyAddress) {
         throw new Error('Proxy not ready!');
       }
-      if (!state.gasEstimation || !state.gasPrice) {
-        throw new Error('No gas estimation!');
+      if (!state.gasPrice) {
+        throw new Error('No gas price!');
       }
       return calls.approveProxy({
         proxyAddress,
@@ -175,8 +182,8 @@ function doSetupProxy(
   calls: Calls,
   state: InstantFormState,
 ): Observable<Progress> {
-  if (!state.gasEstimation || !state.gasPrice) {
-    throw new Error('No gas estimation!');
+  if (!state.gasPrice) {
+    throw new Error('No gas price!');
   }
 
   return calls.setupProxy({

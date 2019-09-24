@@ -572,6 +572,11 @@ function getBestPrice(
 }
 
 function estimateGas(calls$_: Calls$, state: InstantFormState) {
+  if (state.tradeEvaluationStatus !== TradeEvaluationStatus.calculated
+  || !state.buyAmount
+  || !state.sellAmount) {
+    return of(state);
+  }
   return state.user &&
     state.user.account &&
     !state.message &&
@@ -587,18 +592,14 @@ function gasEstimation(
   _readCalls: ReadCalls | undefined,
   state: InstantFormState
 ): Observable<number> | undefined {
-  return state.tradeEvaluationStatus !== TradeEvaluationStatus.calculated
-  || !state.buyAmount
-  || !state.sellAmount
-    ? undefined
-    : calls.proxyAddress().pipe(
-      switchMap(proxyAddress => {
-        const sell = state.sellToken === 'ETH'
-          ? estimateTradePayWithETH
-          : estimateTradePayWithERC20;
-        return sell(calls, proxyAddress, state);
-      })
-    );
+  return calls.proxyAddress().pipe(
+    switchMap(proxyAddress => {
+      const sell = state.sellToken === 'ETH'
+        ? estimateTradePayWithETH
+        : estimateTradePayWithERC20;
+      return sell(calls, proxyAddress, state);
+    })
+  );
 }
 
 function evaluateTrade(
@@ -1075,7 +1076,10 @@ function toContextChange(context$: Observable<NetworkConfig>): Observable<Contex
 function isReadyToProceed(state: InstantFormState): InstantFormState {
   return {
     ...state,
-    readyToProceed: !state.message && state.gasEstimationStatus === GasEstimationStatus.calculated
+    readyToProceed: !state.message && (
+      state.gasEstimationStatus === GasEstimationStatus.calculated ||
+      state.gasEstimationStatus === GasEstimationStatus.unknown
+    ),
   };
 }
 
