@@ -29,6 +29,14 @@ export class BigNumberInput extends React.Component<any> {
       value = currentValue;
     }
 
+    const allowOnlyOneDot = (v: string, { rawValue }: { rawValue: string }) =>
+      rawValue.match(/\..*\./) ? false : v;
+
+    const pipe = [
+      allowOnlyOneDot,
+      ...this.props.pipe ? [this.props.pipe] : [],
+    ].reduce(composePipes, (v: any) => v);
+
     return (
       // @ts-ignore
       <MaskedInput
@@ -37,7 +45,21 @@ export class BigNumberInput extends React.Component<any> {
         onChange={this.changed}
         value={value}
         guide={false}
+        pipe={pipe}
       />
     );
   }
 }
+
+type Pipe = (v: string, config: any) => string | false;
+export const composePipes = (p1: Pipe, p2: Pipe) => (v: string, config: any) => {
+  const tmp = p1(v, config);
+  return tmp === false ? tmp : p2(tmp, config);
+};
+
+export const lessThanOrEqual = (max: BigNumber): Pipe => (value: string) => {
+  if (!value) {
+    return value;
+  }
+  return new BigNumber(value.replace(/,/g, '')).lte(max) ? value : false;
+};

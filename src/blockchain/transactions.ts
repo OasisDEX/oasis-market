@@ -338,12 +338,12 @@ const externalNonce2tx$: Observable<ExternalNonce2tx> = combineLatest(
 ).pipe(
   switchMap(([context, account, firstBlock]) =>
     ajax({
-      url: `${context.etherscan.apiUrl}?module=account
-      &action=txlist
-      &address=${account}
-      &startblock=${firstBlock}
-      &sort=desc
-      &apikey=${context.etherscan.apiKey}`
+      url: `${context.etherscan.apiUrl}?module=account` +
+        `&action=txlist` +
+        `&address=${account}` +
+        `&startblock=${firstBlock}` +
+        `&sort=desc` +
+        `&apikey=${context.etherscan.apiKey}`,
     })
   ),
   map(({ response }) => response.result),

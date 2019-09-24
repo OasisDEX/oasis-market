@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { BigNumber } from 'bignumber.js';
 import classnames from 'classnames';
 import * as styles from './InputGroup.scss';
 
@@ -39,12 +38,3 @@ export const InputGroupAddon = ({ children, className, border, ...props }:
     {children}
   </div>
 );
-
-export const lessThanOrEqual = (max: BigNumber) => (value: string) => {
-  if (!value) {
-    return value;
-  }
-  return new BigNumber(value.replace(/,/g, '')).lte(max)
-    ? value
-    : false;
-};

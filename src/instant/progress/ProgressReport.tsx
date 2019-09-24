@@ -44,6 +44,12 @@ const statuses = new Map<string, (params: Params) => React.ReactNode>([
   [TxStatus.CancelledByTheUser, () => (
     <><span className={styles.failure}>Rejected</span></>
   )],
+  [TxStatus.Failure, () => (
+    <><span className={styles.failure}>Failed</span></>
+  )],
+  [TxStatus.Error, () => (
+    <><span className={styles.failure}>Unknown transaction result</span></>
+  )],
 ]);
 
 export class ProgressReport extends React.Component<{ report: Report }> {
