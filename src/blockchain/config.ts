@@ -8,16 +8,11 @@ import daiCircleSvg from '../icons/coins/dai-circle.svg';
 import daiColorSvg from '../icons/coins/dai-color.svg';
 // import daiInverseSvg from '../icons/coins/dai-inverse.svg';
 import daiSvg from '../icons/coins/dai.svg';
-// import dgdCircleSvg from '../icons/coins/dgd-circle.svg';
-// import dgdColorSvg from '../icons/coins/dgd-color.svg';
-// import dgdSvg from '../icons/coins/dgd.svg';
 import ethCircleSvg from '../icons/coins/eth-circle.svg';
 // import ethColorInverseSvg from '../icons/coins/eth-color-inverse.svg';
 import ethColorSvg from '../icons/coins/eth-color.svg';
 // import ethInverseSvg from '../icons/coins/eth-inverse.svg';
 import ethSvg from '../icons/coins/eth.svg';
-// import mkrInverseSvg from '../icons/coins/mkr-inverse.svg';
-// import mkrSvg from '../icons/coins/mkr.svg';
 import repCircleSvg from '../icons/coins/rep-circle.svg';
 import repColorSvg from '../icons/coins/rep-color.svg';
 import repSvg from '../icons/coins/rep.svg';
@@ -47,7 +42,6 @@ export const tradingPairs: TradingPair[] = [
   ...process.env.REACT_APP_OASIS_DEX_ENABLED !== '1' ? [] : [
     // { base: 'MKR', quote: 'DAI' },
     // { base: 'MKR', quote: 'WETH' },
-    // { base: 'DGD', quote: 'DAI' },
     { base: 'REP', quote: 'DAI' },
     { base: 'ZRX', quote: 'DAI' },
     { base: 'BAT', quote: 'DAI' }
@@ -96,43 +90,6 @@ export const tokens = asMap('symbol', [
     iconColor: SvgImageSimple(daiColorSvg),
   },
   ...process.env.REACT_APP_OASIS_DEX_ENABLED !== '1' ? [] : [
-    // {
-    //   symbol: 'MKR',
-    //   precision: 18,
-    //   digits: 5,
-    //   digitsInstant: 3,
-    //   maxSell: '10000000',
-    //   name: 'Maker',
-    //   icon: SvgImageSimple(mkrSvg),
-    //   iconCircle: SvgImageSimple(mkrInverseSvg),
-    //   iconColor: SvgImageSimple(mkrInverseSvg),
-    // },
-    // {
-    //   symbol: 'DGX',
-    //   precision: 18,
-    //   digits: 5,
-    //   digitsInstant: 3,
-    //   safeCollRatio: 1.5,
-    //   maxSell: '1000000000000000',
-    //   name: 'Digix',
-    //   icon: SvgImageSimple(dgdSvg),
-    //   // iconInverse: SvgImageSimple(mkrInverseSvg),
-    //   iconCircle: SvgImageSimple(dgdCircleSvg),
-    //   iconColor: SvgImageSimple(dgdColorSvg),
-    // },
-    // {
-    //   symbol: 'DGD',
-    //   precision: 9,
-    //   digits: 5,
-    //   digitsInstant: 3,
-    //   safeCollRatio: 1.5,
-    //   maxSell: '1000000000000000',
-    //   name: 'DigixDAO',
-    //   icon: SvgImageSimple(dgdSvg),
-    // // iconInverse: SvgImageSimple(dgdInverseSvg),
-    //   iconCircle: SvgImageSimple(dgdCircleSvg),
-    //   iconColor: SvgImageSimple(dgdColorSvg),
-    // },
     {
       symbol: 'REP',
       precision: 18,
@@ -224,7 +181,6 @@ const protoMain = {
     ethdai: 0.02,
     mkrdai: 0.01,
     mkreth: 0.01,
-    dgddai: 0.02,
     repdai: 0.02,
     zrxdai: 0.02,
     batdai: 0.02,
@@ -238,8 +194,6 @@ const protoMain = {
     return asMap('token', [
       loadToken('WETH', eth, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
       loadToken('DAI', erc20, '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'),
-      loadToken('MKR', erc20, '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2'),
-      loadToken('DGD', erc20, '0xe0b7927c4af23765cb51314a0e0521a9645f0e2a'),
       loadToken('REP', erc20, '0x1985365e9f78359a9B6AD760e32412f4a445E862'),
       loadToken('ZRX', erc20, '0xe41d2489571d322189246dafa5ebde1f4699f498'),
       loadToken('BAT', erc20, '0x0d8775f648430679a709e98d2b0cb6250d2887ef'),
@@ -280,7 +234,6 @@ const kovan: NetworkConfig = {
     ethdai: 0.025,
     mkrdai: 0.015,
     mkreth: 0.015,
-    dgddai: 0.025,
     repdai: 0.025,
     zrxdai: 0.025,
     batdai: 0.025,
@@ -294,8 +247,6 @@ const kovan: NetworkConfig = {
     return asMap('token', [
       loadToken('WETH', eth, '0xd0a1e359811322d97991e03f863a0c30c2cf029c'),
       loadToken('DAI', erc20, '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'),
-      loadToken('MKR', erc20, '0xaaf64bfcc32d0f15873a02163e7e500671a4ffcd'),
-      loadToken('DGD', erc20, '0x62aeec5fb140bb233b1c5612a8747ca1dc56dc1b'),
       loadToken('REP', erc20, '0xc7aa227823789e363f29679f23f7e8f6d9904a9b'),
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
@@ -332,7 +283,6 @@ const localnet: NetworkConfig =   {
     ethdai: 0.05,
     mkrdai: 0.05,
     mkreth: 0.05,
-    dgddai: 0.05,
     repdai: 0.05,
     zrxdai: 0.05,
     batdai: 0.05,
@@ -346,8 +296,8 @@ const localnet: NetworkConfig =   {
     return asMap('token', [
       loadToken('WETH', eth, '0x28085cefa9103d3a55fb5afccf07ed2038d31cd4'),
       loadToken('DAI', erc20, '0xff500c51399a282f4563f2713ffcbe9e53cfb6fa'),
-      loadToken('MKR', erc20, '0xe80C262f63df9376d2ce9eDd373832EDc9FCA46E'),
-      loadToken('DGD', erc20, '0x2f42E9A9BA1A8BfE0a46a7b116aD5b0D16d2B105'),
+      // loadToken('MKR', erc20, '0xe80C262f63df9376d2ce9eDd373832EDc9FCA46E'),
+      // loadToken('DGD', erc20, '0x2f42E9A9BA1A8BfE0a46a7b116aD5b0D16d2B105'),
       loadToken('ZRX', erc20, '0xE2ecCEEc6dEB8c7AFF9787E46FEA7078b89ab159'),
       loadToken('BAT', erc20, '0x2f8e256F2f9301d1992CDCCD85A513954C9dDB71'),
       loadToken('REP', erc20, '0x30ed29c4C4bA30ECCcDd0c0D153E454BFCb0A4Dd'),
