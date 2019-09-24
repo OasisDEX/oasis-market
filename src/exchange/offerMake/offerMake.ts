@@ -329,7 +329,7 @@ function applyChange(state: OfferFormState,
           ? {
             total: new BigNumber(
               change.value.multipliedBy(state.price)
-                .toFixed(tokens[state.quoteToken].digits, 2)
+                .toFixed(tokens[state.quoteToken].digits, BigNumber.ROUND_CEIL)
             )
           }
           : {},
@@ -343,7 +343,7 @@ function applyChange(state: OfferFormState,
           ? {
             total: new BigNumber(
               change.value.multipliedBy(state.amount)
-                .toFixed(tokens[state.quoteToken].digits, 2)
+                .toFixed(tokens[state.quoteToken].digits, BigNumber.ROUND_CEIL)
             )
           }
           : {},
