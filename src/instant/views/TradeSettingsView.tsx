@@ -6,6 +6,7 @@ import backSvg from '../../icons/back.svg';
 import warningSvg from '../../icons/warning.svg';
 import { BigNumberInput } from '../../utils/bigNumberInput/BigNumberInput';
 import { formatPrice } from '../../utils/formatters/format';
+import { lessThanOrEqual } from '../../utils/forms/InputGroup';
 import { ButtonIcon } from '../../utils/icons/Icons';
 import { SvgImage } from '../../utils/icons/utils';
 import { TopLeftCorner } from '../../utils/panel/TopRightCorner';
@@ -51,7 +52,7 @@ export class TradeSettingsView extends React.Component<InstantFormState> {
                 prefix: ''
               })}
               pipe={
-                lessThanOrEqual(100)
+                lessThanOrEqual(new BigNumber(100))
               }
               guide={true}
               placeholder={slippageLimitInPercentage}
@@ -117,7 +118,3 @@ export class TradeSettingsView extends React.Component<InstantFormState> {
     return price.plus(price.times(slippageLimit));
   }
 }
-
-const lessThanOrEqual = (max: number) => {
-  return (value: number) => value <= max ? value : false;
-};
