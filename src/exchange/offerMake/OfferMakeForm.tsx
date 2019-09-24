@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 
+import * as mixpanel from 'mixpanel-browser';
 import { tokens } from '../../blockchain/config';
 import { routerContext } from '../../Main';
 import { BigNumberInput } from '../../utils/bigNumberInput/BigNumberInput';
@@ -358,6 +359,15 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
         value="submit"
         color={this.props.kind === OfferType.buy ? 'green' : 'red' }
         disabled={this.props.stage !== 'readyToProceed'}
+        onClick={() => {
+          mixpanel.track('btn-click', {
+            id: 'initiate-trade',
+            product: 'oasis-trade',
+            page: 'Market',
+            section: 'create-order',
+            kind: this.props.kind
+          });
+        }}
       >
         {this.props.kind} {this.props.baseToken}
       </Button>
@@ -378,7 +388,15 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
         value="submit"
         // color={this.props.kind === 'buy' ? 'green' : 'red' }
         disabled={disabled}
-        onClick={this.handleOpenPicker}
+        onClick={() => {
+          mixpanel.track('btn-click', {
+            id: 'submit-order-type',
+            product: 'oasis-trade',
+            page: 'Market',
+            section: 'choose-order-type',
+          });
+          this.handleOpenPicker();
+        }}
       >
         Done
       </Button>
