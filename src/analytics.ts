@@ -26,7 +26,8 @@ export const mixpanelInit = () => {
 };
 
 export const mixpanelIdentify = (id: string, props: any) => {
-  if (typeof mixpanel.get_config() === 'undefined') return;
+  // @ts-ignore
+  if (typeof mixpanel.config === 'undefined') return;
   console.debug(
     `[Mixpanel] Identifying as ${id} ${
       props && props.wallet ? `using wallet ${props.wallet}` : ''
