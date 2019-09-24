@@ -29,6 +29,9 @@ export class BigNumberInput extends React.Component<any> {
       value = currentValue;
     }
 
+    const allowOnlyOneDot = (v: any, { rawValue }: { rawValue: string }) =>
+      rawValue.match(/\..*\./) ? false : v;
+
     return (
       // @ts-ignore
       <MaskedInput
@@ -37,7 +40,7 @@ export class BigNumberInput extends React.Component<any> {
         onChange={this.changed}
         value={value}
         guide={false}
-        pipe={(v, { rawValue }) => rawValue.match(/\..*\./) ? false : v}
+        pipe={allowOnlyOneDot}
       />
     );
   }
