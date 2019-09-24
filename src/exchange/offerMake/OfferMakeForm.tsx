@@ -6,13 +6,13 @@ import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 
 import { tokens } from '../../blockchain/config';
 import { routerContext } from '../../Main';
-import { BigNumberInput } from '../../utils/bigNumberInput/BigNumberInput';
+import { BigNumberInput, lessThanOrEqual } from '../../utils/bigNumberInput/BigNumberInput';
 import { FormChangeKind, OfferMatchType } from '../../utils/form';
 import { formatAmount, formatPrice } from '../../utils/formatters/format';
 import { FormatAmount, FormatPercent } from '../../utils/formatters/Formatters';
 import { Button, ButtonGroup } from '../../utils/forms/Buttons';
 import { ErrorMessage } from '../../utils/forms/ErrorMessage';
-import { InputGroup, InputGroupAddon, lessThanOrEqual } from '../../utils/forms/InputGroup';
+import { InputGroup, InputGroupAddon } from '../../utils/forms/InputGroup';
 import { Radio } from '../../utils/forms/Radio';
 import { GasCost } from '../../utils/gasCost/GasCost';
 import { Hr } from '../../utils/layout/LayoutHelpers';
@@ -483,9 +483,11 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
             type="text"
             mask={createNumberMask({
               allowDecimal: true,
-              decimalLimit: 5,
               prefix: ''
             })}
+            pipe={
+              lessThanOrEqual(new BigNumber(100))
+            }
             onChange={this.handleSlippageLimitChange}
             value={
               (this.props.slippageLimit || null) &&
