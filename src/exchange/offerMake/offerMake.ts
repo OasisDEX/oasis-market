@@ -327,10 +327,7 @@ function applyChange(state: OfferFormState,
         amount: change.value,
         ...change.value && state.price
           ? {
-            total: new BigNumber(
-              change.value.multipliedBy(state.price)
-                .toFixed(tokens[state.quoteToken].digits, BigNumber.ROUND_CEIL)
-            )
+            total: change.value.multipliedBy(state.price)
           }
           : {},
         gasEstimationStatus: GasEstimationStatus.unset
@@ -341,10 +338,7 @@ function applyChange(state: OfferFormState,
         price: change.value,
         ...change.value && state.amount
           ? {
-            total: new BigNumber(
-              change.value.multipliedBy(state.amount)
-                .toFixed(tokens[state.quoteToken].digits, BigNumber.ROUND_CEIL)
-            )
+            total:  change.value.multipliedBy(state.amount)
           }
           : {},
         gasEstimationStatus: GasEstimationStatus.unset
