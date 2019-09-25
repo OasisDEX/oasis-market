@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 
 import { etherscan } from '../../blockchain/etherscan';
 import { formatDateTime } from '../../utils/formatters/format';
-import { FormatAmount, FormatPriceOrder } from '../../utils/formatters/Formatters';
+import { FormatAmount } from '../../utils/formatters/Formatters';
 import { Button } from '../../utils/forms/Buttons';
 import { LoadableStatus } from '../../utils/loadable';
 import { WithLoadingIndicator } from '../../utils/loadingIndicator/LoadingIndicator';
@@ -76,9 +76,8 @@ export class AllTrades extends React.Component<AllTradesProps> {
                         <RowClickable clickable={!!trade.tx} onClick={this.tradeDetails(trade)}>
                           <td className={tableStyles.numerical}>
                             <SellBuySpan type={trade.act}>
-                              <FormatPriceOrder value={trade.price}
-                                                token={trade.quoteToken}
-                                                kind={trade.kind}
+                              <FormatAmount value={trade.price}
+                                            token={trade.quoteToken}
                               />
                             </SellBuySpan>
                           </td>

@@ -8,7 +8,7 @@ import { distinctUntilKeyChanged, map, startWith } from 'rxjs/operators';
 
 import * as mixpanel from 'mixpanel-browser';
 import { FormChangeKind, PickOfferChange } from '../../utils/form';
-import { FormatAmount, FormatPriceOrder } from '../../utils/formatters/Formatters';
+import { FormatAmount } from '../../utils/formatters/Formatters';
 import { Button } from '../../utils/forms/Buttons';
 import { SvgImage } from '../../utils/icons/utils';
 import { Loadable, LoadableStatus, loadablifyLight } from '../../utils/loadable';
@@ -264,7 +264,7 @@ export class OrderbookView extends React.Component<Props> {
         onClick={onClick(offer)}>
         <td data-test-id="price">
           <SellBuySpan type={kind}>
-            <FormatPriceOrder value={offer.price} token={offer.quoteToken} kind={kind}/>
+            <FormatAmount value={offer.price} token={offer.quoteToken}/>
           </SellBuySpan>
         </td>
         <td className={tableStyles.numerical} data-test-id="amount">
