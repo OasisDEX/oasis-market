@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { first, flatMap, map, startWith, switchMap } from 'rxjs/operators';
 import { Calls } from '../blockchain/calls/calls';
 import { InstantOrderData } from '../blockchain/calls/instant';
-import { allowance$ } from '../blockchain/network';
+import { allowance$, waitUntil } from '../blockchain/network';
 import { getTxHash, isDone, isSuccess, TxState, TxStatus } from '../blockchain/transactions';
 import { amountFromWei } from '../blockchain/utils';
 import {
@@ -131,7 +131,7 @@ function doApprove(
   state: InstantFormState,
   initialProgress: Progress
 ): Observable<Progress> {
-  return calls.proxyAddress().pipe(
+  return waitUntil(calls.proxyAddress(), proxyAddress => !!proxyAddress).pipe(
     flatMap(proxyAddress => {
       if (!proxyAddress) {
         throw new Error('Proxy not ready!');

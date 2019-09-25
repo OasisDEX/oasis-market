@@ -1,6 +1,7 @@
 // tslint:disable:no-console
 import { BigNumber } from 'bignumber.js';
 import { bindNodeCallback, combineLatest, concat, interval, Observable, of } from 'rxjs';
+import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
 import { ajax } from 'rxjs/ajax';
 import {
   catchError,
@@ -8,6 +9,7 @@ import {
   distinctUntilChanged,
   filter,
   first,
+  last,
   map,
   mergeMap,
   retryWhen,
@@ -159,3 +161,13 @@ export const etherPriceUsd$: Observable<BigNumber> = concat(
   distinctUntilChanged((x: BigNumber, y: BigNumber) => x.eq(y)),
   shareReplay(1),
 );
+
+export function waitUntil<T>(
+  value: Observable<T>, condition: (v: T) => boolean, maxRetries = 5, generator$ = onEveryBlock$,
+): Observable<T> {
+  return generator$.pipe(
+    switchMap(() => value),
+    takeWhileInclusive((v, i) => i < maxRetries && !condition(v)),
+    last(),
+  );
+}
