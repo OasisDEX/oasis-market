@@ -1,12 +1,12 @@
-# Eth2Dai
+# Oasis Trade
 
-[![CircleCI](https://circleci.com/gh/OasisDEX/eth2dai.svg?style=svg)](https://circleci.com/gh/OasisDEX/eth2dai)
+[![CircleCI](https://circleci.com/gh/OasisDEX/oasis-market.svg?style=svg)](https://circleci.com/gh/OasisDEX/oasis-market)
 
-**Eth2Dai** is a marketplace that allows fully on-chain exchange of **ETH** and **DAI** tokens. It uses the [**matching_market**](https://etherscan.io/address/0xb7ac09c2c0217b07d7c103029b4918a2c401eecb) smart contract on the Ethereum blockchain.
+**Oasis Trade** is a marketplace that allows fully on-chain exchange of **ETH** and **DAI** tokens. It uses the [**matching_market**](https://etherscan.io/address/0xb7ac09c2c0217b07d7c103029b4918a2c401eecb) smart contract on the Ethereum blockchain.
 
 ## Installation
 
-To run `eth2dai` locally, clone the respository and then run from the command line:
+To run `oasis-market` locally, clone the respository and then run from the command line:
 ```
 yarn
 yarn start
@@ -14,7 +14,7 @@ yarn start
 
 ## Development
 
-[dev branch](http://eth2dai-dev.surge.sh/)
+[dev branch](http://oasis-market-dev.surge.sh/)
 
 ### Local development
 
