@@ -1,5 +1,7 @@
+@import '../../utils/Variables';;
+
 .scrollbarThumb {
-  background-color: #eee;
+  background-color: $very-light-gray-2;
   border-radius: 5.5px;
 }
 

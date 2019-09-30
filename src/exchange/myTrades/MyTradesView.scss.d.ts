@@ -7,3 +7,4 @@ export const myCloseTradesTable: string;
 export const status: string;
 export const statusText: string;
 export const statusProgress: string;
+export const closeButton: string;

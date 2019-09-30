@@ -11,11 +11,8 @@
 
   padding: 1.5em;
 
-  letter-spacing: 1.2px;
-
   h1, h2, h3, h4, h5, h6 {
-    @include fontMontserratMedium;
-    font-size: 1em;
+    font-size: 18px;
     margin: 0 0;
   }
 }
@@ -27,6 +24,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     text-align: center;
+    font-weight: 500;
   }
 }
 
@@ -44,7 +42,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   width: 100%;
-  border: 1px solid $button-border-disabled;
+  border: 1px solid $element-border;
   border-radius: .25rem;
 
   margin-top: 1.25rem;
@@ -55,7 +53,6 @@
     min-height: 2rem;
     align-items: center;
     justify-content: center;
-    letter-spacing: 1px;
     margin-bottom: 1rem;
     padding: 0;
 
@@ -104,9 +101,7 @@
   border-radius: .25rem;
   margin-top: 1rem;
 
-  @include fontMontserratMedium;
   font-size: 12px;
-  letter-spacing: 1.10px;
 
   @include media-breakpoint-down(md) {
     margin: 1rem 0;
@@ -125,6 +120,7 @@
 .errors {
   @extend %errors-base;
   color: $errors;
+  border-color: $errors;
 }
 
 .warnings {
@@ -153,15 +149,21 @@
 .cornerIcon {
   height: 28px;
   width: 28px;
-  border: 1px solid $button-border-disabled;
   border-radius: 100%;
 }
 
 .accountIcon {
-  border-color: $grey-light;
+  padding: unset;
+  border-color: $element-border;
 
   :global(.account-icon-background) {
     fill: transparent;
+  }
+
+  &:hover:not(:disabled){
+    :global(.account-icon-background) {
+      fill: white;
+    }
   }
 }
 
@@ -170,19 +172,27 @@
 }
 
 .settingsIcon, .backIcon, .accountIcon {
-  border-color: $grey-light;
+  background: white;
+  border-color: $element-border;
 
   :global(.cog-wheel-icon), :global(.back-icon),  :global(.account-icon-body) {
-    fill: $white;
+    fill: $info-label-color;
   }
 
-  &:hover:enabled {
-    border-color: $button-border-hover;
+  &:not(:disabled):hover {
+    border-color: #708390;
+    background-color: white !important;
+
+    :global(.cog-wheel-icon), :global(.back-icon),  :global(.account-icon-body) {
+      fill: #708390;
+    }
   }
 
   &:disabled {
-    :global(.cog-wheel-icon), :global(.back-icon), :global(.account-icon-body) {
-      fill: $grey-light;
+    border-color: #D1DEE6;
+
+    :global(.cog-wheel-icon), :global(.back-icon),  :global(.account-icon-body) {
+      fill: #D1DEE6;
     }
   }
 }
@@ -191,25 +201,22 @@
 .input {
   height: 2rem;
 
-  @include fontMontserratMedium;
   font-size: .75rem;
 
   @include media-breakpoint-down(md) {
     font-size: .625rem;
   }
 
-  border: 1px solid $grey-light;
+  border: 1px solid $element-border;
   border-radius: .125rem;
 
   padding: .5rem;
 
   text-align: center;
-  letter-spacing: 1.1px;
-  color: $white;
 
   &::placeholder {
     text-transform: uppercase;
-    color: $input-number-color;
+    color: #708390;
   }
 
   &:hover {
@@ -227,7 +234,7 @@
   font-weight: 700;
   top: 50%;
   transform: translateY(-50%);
-  color: $button-border-hover;
+  color: $dark-grayish-blue-2;
 }
 
 .inputApprox {
@@ -243,25 +250,10 @@
 
 .button {
   width: 100%;
-
-  &:disabled {
-    color: $grey-light
-  }
 }
 
 .tradingAsset {
   width: 100%;
   max-width: 7.75rem;
   margin: auto auto 1rem;
-}
-
-.closeButton {
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 100%;
-  padding: 5px;
-
-  svg {
-    fill: $errors;
-  }
 }

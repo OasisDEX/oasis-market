@@ -16,14 +16,14 @@ export const ServerUnreachable = ({ className, ...props }: {
     >
       <div className={styles.mainInfo}>
         <SvgImage image={errorSvg} className={styles.icon}/>
-        Server unreachable
+        <span>Server Unreachable</span>
       </div>
       <Muted className={styles.annotate}>
         Please try again later or <a
           className={styles.link}
           target="_blank"
           rel="noopener noreferrer"
-          href="https://chat.makerdao.com/channel/eth2dai">
+          href="https://chat.makerdao.com/channel/oasis">
         Contact us
       </a>
       </Muted>

@@ -48,7 +48,7 @@ class AnnouncementView extends React.Component<AnnouncementViewProps & {
           </div>
           <div className={styles.container}>
             <Button data-test-id="continue-with-new-contract"
-                    size="md" color="greyWhite" className={styles.btn}
+                    size="md" color="secondaryOutlined" className={styles.btn}
                     onClick={onContinue}>
               {buttonLabel}
             </Button>

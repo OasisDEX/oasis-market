@@ -8,7 +8,10 @@ import { formatDateTime } from '../../utils/formatters/format';
 import { FormatAmount, FormatPriceOrder } from '../../utils/formatters/Formatters';
 import { Button } from '../../utils/forms/Buttons';
 import { LoadableStatus } from '../../utils/loadable';
-import { WithLoadingIndicator } from '../../utils/loadingIndicator/LoadingIndicator';
+import {
+  LoadingIndicator,
+  WithLoadingIndicator
+} from '../../utils/loadingIndicator/LoadingIndicator';
 import { ServerUnreachable } from '../../utils/loadingIndicator/ServerUnreachable';
 import { PanelHeader } from '../../utils/panel/Panel';
 import { Scrollbar } from '../../utils/Scrollbar/Scrollbar';
@@ -42,10 +45,10 @@ export class AllTrades extends React.Component<AllTradesProps> {
         this.forceUpdate();
       });
     }
-
+    console.log(this.props.status);
     return (
       <>
-        <PanelHeader bordered={this.props.status === 'error'}>
+        <PanelHeader>
           Trade history
         </PanelHeader>
         <Table align="right" className={styles.allTradesTable}>
@@ -99,9 +102,10 @@ export class AllTrades extends React.Component<AllTradesProps> {
                           <Button onClick={showMore(more$)}
                                   block={true}
                                   size="md"
+                                  color="secondaryOutlined"
                                   disabled={loading}
                           >
-                            {loading ? <span className={styles.loader}/> : 'Load more'}
+                            {loading ? <LoadingIndicator inline={true}/> : 'Load more'}
                           </Button>
                         </td>
                       </tr>

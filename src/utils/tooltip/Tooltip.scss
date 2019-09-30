@@ -1,28 +1,26 @@
 @import '../../utils/Variables';
+@import '../../utils/Mixins';
 
 :global(.instantTooltip.show) {
   opacity: 1;
-  box-shadow: 0 0 4px 1px rgba(0, 0, 0, .15);
-  border: 1px solid hsla(240, 1%, 72%, .05);
-  background-color: #ffffff;
+  border: 1px solid $element-border;
+  background-color: $white;
   font-size: 12px;
   padding: 6px 10px;
-  color: #263238;
+  color: $very-dark-grayish-blue;
 
   max-width: 200px;
-  border-radius: 2px;
+  border-radius: 6px;
 }
 
 :global(.instantTooltip.show p) {
-  font-family: Montserrat, sans-serif;
-  font-weight: 500;
   font-size: 12px;
   line-height: 18px;
-  letter-spacing: 1.1px;
   margin: 0;
 }
 
 :global(.instantTooltip.show:after) {
+  display:none;
   box-sizing: border-box;
   transform-origin: 0 0;
   transform: rotate(-45deg);
@@ -33,22 +31,22 @@
 
 :global(.instantTooltip.show.place-top:after) {
   bottom: -12px;
-  box-shadow: -3px 3px 5px -2px rgba(0, 0, 0, .15);
+  //box-shadow: -3px 3px 5px -2px rgba(0, 0, 0, .15);
 }
 
 :global(.instantTooltip.show.place-right:after) {
   left: -9px;
-  box-shadow: -3px -3px 5px -2px rgba(0, 0, 0, .15);
+  //box-shadow: -3px -3px 5px -2px rgba(0, 0, 0, .15);
 }
 
 :global(.instantTooltip.show.place-left:after) {
   right: -4px;
-  box-shadow: 3px 3px 5px -2px rgba(0, 0, 0, .15);
+  //box-shadow: 3px 3px 5px -2px rgba(0, 0, 0, .15);
 }
 
 :global(.instantTooltip.show.place-bottom:after) {
   top: 0;
-  box-shadow: 3px -3px 5px -2px rgba(0, 0, 0, .15);
+  //box-shadow: 3px -3px 5px -2px rgba(0, 0, 0, .15);
 }
 
 
@@ -59,19 +57,13 @@
 
   &.grey {
     :global(.warning-icon) {
-      fill: $dark-gray-blue;
+      fill: $dark-grayish-blue;
     }
   }
 
-  &.white {
+  &.green {
     :global(.warning-icon) {
-      fill: rgba(255, 255, 255, 0.9);
-    }
-  }
-
-  &.softCyan {
-    :global(.warning-icon) {
-      fill: $soft-cyan;
+      fill: $green;
     }
   }
 }

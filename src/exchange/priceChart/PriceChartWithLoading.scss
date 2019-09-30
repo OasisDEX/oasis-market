@@ -1,10 +1,10 @@
 @import "../../utils/Mixins";
 
 .btn {
+  font-size: 12px;
   width: 42px;
 
   @include media-breakpoint-down(sm){
     width: 34px;
-    font-size: 11px;
   }
 }

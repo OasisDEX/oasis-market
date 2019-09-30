@@ -17,10 +17,9 @@
   position: relative;
   padding: 16px 24px 16px 16px;
   margin: 10px 18px 24px 18px;
-  background-color: $grey-darkest;
-  border: 1px solid $grey-darken-darkest;
+  background-color: white;
+  border: 1px solid $element-border;
   border-radius: 4px;
-  box-shadow: 0 0 4px 1px rgba(black, 0.20);
   font-size: 14px;
   width: 350px;
 
@@ -32,7 +31,6 @@
 }
 
 .title {
-  letter-spacing: 0.4px;
   margin-bottom: 4px;
   margin-top: 5px;
 }
@@ -42,11 +40,7 @@
     top: 0.5em;
     right: 0.5em;
     padding: 2px;
-    border: 1px solid black;
     cursor: pointer;
-    &:hover {
-        background-color: #eee;
-    }
 }
 
 .icon {
@@ -65,11 +59,10 @@
   color: $grey-light;
 }
 .link {
-  color: $very-light-blue;
+  color: $green;
 }
 .cross {
   border-radius: 100%;
-  background-color: $grey-dark;
   height: 1.5em;
   width: 1.5em;
   display: flex;
@@ -79,9 +72,11 @@
   top: 1em;
   right: 1em;
   cursor: pointer;
+  padding: 4px;
 
   &:hover,&:focus {
     opacity: 0.8;
+    background-color: white !important;
   }
 }
 

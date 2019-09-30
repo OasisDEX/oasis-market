@@ -3,9 +3,9 @@
 .infoIcon {
   $iconSize: 22px;
 
-  color: $grey-lightest;
+  color: $dark-grayish-blue;
 
-  border: 1px solid $grey-lightest;
+  border: 1px solid $dark-grayish-blue;
   border-radius: 100%;
 
   width: $iconSize;
@@ -33,8 +33,8 @@
 
   display: inline-block;
 
-  border: 2px solid $grey-light;
-  border-right-color: white;
+  border: 2.8px solid $grayish-blue;
+  border-right-color: $light-grayish-blue;
   border-radius: 100%;
 
   width: $iconSize;
@@ -44,8 +44,8 @@
 }
 
 .progressIconLight {
-  border-color: #eee;
-  border-right-color: #448AFF;
+  border-color: $very-light-gray-2;
+  border-right-color: $light-blue;
 }
 
 .progressIconSm {
@@ -62,13 +62,13 @@
 
 .socialIcon {
   path {
-    fill: #B3B3B9;
+    fill: $grayish-blue;
   }
 }
 
 .socialIcon:hover {
   path {
-    fill: #FFF;
+    fill: $very-dark-desaturated-blue;
   }
 }
 

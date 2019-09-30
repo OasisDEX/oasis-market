@@ -15,7 +15,6 @@
     th {
       position: sticky;
       top: -1px;
-      background-color: $grey-dark;
     }
   }
 
@@ -24,15 +23,12 @@
   }
 
   th {
-    font-size: 12px;
-    text-transform: uppercase;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.43px;
+    text-transform: uppercase;
   }
 
   td {
-    font-family: Lato, sans-serif;
-    font-weight: 600;
     font-size: 14px;
   }
 
@@ -62,10 +58,16 @@
 // Extend full width table to be even a bit wider
 // Stretches table by 1px to the left and 1px to the right
 // In Panel component it covers Panel's border
+//.extendOnBorders {
+//  margin-left: -1px;
+//  width: calc(100% + 2px);
+//}
+
 .extendOnBorders {
-  margin-left: -1px;
-  width: calc(100% + 2px);
+  margin-left: 0;
+  width: 100%;
 }
+
 
 // Align text
 //
@@ -83,10 +85,9 @@
 @include tableTextAlign(left);
 
 .trHighlighted {
-  background-color: $grey-dark;
+  background-color: white;
   th, td {
-    border-top: 1px solid $grey-darken-darkest;
-    border-bottom: 1px solid $grey-darken-darkest;
+    border-bottom: 1px solid $element-border;
   }
 }
 
@@ -94,9 +95,9 @@
 .clickable {
   cursor: pointer;
   &:hover {
-    background-color: darken($grey-dark, 2.5%);
+    background-color: $background-on-hover;
   }
   &:active {
-    background-color: lighten($grey-dark, 2.5%);
+    background-color: $background-on-hover;
   }
 }

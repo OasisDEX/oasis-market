@@ -14,9 +14,8 @@
 
 .summary {
   line-height: 1rem;
-  color: $grey-lighter;
+  color: $dark-grayish-blue;
   font-weight: 400;
-  letter-spacing: .8px;
   word-break: break-word;
 
   @include media-breakpoint-down(md) {
@@ -25,6 +24,6 @@
 }
 
 .highlight {
-  color: white;
+  color: $very-dark-violet;
   font-weight: 500;
 }

@@ -20,7 +20,7 @@ export type GroupMode = 'byMonth' | 'byWeek' | 'byDay' | 'byHour';
 
 export const groupModeMapper: { [key in GroupMode]: {addUnit: string, format: string} } = {
   byMonth: { addUnit: 'month', format: 'YYYY MMM' },
-  byWeek: { addUnit: 'weeks', format: 'MMM DD' },
+  byWeek: { addUnit: 'weeks', format: 'MMM' },
   byDay: { addUnit: 'days', format: 'MMM DD' },
   byHour: { addUnit: 'hours', format: 'HH:mm' },
 };

@@ -152,7 +152,7 @@ export class WrapUnwrapFormView
           'Be sure to keep some Ether to pay for transactions';
       case WrapUnwrapFormKind.unwrap:
         return 'You can unwrap your Wrapped Ether (WETH) back to ETH anytime. ' +
-          'Any WETH you convert back to ETH will no longer be usable on Eth2dai';
+          'Any WETH you convert back to ETH will no longer be usable on Oasis Trade';
     }
   }
 
@@ -214,17 +214,17 @@ export class WrapUnwrapFormView
       <PanelFooter className={styles.buttons}>
         <Button
           onClick={this.props.close}
-          size="lg"
+          size="md"
+          color="dangerOutlined"
         >
           Close
         </Button>
         <Button
-          className={styles.btn}
           data-test-id="proceed"
           disabled={!state.readyToProceed || state.progress !== undefined}
           onClick={() => state.proceed(state)}
-          size="lg"
-          color="white"
+          size="md"
+          color="secondaryOutlined"
         >
           Proceed
         </Button>

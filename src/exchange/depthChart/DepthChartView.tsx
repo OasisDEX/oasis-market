@@ -179,7 +179,7 @@ const btnStyles = {
   padding: 0,
   width: '30px',
   height: '30px',
-  fill: 'white'
+  background: 'white',
 };
 
 export class DepthChartView extends React.Component<DepthChartInternalProps> {

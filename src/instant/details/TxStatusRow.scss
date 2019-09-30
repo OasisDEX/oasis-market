@@ -27,12 +27,10 @@
   .label {
     min-width: 9rem;
     font-size: 0.75rem;
-    letter-spacing: 0.7px;
   }
 
   .status {
     margin-left: auto;
-    letter-spacing: .5px;
 
     @include media-breakpoint-down(md) {
       display: flex;

@@ -67,8 +67,8 @@ export class AssetsOverviewViewInternal
       <Table className={styles.table} align="left">
         <thead>
         <tr>
-          <th className="hide-md" style={{ width: '20%' }}>Symbol</th>
-          <th style={{ width: '20%' }}>Asset</th>
+          <th className="hide-lg" style={{ width: '20%' }}>Asset</th>
+          <th style={{ width: '10%' }}>Symbol</th>
           <th style={{ width: '20%' }} className={styles.center}>Unlock</th>
           <th style={{ width: '15%' }} className={styles.center}/>
           <th style={{ width: '15%' }} className={styles.amount}>Wallet</th>
@@ -79,19 +79,19 @@ export class AssetsOverviewViewInternal
         </thead>
         <tbody>
         <tr data-test-id="ETH-overview">
-          <td className="hide-md">ETH</td>
+          <td className="hide-lg">{tokens.ETH.name}</td>
           <td>
             <div className={styles.centeredAsset}>
               { tokens.ETH.icon }
-              <Currency value={tokens.ETH.name} />
+              <Currency value="ETH"/>
             </div>
           </td>
           <td className={styles.center} >-</td>
           <td>
             <Button
               data-test-id="open-wrap-form"
-              color="grey"
-              size="sm"
+              color="secondary"
+              size="xs"
               className={styles.wrapUnwrapBtn}
               block={true}
               onClick={() => {
@@ -112,17 +112,17 @@ export class AssetsOverviewViewInternal
             <FormatAmount value={this.props.etherBalance} token="ETH" />
           </td>
           <td className={classnames(styles.amount, 'hide-md')} data-vis-reg-mask={true}>
-            <FormatAmount value={this.props.etherValueInUsd} token="USD" />
+            <FormatAmount value={this.props.etherValueInUsd} token="USD" fallback="N/A" />
           </td>
         </tr>
 
         { this.props.balances && this.props.balances.map(combinedBalance => (
           <tr data-test-id={`${combinedBalance.name}-overview`} key={combinedBalance.name}>
-            <td className="hide-md">{combinedBalance.name}</td>
+            <td className="hide-lg">{tokens[combinedBalance.name].name}</td>
             <td>
               <div className={styles.centeredAsset}>
                 { tokens[combinedBalance.name].icon }
-                <Currency value={tokens[combinedBalance.name].name} />
+                <Currency value={combinedBalance.name} />
               </div>
             </td>
             <td className={styles.center}>
@@ -140,8 +140,8 @@ export class AssetsOverviewViewInternal
               { combinedBalance.name === 'WETH' &&
               <Button
                 data-test-id="open-unwrap-form"
-                color="grey"
-                size="sm"
+                color="secondary"
+                size="xs"
                 className={styles.wrapUnwrapBtn}
                 block={true}
                 onClick={() => {
@@ -166,7 +166,7 @@ export class AssetsOverviewViewInternal
               <FormatAmount value={combinedBalance.balance} token={combinedBalance.name} />
             </td>
             <td className={classnames(styles.amount, 'hide-md')} data-vis-reg-mask={true}>
-              <FormatAmount value={combinedBalance.valueInUsd} token="USD" fallback=""/>
+              <FormatAmount value={combinedBalance.valueInUsd} token="USD" fallback="N/A"/>
             </td>
           </tr>
         ))}
