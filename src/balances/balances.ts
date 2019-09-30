@@ -248,10 +248,10 @@ export function createCombinedBalances$(
            transactions,
            currentBlock
          ]) => {
-        return ({
-          etherBalance,
-          etherValueInUsd: etherBalance && etherPriceUsd && etherBalance.times(etherPriceUsd),
-          balances: combineBalances(
+      return ({
+        etherBalance,
+        etherValueInUsd: etherBalance && etherPriceUsd && etherBalance.times(etherPriceUsd),
+        balances: combineBalances(
             balances,
             allowances,
             tokenPricesUsd,
@@ -259,8 +259,8 @@ export function createCombinedBalances$(
             transactions,
             currentBlock
           ),
-        });
-      }
+      });
+    }
     )
   );
 }
