@@ -58,7 +58,7 @@ export class PriceChartWithLoading extends React.Component<PriceChartProps> {
 
   private button = (label: string, groupMode: GroupMode) => (
     <Button
-      color={this.props.groupMode === groupMode ? 'primaryOutlined' : 'secondaryOutlined'}
+      color={this.props.groupMode === groupMode ? 'primary' : 'greyOutlined'}
       size="sm"
       className={classnames(styles.btn)}
       onClick={this.handleKindChange(groupMode)}

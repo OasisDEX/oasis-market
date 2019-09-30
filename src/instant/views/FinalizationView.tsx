@@ -26,13 +26,13 @@ import { ProgressReport } from '../progress/ProgressReport';
 const proxyTooltip = {
   id: 'proxy-tooltip',
   text: 'Proxy is a supporting contract owned by you that groups different actions as one Ethereum transaction.',
-  iconColor: 'white'
+  iconColor: 'grey'
 } as WarningTooltipType;
 
 const allowanceTooltip = {
   id: 'allowance-tooltip',
   text: 'Enabling token trading allows your Proxy to take tokens from you and trade them on the exchange.',
-  iconColor: 'white'
+  iconColor: 'grey'
 } as WarningTooltipType;
 // tslint:enable
 

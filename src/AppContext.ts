@@ -37,7 +37,7 @@ import {
   etherPriceUsd$,
   gasPrice$,
   initializedAccount$,
-  onEveryBlock$
+  onEveryBlock$, tokenPricesInUSD$
 } from './blockchain/network';
 import { user$ } from './blockchain/user';
 import { loadOrderbook$, Orderbook } from './exchange/orderbook/orderbook';
@@ -124,7 +124,7 @@ export function setupAppContext() {
 
   const combinedBalances$ = createCombinedBalances$(
     context$, initializedAccount$, etherBalance$,
-    balances$, onEveryBlock$, etherPriceUsd$, transactions$
+    balances$, onEveryBlock$, tokenPricesInUSD$, etherPriceUsd$, transactions$
   ).pipe(
     shareReplay(1)
   );

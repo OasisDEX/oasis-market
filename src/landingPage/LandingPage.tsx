@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Eth2DaiLogoSvg from '../header/Eth2DaiLogo.svg';
 import OasisDexLogoSvg from '../header/OasisDexLogo.svg';
 import networkSvg from '../icons/network.svg';
 import { SvgImage } from '../utils/icons/utils';
@@ -18,11 +17,7 @@ export class LoadingState {
   public static get MISSING_PROVIDER() {
     return (
       <section className={styles.section}>
-        {
-          process.env.REACT_APP_OASIS_DEX_ENABLED === '1' ?
-            <SvgImage image={OasisDexLogoSvg}/> :
-            <SvgImage image={Eth2DaiLogoSvg}/>
-        }
+        <SvgImage image={OasisDexLogoSvg}/>
         <div className={styles.container}>
           <div style={{ justifyContent: 'center' }} className={styles.containerTopHalf}>
             <h4>You have currently no Client in use</h4>

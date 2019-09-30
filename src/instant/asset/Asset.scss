@@ -15,26 +15,24 @@
 
   cursor: pointer;
 
-  color: $nav-account-text;
+  color: $very-dark-violet;
   background: transparent;
 
-  @include fontMontserratMedium;
   font-size: .75rem;
-  letter-spacing: 1px;
 
   &:hover {
-    border-color: $button-border-hover;
+    border-color: $dark-grayish-blue;
   }
 
   &.locked {
     pointer-events: none;
 
-    border-color: $button-border-disabled;
-    color: $button-border-disabled;
+    border-color: $disabled;
+    color: $disabled;
 
     @include iconsDisabled(
-        $button-border-disabled,
-        $grey-darkest
+        $disabled,
+        $white
     )
   }
 }

@@ -47,13 +47,13 @@ export class TheFooter extends React.Component<FooterProps> {
               </a>
               <a target="_blank"
                  rel="noopener noreferrer"
-                 href="https://github.com/OasisDEX/eth2dai/issues">
+                 href="https://github.com/OasisDEX/oasis-market/issues">
                 Report Issues
               </a>
               <span>
               <a target="_blank" className={styles.iconLink}
                  rel="noopener noreferrer"
-                 href="https://chat.makerdao.com/channel/eth2dai">
+                 href="https://chat.makerdao.com/channel/oasis">
                 <RocketChat/>
               </a>
               <a target="_blank" className={styles.iconLink}
@@ -63,14 +63,14 @@ export class TheFooter extends React.Component<FooterProps> {
               </a>
               <a target="_blank" className={styles.iconLink}
                  rel="noopener noreferrer"
-                 href="https://github.com/OasisDEX/eth2dai">
+                 href="https://github.com/OasisDEX/oasis-market">
                 <Github/>
               </a>
             </span>
             </div>
             <div data-vis-reg-hide={true}>
               <span>
-            <a href={`https://github.com/OasisDEX/eth2dai/commit/${process.env.__HASH__}`}
+            <a href={`https://github.com/OasisDEX/oasis-market/commit/${process.env.__HASH__}`}
                target="_blank"
                rel="noopener noreferrer">
               {process.env.__NAME__} Commit {process.env.__HASH__}
@@ -102,14 +102,14 @@ export class TheFooter extends React.Component<FooterProps> {
               </a>
               <a target="_blank"
                  rel="noopener noreferrer"
-                 href="https://github.com/OasisDEX/eth2dai/issues">
+                 href="https://github.com/OasisDEX/oasis-market/issues">
                 Report Issues
               </a>
             </div>
             <div>
               <a target="_blank" className={styles.iconLink}
                  rel="noopener noreferrer"
-                 href="https://chat.makerdao.com/channel/eth2dai">
+                 href="https://chat.makerdao.com/channel/oasis-market">
                 <RocketChat/>
               </a>
               <a target="_blank" className={styles.iconLink}
@@ -119,12 +119,12 @@ export class TheFooter extends React.Component<FooterProps> {
               </a>
               <a target="_blank" className={styles.iconLink}
                  rel="noopener noreferrer"
-                 href="https://github.com/OasisDEX/eth2dai">
+                 href="https://github.com/OasisDEX/oasis-market">
                 <Github/>
               </a>
             </div>
             <div data-vis-reg-hide={true}>
-              <a href={`https://github.com/OasisDEX/eth2dai/commit/${process.env.__HASH__}`}
+              <a href={`https://github.com/OasisDEX/oasis-market/commit/${process.env.__HASH__}`}
                  target="_blank"
                  rel="noopener noreferrer">
                 {process.env.__NAME__} Commit {process.env.__HASH__}

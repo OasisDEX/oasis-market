@@ -1,6 +1,8 @@
 @import "../Mixins";
 @import "../Variables";
 
+$input-border: $element-border;
+
 .inputGroup {
   display: flex;
 
@@ -28,6 +30,10 @@
   justify-content: center;
   padding: 5px 20px;
   font-size: 14px;
+
+  &[disabled] {
+    background-color: rgb(235, 235, 228);
+  }
 }
 
 // ----------- sizes
@@ -57,6 +63,6 @@
 }
 
 .disabled {
-  border-color: $disabledBorderColor;
-  color: $disabledColor;
+  border-color: $disabled-border-color;
+  color: $disabled;
 }

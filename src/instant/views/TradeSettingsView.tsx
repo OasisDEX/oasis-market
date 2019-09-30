@@ -25,6 +25,7 @@ export class TradeSettingsView extends React.Component<InstantFormState> {
       <InstantFormWrapper heading="Advanced Settings">
         <TopLeftCorner>
           <ButtonIcon
+            color="secondaryOutlined"
             className={classnames(instantStyles.cornerIcon, instantStyles.backIcon)}
             onClick={this._hideTradeSettings}
             image={backSvg}

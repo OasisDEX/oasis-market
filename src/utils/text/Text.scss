@@ -2,14 +2,13 @@
 @import "../Mixins";
 
 .muted {
-  color: $grey-lightest;
+  color: #546978;
 }
 
 .infoLabel {
   color: $info-label-color;
-  text-transform: capitalize;
-  letter-spacing: 0.43px;
-  font-size: 12px;
+  text-transform: uppercase;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -21,7 +20,7 @@
 }
 
 .redSpan {
-  color: $red;
+  color: #DC5D00;
 }
 
 .greenSpan {
@@ -29,7 +28,6 @@
 }
 
 .currency {
-  @include fontMontserratMedium;
   white-space: nowrap;
 
   &.highlight {

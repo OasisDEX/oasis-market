@@ -3,11 +3,11 @@
 
 $base: 4px;
 $baseLength: (45 * $base);
-$barBackground: $cyan;
-$barBorder: $cyan;
-$barBackgroundDanger: #AC4648;
-$barBorderDanger: #AC4648;
-$arrowColor: #AC4648;
+$barBackground: $green;
+$barBorder: $green;
+$barBackgroundDanger: $red;
+$barBorderDanger: $red;
+$arrowColor: $red;
 
 .container {
   width: 100%;
@@ -15,11 +15,11 @@ $arrowColor: #AC4648;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  border: 1px solid $button-border-disabled;
+  border: 1px solid $element-border;
   border-radius: 4px;
   margin: 1.25rem 0 1rem;
   padding: 2.375rem 0;
-  color: #fff;
+  color: $very-dark-violet;
   font-size: 14px;
 
   @include media-breakpoint-down(sm) {
@@ -28,15 +28,13 @@ $arrowColor: #AC4648;
 }
 
 .impactText {
-  letter-spacing: 1px;
   text-align: center;
-  color: $grey-lighter;
+  color: $light-gray;
   margin: 16px 0;
 }
 
 .continueText {
   font-weight: 500;
-  letter-spacing: 1px;
   text-align: center;
 
   margin: 0;

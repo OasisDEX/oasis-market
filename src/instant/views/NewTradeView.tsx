@@ -125,6 +125,7 @@ export class NewTradeView extends React.Component<InstantFormState> {
       >
         <TopRightCorner>
           <ButtonIcon
+            color="secondaryOutlined"
             className={classnames(styles.cornerIcon, styles.settingsIcon)}
             disabled={!price}
             onClick={this.showTradeSettings}
@@ -134,6 +135,7 @@ export class NewTradeView extends React.Component<InstantFormState> {
         </TopRightCorner>
         <TopLeftCorner>
           <ButtonIcon
+            color="secondaryOutlined"
             disabled={!(user && user.account)}
             className={classnames(styles.cornerIcon, styles.accountIcon)}
             data-test-id="account-settings"

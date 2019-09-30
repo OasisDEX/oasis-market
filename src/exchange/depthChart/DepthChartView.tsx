@@ -18,7 +18,6 @@ import * as styles from './DepthChartView.scss';
 import minusSvg from './minus.svg';
 import orderbookSvg from './orderbook.svg';
 import plusSvg from './plus.svg';
-import { CSSProperties } from "react";
 
 interface PriceVolume {
   price: number;
@@ -181,7 +180,6 @@ const btnStyles = {
   width: '30px',
   height: '30px',
   background: 'white',
-  border: '1px solid #708390'
 };
 
 export class DepthChartView extends React.Component<DepthChartInternalProps> {

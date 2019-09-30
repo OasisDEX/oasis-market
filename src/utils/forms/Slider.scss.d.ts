@@ -1,4 +1,5 @@
 export const wrapper: string;
+export const unblocked: string;
 export const pointer: string;
 export const disabled: string;
 export const pointerBlocked: string;

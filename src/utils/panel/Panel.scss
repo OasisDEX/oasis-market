@@ -3,6 +3,8 @@
 
 $panel-padding-horizontal: 16px;
 $panel-padding-vertical: 12px;
+$panel-background: $white;
+$panel-border: $element-border;
 
 
 // panel
@@ -36,10 +38,12 @@ $panel-padding-vertical: 12px;
   display: flex;
   align-items: center;
   padding: $panel-padding-vertical $panel-padding-horizontal;
-  text-transform: uppercase;
+  text-transform: capitalize;
   font-weight: 500;
-  letter-spacing: 0.36px;
+  font-size: 18px;
+  color: $very-dark-violet;
   min-height: 64px;
+  border-bottom: 1px solid $panel-border;
 
   @include media-breakpoint-down(md) {
     font-size: 14px;
@@ -52,7 +56,6 @@ $panel-padding-vertical: 12px;
 .panelHeaderBordered {
   padding-bottom: $panel-padding-vertical - 1px;  // adding border makes header 1px higher,
                                                   // so subtract this 1px from bottom padding
-  border-bottom: 1px solid $panel-border;
 }
 
 // panel body

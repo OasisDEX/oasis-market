@@ -1,8 +1,6 @@
 @import "../Mixins";
 
 .block {
-  @include fontMontserratMedium;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,19 +17,24 @@
 
 // block version elements
 .icon {
-  margin-right: 0.5em;
+  display: inline-flex;
+  margin-right: 0.5rem;
+  color: $grayish-blue;
 }
 
 .mainInfo {
   display: flex;
   align-items: center;
+  color: $very-dark-grayish-blue;
 }
 
 .annotate {
   margin-top: 0.8em;
   font-size: 14px;
+  color: $grey-lightest;
 }
 
 .link {
-  color: white;
+  color: $light-blue;
+  text-decoration: underline;
 }

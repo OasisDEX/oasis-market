@@ -6,6 +6,7 @@
 
 .orderTypeBtn {
   width: 86px;
+  font-size: 13px;
 
   @include media-breakpoint-down(sm){
     width: 72px;
@@ -63,4 +64,11 @@
 .statusProgress {
   display: inline-block;
   position: relative;
+}
+
+.closeButton {
+  display: inline-flex;
+  height: 20px;
+  width: 20px;
+  padding: 4px;
 }

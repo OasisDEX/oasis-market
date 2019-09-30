@@ -29,13 +29,13 @@ export class MyTrades extends React.Component<MyTradesPropsLoadable> {
           <ButtonGroup style={{ marginLeft: 'auto' }}>
             <Button
               size="sm"
-              color={kind === MyTradesKind.open ? 'primary' : 'dangerOutlined'}
+              color={kind === MyTradesKind.open ? 'primary' : 'greyOutlined'}
               className={styles.orderTypeBtn}
               onClick={() => changeKind && changeKind(MyTradesKind.open)}
             >Open</Button>
             <Button
               size="sm"
-              color={kind === MyTradesKind.closed ? 'danger' : 'primaryOutlined'}
+              color={kind === MyTradesKind.closed ? 'primary' : 'greyOutlined'}
               className={styles.orderTypeBtn}
               onClick={() => changeKind && changeKind(MyTradesKind.closed)}
             >Closed</Button>
@@ -112,10 +112,12 @@ export class MyTrades extends React.Component<MyTradesPropsLoadable> {
                             {kind === MyTradesKind.open &&
                             trade.status === undefined &&
                             <td className={styles.right}>
-                          <span className={classnames('hide-md', styles.statusText)}>
+                          <span className={classnames('hide-lg', styles.statusText)}>
                             Open
                           </span>
-                              <CloseButton data-test-id="cancel"
+                              <CloseButton theme="danger"
+                                           className={styles.closeButton}
+                                           data-test-id="cancel"
                                            onClick={
                                              this.cancelOffer(
                                                trade.offerId,

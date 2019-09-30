@@ -7,18 +7,27 @@
   border-color: map-get($map, border-color);
   background-color: map-get($map, bg);
 
-  &:hover:enabled:not(.disabled),
-  &:focus:enabled:not(.disabled),
-  &:active:enabled:not(.disabled) {
+  &:disabled{
+    color: map_get($map, color-disabled);
+    background-color: map_get($map, bg-disabled);
+    border-color: map-get($map, border-color-disabled)
+  }
+
+  &:hover:enabled:not(.disabled) {
     color: map-get($map, color-hover);
     background-color: map-get($map, bg-hover);
     border-color: map-get($map, border-color-hover);
   }
 
-  &[disabled]:hover,
-  &[disabled],
-  &.disabled:hover,
-  &.disabled {
-    opacity: 0.5;
+  &:focus:enabled:not(.disabled) {
+    color: map-get($map, color-focus);
+    background-color: map-get($map, bg-focus);
+    border-color: map-get($map, border-color-hover);
+  }
+
+  &:active:enabled:not(.disabled) {
+    color: map-get($map, color-active);
+    background-color: map-get($map, bg-active);
+    border-color: map-get($map, border-color-active);
   }
 }

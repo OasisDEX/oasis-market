@@ -17,12 +17,13 @@
   width: 30px;
   height: 30px;
   background: white;
-  border: 1px solid #708390;
+  border: 1px solid $element-border;
 }
 
 
 .spreadRow {
   background-color: rgba(white, 0.02);
+  border-top: 1px solid $element-border;
 }
 
 .orderbookTable {

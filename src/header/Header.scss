@@ -97,8 +97,7 @@ $header-media-breakpoint: 800px;
   height: 40px;
 
   border: 1px solid $element-border;
-  background: $button-background;
-  color: $white;
+  background: $white;
   border-radius: 0;
 }
 
@@ -106,11 +105,11 @@ $header-media-breakpoint: 800px;
   @extend .navElement;
   text-decoration: none;
   width: 108px;
-  color: $grey-lightest;
+  color: $desaturated-dark-blue;
 
   &:hover {
     background-clip: padding-box;
-    background-color: $button-hover-background;
+    background-color: $background-on-hover;
     cursor: pointer;
   }
 
@@ -138,13 +137,14 @@ $header-media-breakpoint: 800px;
 }
 
 .account {
-  color: $nav-account-text;
+  color: $desaturated-dark-blue;
+  font-size: 14px;
   width: 196px;
   border-radius: $border-radius;
-  margin-right: 0px;
+  margin-right: 0;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: $background-on-hover;
     cursor: pointer;
   }
 
@@ -155,7 +155,7 @@ $header-media-breakpoint: 800px;
 
   & span, & .arrowDown {
     @include media-breakpoint-down($header-media-breakpoint) {
-      display: none
+      display: none !important;
     }
   }
 }
@@ -210,8 +210,8 @@ $header-media-breakpoint: 800px;
 }
 
 .networkIndicator.main {
-  background-color: $lime-green;
-  border: 1px solid $lime-green;
+  background-color: $green;
+  border: 1px solid $green;
 }
 
 .arrowDown {
@@ -221,15 +221,15 @@ $header-media-breakpoint: 800px;
   display: inherit;
 
   &.dark svg path {
-    fill: #263238;
+    fill: $very-dark-grayish-blue;
   }
 
   &.mild svg path {
-    fill: #9FAFB9;
+    fill: $grayish-blue;
   }
 
   &.light svg path {
-    fill: #FFFFFF;
+    fill: $white;
   }
 }
 

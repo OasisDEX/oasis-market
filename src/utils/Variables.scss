@@ -1,83 +1,78 @@
-
-$body-bg: #F6F8F9;
-
-$white: #fff; // text colors
-$whitish: #f5f5f5;
-$grey-lightest: #87878C; // muted text colors
-$grey-lighter: #97979B;
-$grey-light: #58585F;
-$grey-mid: #35353E;
-$grey-mid-hover: #393942;
-$grey-mid-active: #3D3D46;
-$grey-dark: #393942; // table header bg, input bg, order subsection bg
-$grey-darkest: #2F2F38; // components bg
-$grey-darken-darkest: #2B2B33; // panel border
-$very-dark-greyish-blue: #263238;
-$dark-greyish-blue: #555561;
-$darker-greyish-blue: #676773;
-$dark-gray-blue: #828287;
-$lighter-dark-gray-blue: #8D8D96;
-$input-number-color: #ABABAF; //
-$button-border-hover: #707076;
-$button-border-disabled: #3F3F47;
-$yet-another-dark-grayish-blue: #6D6D74; //used in disabled done icon in token allowances view
-
-$element-border: #D8E0E3;
-$button-background: white;
-$button-hover-background: #F5F5F5;
-$nav-account-text: #231536;
-$panel-background: white;
-$panel-border: $element-border;
-$info-label-color: #9FAFB9;
-$button-content-color: #708390;
-$input-border: $element-border;
-
-$chart-border: $element-border;
-$chart-label: $button-content-color;
-
-//#D8E0E3
-
-$soft-cyan: #69F0AE;
-$lime-green: #1AAD77; // main network indicator
-$cyan: #55AC85; //bars in the price impact warning view
+// Color Palette
+$white: #fff;
+$gray: #bbb;
 $green: #1AAB9B;
-$green-dark: #22906A; // depth chart buy dark color
-$brown-reddish: #7C3D42;
-$brown-reddish-highlight: #A24546;
-$red: #FF6951; // sell color
-$errors: #EF5350;
-$red-dark: #C15849; // depth chart sell dark color
-$orange: #f7a600; //
+$red: #FF6951;
+$orange: #DC5D00;
+$lime-green: #6edbb5;
+$grayish-blue: #9FAFB9;
+$desaturated-dark-blue: #546978;
+$light-blue: #448AFF;
+$light-violet: #7C4DFF;
+$bright-red: #F77249;
+$soft-red: #EF5350;
+$soft-red-2: #F99374;
+$vivid-red: #F75524;
+$strong-red: #CB3A0D;
+$strong-cyan: #2DC1B1;
+$strong-cyan-2: #1CBA80;
 
-$very-pale-blue: #EEF4FF;
-$very-light-blue: #80D8FF; // used for tx status in instant
-$etherColor: #4f6cb1;
-$makerColor: #3ab493;
-$daiColor: #f7a600;
-$dgxColor: #be9e57;
-$moderate-violet: #B388FF;
-$light-violet: #7C4DFF; // kovan network indicator
-$vivid-blue: #2979FF; // used on connect button
-$vivid-blue-hover: #2962FF; // used on connect button
+$light-gray: #97979B;
+$light-grayish-cyan: #E7FCFA;
+$light-grayish-cyan-2: #E8F8F2;
+$light-grayish-blue: #ECF1F3;
+$light-grayish-blue-2: #CCD6DA;
+$light-grayish-red: #FDEDE8;
 
-$font-color-base: #546978;
 
-$disabledColor: $grey-light;
-$disabledBorderColor: $grey-dark;
+$very-light-gray: #F5F5F5;
+$very-light-gray-2: #EEE;
+$very-light-red: #FFA799;
 
-// Font weights for Montserrat
-// semiBold = 600,
-// medium = 500
-// normal = 400
-$font-main: Montserrat, sans-serif;
+$another-light-grayish-blue: #D1DEE6;
+$another-light-grayish-blue-2: #F6F8F9;
+$another-light-grayish-blue-3: #D8E0E3;
+$another-light-grayish-blue-4: #D4D9E1;
+$another-light-grayish-red: #FBE1D9;
 
-// Font weights for Lato
-// regular = 400
-// bold = 700
-$font-additional: Lato, sans-serif;
+$dark-cyan: #139D8D;
+$dark-grayish-blue: #708390;
+$dark-grayish-blue-2: #707076;
 
-$font-size-base: 16px;
+$very-soft-red: #FAB6A1;
+$very-soft-cyan: #B6EDE7;
+
+$very-dark-grayish-blue: #3F3F47;
+$very-dark-grayish-blue-2: #263238;
+$very-dark-desaturated-blue: #31424E;
+$very-dark-violet: #231536;
+
+$grey-lightest: #87878C;
+$grey-light: #58585F;
+
+// Properties
+$body-bg: $another-light-grayish-blue-2;
+
+$element-border: $another-light-grayish-blue-3;
+
+$background-on-hover: $very-light-gray;
+
+$disabled: $another-light-grayish-blue;
+$disabled-border-color: $another-light-grayish-blue;
+
+$font-color-base: $desaturated-dark-blue;
+$font-color: $very-dark-violet;
+$font-size-base: 15px;
 $font-size-smaller: 12px;
+
+$errors: $soft-red;
+
+$button-border-hover: $dark-grayish-blue-2;
+$button-border-disabled: $very-dark-grayish-blue;
+$button-background: $white;
+
+$info-label-color: $grayish-blue;
+
 
 $border-radius: 4px;
 

@@ -15,7 +15,6 @@
     th {
       position: sticky;
       top: -1px;
-      background-color: $grey-dark;
     }
   }
 
@@ -24,15 +23,12 @@
   }
 
   th {
-    font-size: 12px;
-    text-transform: uppercase;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.43px;
+    text-transform: uppercase;
   }
 
   td {
-    font-family: Lato, sans-serif;
-    font-weight: 600;
     font-size: 14px;
   }
 
@@ -91,8 +87,7 @@
 .trHighlighted {
   background-color: white;
   th, td {
-    border-top: 1px solid $panel-border;
-    border-bottom: 1px solid $panel-border;
+    border-bottom: 1px solid $element-border;
   }
 }
 
@@ -100,9 +95,9 @@
 .clickable {
   cursor: pointer;
   &:hover {
-    background-color: $button-hover-background;
+    background-color: $background-on-hover;
   }
   &:active {
-    background-color: $button-hover-background;
+    background-color: $background-on-hover;
   }
 }

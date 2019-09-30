@@ -18,9 +18,9 @@ $sm: 400px;
     @include media-breakpoint-down(md-lg) {
       border: 0;
       z-index: 0;
-      border-top: 1px solid $panel-border;
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
+      border-top: 1px solid $element-border;
+      border-top-right-radius: unset;
+      border-bottom-left-radius: $border-radius;
     }
 
     @include media-breakpoint-down(md){
@@ -73,10 +73,9 @@ $sm: 400px;
     background-size: 16px;
 
     @include media-breakpoint-down(md-lg) {
-      border: none;
-      border-right: 1px solid $element-border;
+      border-radius: $border-radius;
+      border-right: none;
       width: 100%;
-      border-radius: unset;
     }
 
     &:focus {
@@ -94,18 +93,11 @@ $sm: 400px;
 
 .dropdownBtnActive {
     background-color: white;
-    border-bottom-left-radius: unset;
     z-index: 15;
-    border-bottom-color: $element-border;
 
     .dropdownIcon {
       content: url("../../icons/chevron-up.svg");
     }
-
-  @include media-breakpoint-down(md-lg){
-    border-top-left-radius: $border-radius;
-    border-top-right-radius: $border-radius;
-  }
 }
 
 .dropdownListWrapper {
@@ -115,12 +107,17 @@ $sm: 400px;
     overflow: hidden;
     //box-shadow: 0 0px 4px  rgba(0, 0, 0, .25);
 
-    border-bottom-left-radius: $border-radius;
-    border-bottom-right-radius: $border-radius;
+
+    margin-top: 6px;
+    margin-left: -1px;
+    border-radius: 4px;
+    border: 1px solid $element-border;
 
     @include media-breakpoint-down(md-lg){
       width: calc(100% + 2px);
-      margin-left: -1px;
+      margin-top: 0;
+      border-top-left-radius: unset;
+      border-top-right-radius: unset;
     }
 }
 
@@ -132,7 +129,6 @@ $sm: 400px;
     margin: 0;
 
     background-color: white;
-    border: 1px solid $element-border;
     border-top: none;
 
     border-bottom-left-radius: $border-radius;
@@ -141,7 +137,6 @@ $sm: 400px;
     @include media-breakpoint-down(md-lg){
       width: 100%;
       margin-left: 0;
-      border-top: 1px solid $grey-darken-darkest;
     }
 }
 
@@ -150,13 +145,7 @@ $sm: 400px;
 }
 
 .dropdownItemLink {
-    color: white;
     text-decoration: none;
-
-    &:hover {
-        background-color: $grey-dark;
-        cursor: pointer;
-    }
 }
 
 
@@ -170,7 +159,6 @@ $sm: 400px;
     display: flex;
     align-items: center;
     width: 100%;
-    letter-spacing: 1px;
 }
 
 .activePairViewIcon {
@@ -203,10 +191,13 @@ $sm: 400px;
     align-items: center;
     padding: 7px 0;
     width: 100%;
-    background-color: $grey-mid;
+    background-color: white;
+
     &:hover {
-        background-color: $grey-mid-hover;
+      background-color: $background-on-hover;
+      cursor: pointer;
     }
+
     font-size: 14px;
 
     @include media-breakpoint-down($sm) {
@@ -233,7 +224,6 @@ $sm: 400px;
     .tokenBase, .tokenQuote {
       padding-left: 4px;
       width: 58px;
-      letter-spacing: 0.5px;
 
       @include media-breakpoint-down($sm) {
         width: 54px;
@@ -267,7 +257,7 @@ $sm: 400px;
 }
 
 .active, .active:hover {
-  background-color: $grey-mid-active;
+  background-color: $background-on-hover;
 }
 
 // ---------------------
@@ -294,13 +284,13 @@ $sm: 400px;
     margin-left: 7px;
 
     @include media-breakpoint-down(md){
-      font-size: 10px;
+      font-size: 11px;
       margin-left: 0;
     }
 }
 
 .pairInfoValue {
     @include media-breakpoint-down(md){
-      font-size: 14px;
+      font-size: 15px;
     }
 }

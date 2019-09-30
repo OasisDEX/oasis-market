@@ -21,37 +21,27 @@ stories.add('Colors', () => (
     <br/>
     <Button color="danger" disabled={true}>Red disabled button</Button>
 
-    <h3>White button</h3>
-    <Button color="white">White enabled button</Button>
+    <h3>Secondary button</h3>
+    <Button color="secondary">Secondary enabled button</Button>
     <br/>
-    <Button color="white" disabled={true}>White disabled button</Button>
-
-    <h3>Grey white button</h3>
-    <Button color="greyWhite">Grey white enabled button</Button>
-    <br/>
-    <Button color="greyWhite" disabled={true}>Grey white disabled button</Button>
-
-    <h3>White outlined button</h3>
-    <Button color="whiteOutlined">White outlined enabled button</Button>
-    <br/>
-    <Button color="whiteOutlined" disabled={true}>White outlined disabled button</Button>
+    <Button color="secondary" disabled={true}>Secondary disabled button</Button>
   </div>
 ));
 
 stories.add('Button group', () => (
   <div>
     <ButtonGroup>
-      <Button color="danger">Pierwszy</Button>
-      <Button color="primary">Drugi</Button>
+      <Button color="primary">Pierwszy</Button>
+      <Button color="secondary">Drugi</Button>
       <Button color="danger">Trzeci</Button>
     </ButtonGroup>
     <br/>
     <ButtonGroup>
-      <Button color="grey">Nick Burkhardt</Button>
-      <Button color="grey">Juliette Silverton</Button>
-      <Button color="grey">Eddie Monroe</Button>
-      <Button color="grey">Rosalee Calvert</Button>
-      <Button color="grey">Hank Griffin</Button>
+      <Button color="greyOutlined">Nick Burkhardt</Button>
+      <Button color="greyOutlined">Juliette Silverton</Button>
+      <Button color="greyOutlined">Eddie Monroe</Button>
+      <Button color="greyOutlined">Rosalee Calvert</Button>
+      <Button color="greyOutlined">Hank Griffin</Button>
     </ButtonGroup>
   </div>
 ));

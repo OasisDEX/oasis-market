@@ -158,13 +158,11 @@ $inputFontSize: (
   }
 
   .checklistTitle {
-    font-weight: 600; // semi bold
-    letter-spacing: 0.1px;
+    font-weight: 600;
   }
 
   .checklistSummary {
     font-weight: 500; // medium
-    letter-spacing: 0.4px;
   }
 
   .checklistHrMargin {
@@ -175,25 +173,9 @@ $inputFontSize: (
 
 
 // Fonts standard sets helpers
-@mixin fontMontserratSemibold() {
-  font-family: $font-main;
+@mixin fontSemiBold() {
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,Helvetica Neue,Roboto,Segoe UI,sans-serif;
   font-weight: 600;
-}
-
-@mixin fontMontserratMedium() {
-  font-family: $font-main;
-  font-weight: 500;
-}
-
-@mixin fontLatoBold() {
-  font-family: $font-additional;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-@mixin fontLatoMedium() {
-  font-family: $font-additional;
-  font-weight: 500;
 }
 
 

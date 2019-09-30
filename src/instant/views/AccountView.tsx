@@ -18,10 +18,10 @@ import * as styles from './AccountView.scss';
 const proxyToolTip = {
   id: 'proxy-tooltip',
   text: 'Proxy is a supporting contract owned by you that groups different actions as one Ethereum transaction.',
-  iconColor: 'white'
+  iconColor: 'grey'
 } as WarningTooltipType;
 
-const activeProxyTooltip = { ...proxyToolTip, iconColor: 'soft-cyan' as 'soft-cyan' };
+const activeProxyTooltip = { ...proxyToolTip, iconColor: 'green' as 'green'};
 
 // tslint:enable
 
@@ -38,8 +38,9 @@ export class AccountView extends React.Component<InstantFormState> {
       <InstantFormWrapper heading={'Account Overview'}>
         <TopLeftCorner>
           <ButtonIcon
+            color="secondaryOutlined"
             onClick={this.switchToNewTrade}
-            className={instantStyles.cornerIcon}
+            className={classnames(instantStyles.cornerIcon, instantStyles.backIcon)}
             image={backSvg}
           />
         </TopLeftCorner>
@@ -81,7 +82,7 @@ export class AccountView extends React.Component<InstantFormState> {
         </span>
           <Button
             size="sm"
-            color="grey"
+            color="secondaryOutlined"
             className={styles.button}
             data-test-id="set-allowances"
             onClick={this.switchToAllowances}
@@ -111,7 +112,7 @@ export class AccountView extends React.Component<InstantFormState> {
                 : (
                   <Button
                     size="sm"
-                    color="grey"
+                    color="secondaryOutlined"
                     className={styles.button}
                     data-test-id="create-proxy"
                     onClick={this.props.createProxy}

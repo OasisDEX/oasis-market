@@ -8,7 +8,7 @@
   width: 100%;
   word-break: break-word;
   padding: 1rem 0;
-  border-bottom: 1px solid $button-border-disabled;
+  border-bottom: 1px solid $element-border;
 
   &:first-child {
     padding-top: 0;
@@ -23,38 +23,46 @@
 .proxy {
   &Missing {
     .text {
-      color: white;
+      color: $font-color;
       margin-right: 6px;
     }
 
     .accountIcon {
-      :global(.account-icon) {
-        fill: white;
+      :global(.account-icon-body) {
+        fill: $dark-grayish-blue;
+      }
+
+      :global(.account-icon-background) {
+        fill: $white;
       }
     }
 
     .warningIcon {
       :global(.warning-icon) {
-        fill: white;
+        fill: $font-color-base;
       }
     }
   }
 
   &Available {
     .text {
-      color: $soft-cyan;
+      color: $green;
       margin-right: 6px;
     }
 
     .accountIcon {
-      :global(.account-icon) {
-        fill: $soft-cyan;
+      border-color: $green;
+      :global(.account-icon-background) {
+        fill: white;
+      }
+      :global(.account-icon-body) {
+        fill: $green;
       }
     }
 
     .warningIcon {
       :global(.warning-icon) {
-        fill: $soft-cyan;
+        fill: $green;
       }
     }
   }
@@ -62,9 +70,8 @@
 
 .warning {
   .text {
-    color: $grey-lighter;
+    color: $light-gray;
     font-size: .8125rem;
-    letter-spacing: .1px;
     line-height: 18px;
   }
 
@@ -76,7 +83,7 @@
     margin-left: 0;
 
     :global(.warning-icon) {
-      fill: $grey-lighter;
+      fill: $light-gray;
     }
   }
 }
@@ -84,20 +91,20 @@
 .allowances {
   .text {
     font-size: 0.875rem;
-    color: $grey-lighter;
-    letter-spacing: 0.4px;
+    color: $light-gray;
   }
 }
 
 .text {
   font-size: .875rem;
-  letter-spacing: .82px;
 }
 
 .accountIcon {
   width: 24px;
   height: 24px;
   margin-right: 1rem;
+  border: 1px solid $element-border;
+  border-radius: 100%;
 }
 
 .warningIcon {
@@ -110,7 +117,6 @@
   height: auto;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.2px;
   padding: 6px 15px;
 }
 

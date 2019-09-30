@@ -17,14 +17,12 @@
   text-align: center;
   font-weight: 500;
   margin: 1.25rem 0;
-  letter-spacing: .4px;
 }
 
 .list {
   display: flex;
   flex-direction: column;
 
-  @include fontMontserratMedium();
   font-size: 0.875rem;
   list-style-type: none;
 
@@ -46,7 +44,6 @@
   &.single {
     padding-top: .75rem;
     border-top: 1px solid rgba(88, 88, 95, .2);
-    border-bottom: 0;
   }
 }
 
@@ -54,9 +51,7 @@
   min-height: 2.75rem;
   display: flex;
   align-items: center;
-  @include fontMontserratMedium();
   font-size: 0.875rem;
-  letter-spacing: 0.4px;
 
   .icon {
     display: inline-block;
@@ -70,19 +65,19 @@
   }
 
   &.selected {
-    background-color: #F5F5F5;
+    background-color: $background-on-hover;
   }
 
   &:hover {
-    background-color: #F5F5F5;
+    background-color: $background-on-hover;
   }
 
   &.inactive {
     pointer-events: none;
-    color: $dark-gray-blue;
+    color: $disabled;
 
     :global(.provider-icon) {
-      fill: $dark-gray-blue;
+      fill: $disabled;
     }
   }
 }
@@ -92,18 +87,16 @@
 
   font-size: .75rem;
   padding: 1rem 1.5rem;
-  color: #ACACAF;
+  color: #48495F;
 
-  border-bottom: 1px solid rgba(88, 88, 95, .2);
-
-  letter-spacing: .4px;
+  border-bottom: $element-border;
 
   input[type=checkbox] + span:before {
     margin-left: 4px;
   }
 
   a {
-    color: #828287;
+    color:  #447AFB;
     text-decoration: underline;
   }
 }

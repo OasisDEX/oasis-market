@@ -13,7 +13,7 @@ import {
 } from 'rxjs/operators';
 
 import { shareReplay } from 'rxjs/internal/operators';
-import { GasPrice$ } from 'src/blockchain/network';
+import { GasPrice$, Ticker } from 'src/blockchain/network';
 import { Calls$ } from '../blockchain/calls/calls';
 import { TxMetaKind } from '../blockchain/calls/txMeta';
 import { NetworkConfig, tokens } from '../blockchain/config';
@@ -98,11 +98,11 @@ export function createDustLimits$(context$: Observable<NetworkConfig>): Observab
       forkJoin(
         Object.keys(tokens).filter(name => name !== 'ETH').map((token: string) => {
           return bindNodeCallback(context.otc.contract.getMinSell as Dust)(
-           context.tokens[token].address
+            context.tokens[token].address
           ).pipe(
-           map(dustLimit => ({
-             [token]: amountFromWei(dustLimit, token)
-           }))
+            map(dustLimit => ({
+              [token]: amountFromWei(dustLimit, token)
+            }))
           );
         })
       ).pipe(concatAll(), scan((a, e) => ({ ...a, ...e }), {}), last())
@@ -129,14 +129,14 @@ export function createAllowances$(
     switchMap(([context, account]) =>
       forkJoin(
         Object.keys(tokens)
-        .filter(token => token !== 'ETH')
-        .map((token: string) =>
-              bindNodeCallback(context.tokens[token].contract.allowance as Allowance)(
-                account, context.otc.address
-              ).pipe(
-                map((x: BigNumber) => ({ [token]: x.gte(MIN_ALLOWANCE) }))
-              )
-        )
+          .filter(token => token !== 'ETH')
+          .map((token: string) =>
+            bindNodeCallback(context.tokens[token].contract.allowance as Allowance)(
+              account, context.otc.address
+            ).pipe(
+              map((x: BigNumber) => ({ [token]: x.gte(MIN_ALLOWANCE) }))
+            )
+          )
       ).pipe(concatAll(), scan((a, e) => ({ ...a, ...e }), {}), last())
     ),
     distinctUntilChanged(isEqual)
@@ -194,24 +194,29 @@ function isAllowanceChangeInProgress(token: string, currentBlock: number) {
 }
 
 export function combineBalances(
-  balances: Balances, allowances: Allowances,
+  balances: Balances,
+  allowances: Allowances,
+  tokenPricesUsd: Ticker,
   etherPriceUsd: BigNumber, transactions: TxState[],
   currentBlock: number
 ) {
-
   return Object.keys(tokens)
-  .filter(name => name !== 'ETH')
-  .map(name => {
-    return {
-      name,
-      balance: balances[name],
-      allowance: allowances[name],
-      allowanceChangeInProgress:
-        !!transactions.find(isAllowanceChangeInProgress(name, currentBlock)),
-      valueInUsd: name === 'DAI' ? balances[name] :
-        name === 'WETH' ? etherPriceUsd.times(balances[name]) : undefined,
-    };
-  });
+    .filter(name => name !== 'ETH')
+    .map(name => {
+      return {
+        name,
+        balance: balances[name],
+        allowance: allowances[name],
+        allowanceChangeInProgress:
+          !!transactions.find(isAllowanceChangeInProgress(name, currentBlock)),
+        valueInUsd: name === 'WETH'
+          // @ts-ignore
+          ? (etherPriceUsd ? etherPriceUsd.times(balances[name]) : undefined)
+          // @ts-ignore
+          : (tokenPricesUsd[name] ? tokenPricesUsd[name].times(balances[name]) : undefined)
+
+      };
+    });
 }
 
 export function createCombinedBalances$(
@@ -220,6 +225,7 @@ export function createCombinedBalances$(
   etherBalance$: Observable<BigNumber>,
   balances$: Observable<Balances>,
   onEveryBlock$: Observable<number>,
+  tokenPricesUsd$: Observable<any>, // TODO: this cannot be Observable<Ticker> Investigate why
   etherPriceUsd$: Observable<BigNumber>,
   transactions$: Observable<TxState[]>
 ): Observable<CombinedBalances> {
@@ -229,14 +235,32 @@ export function createCombinedBalances$(
     balances$,
     createAllowances$(context$, initializedAccount$, onEveryBlock$),
     etherPriceUsd$,
-    transactions$, onEveryBlock$
+    tokenPricesUsd$,
+    transactions$,
+    onEveryBlock$
   ).pipe(
-    map(([etherBalance, balances, allowances, etherPriceUsd, transactions, currentBlock]) =>
-      ({
-        etherBalance,
-        etherValueInUsd: etherBalance && etherPriceUsd && etherBalance.times(etherPriceUsd),
-        balances: combineBalances(balances, allowances, etherPriceUsd, transactions, currentBlock),
-      })
+    map(([
+           etherBalance,
+           balances,
+           allowances,
+           etherPriceUsd,
+           tokenPricesUsd,
+           transactions,
+           currentBlock
+         ]) => {
+        return ({
+          etherBalance,
+          etherValueInUsd: etherBalance && etherPriceUsd && etherBalance.times(etherPriceUsd),
+          balances: combineBalances(
+            balances,
+            allowances,
+            tokenPricesUsd,
+            etherPriceUsd,
+            transactions,
+            currentBlock
+          ),
+        });
+      }
     )
   );
 }

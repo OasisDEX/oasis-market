@@ -212,7 +212,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
           data-test-id="new-buy-order"
           className={styles.btn}
           onClick={() => this.handleKindChange(OfferType.buy)}
-          color={this.props.kind === OfferType.buy ? 'primary' : 'dangerOutlined'}
+          color={this.props.kind === OfferType.buy ? 'primary' : 'greyOutlined'}
           disabled={disabled}
           size="sm"
         >Buy</Button>
@@ -220,7 +220,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
           data-test-id="new-sell-order"
           className={styles.btn}
           onClick={() => this.handleKindChange(OfferType.sell)}
-          color={this.props.kind === OfferType.sell ? 'danger' : 'primaryOutlined'}
+          color={this.props.kind === OfferType.sell ? 'danger' : 'greyOutlined'}
           disabled={disabled}
           size="sm"
         >Sell</Button>
@@ -259,13 +259,14 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
               this.props.baseToken && tokens[this.props.baseToken].icon
             }
           </span>
-          <span style={{ lineHeight: 1 }} data-test-id="base-balance">
+          <span data-test-id="base-balance">
                 {
                   this.props.balances && this.props.balances[this.props.baseToken] &&
                   formatAmount(this.props.balances[this.props.baseToken], this.props.baseToken)
                 }
-            <Currency value={this.props.baseToken}/>
           </span>
+          &nbsp;
+          <Currency value={this.props.baseToken}/>
         </Button>
         <Button
           type="button"
@@ -280,13 +281,14 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
               this.props.quoteToken && tokens[this.props.quoteToken].icon
             }
           </span>
-          <span style={{ lineHeight: 1 }} data-test-id="quote-balance">
+          <span data-test-id="quote-balance">
                 {
                   this.props.balances && this.props.balances[this.props.quoteToken] &&
                   formatAmount(this.props.balances[this.props.quoteToken], this.props.quoteToken)
                 }
-            <Currency value={this.props.quoteToken}/>
           </span>
+          &nbsp;
+          <Currency value={this.props.quoteToken}/>
         </Button>
       </div>
     );
@@ -447,7 +449,10 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
           className={styles.input}
           disabled={this.props.stage === 'waitingForApproval'}
         />
-        <InputGroupAddon className={styles.inputCurrencyAddon} onClick={this.handleAmountFocus}>
+        <InputGroupAddon className={styles.inputCurrencyAddon}
+                         onClick={this.handleAmountFocus}
+                         disabled={this.props.stage === 'waitingForApproval'}
+        >
           {this.props.baseToken}
         </InputGroupAddon>
       </div>
@@ -486,7 +491,10 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
             className={styles.input}
             disabled={this.props.stage === 'waitingForApproval'}
           />
-          <InputGroupAddon className={styles.inputCurrencyAddon} onClick={this.handlePriceFocus}>
+          <InputGroupAddon className={styles.inputCurrencyAddon}
+                           onClick={this.handlePriceFocus}
+                           disabled={this.props.stage === 'waitingForApproval'}
+          >
             {this.props.quoteToken}
           </InputGroupAddon>
         </div>

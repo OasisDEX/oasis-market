@@ -6,7 +6,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  @include fontMontserratMedium;
   background-color: transparent;
   border: 1px solid transparent;
   border-radius: $border-radius;
@@ -38,79 +37,36 @@
 
 // --------------- color -----------
 
-@mixin button($map) {
-  font-weight: 600;
-
-  color: map-get($map, color);
-  border-color: map-get($map, border-color);
-  background-color: map-get($map, bg);
-
-  &:disabled{
-    color: map_get($map, color-disabled);
-    background-color: map_get($map, bg-disabled);
-    border-color: map-get($map, border-color-disabled)
-  }
-
-  &:hover:enabled:not(.disabled) {
-    color: map-get($map, color-hover);
-    background-color: map-get($map, bg-hover);
-    border-color: map-get($map, border-color-hover);
-  }
-
-  &:focus:enabled:not(.disabled) {
-    color: map-get($map, color-focus);
-    background-color: map-get($map, bg-focus);
-    border-color: map-get($map, border-color-hover);
-  }
-
-  &:active:enabled:not(.disabled) {
-    color: map-get($map, color-active);
-    background-color: map-get($map, bg-active);
-    border-color: map-get($map, border-color-active);
-  }
-}
-
-.grey {
-  @include button((
-    color: $font-color-base,
-    bg: $grey-darkest,
-    border-color: $grey-light,
-    color-hover: $font-color-base,
-    border-color-hover: lighten($button-border-hover, 2%),
-  ));
-}
-
 .primaryOutlined {
   opacity: .99;
 
   @include button((
-    color: #1AAB9B,
+    color: $green,
     bg: transparent,
-    border-color: #1AAB9B,
+    border-color: $green,
 
-    color-disabled: #6EDBD0,
-    border-color-disabled: #6EDBD0,
+    color-disabled: $lime-green,
+    border-color-disabled: $lime-green,
 
-    bg-hover: #E7FCFA,
+    bg-hover: $light-grayish-cyan,
 
-    bg-active: #B6EDE7,
+    bg-active: $very-soft-cyan,
   ));
 }
 
-.secondaryOutlined{
-  opacity: .99;
+.secondaryOutlined {
 
   @include button((
-    color: #546978,
+    color: $desaturated-dark-blue,
     bg: transparent,
-    border-color: #9FAFB9,
+    border-color: $grayish-blue,
 
-    color-disabled: #9FAFB9,
-    border-color-disabled: #9FAFB9,
+    color-disabled: $grayish-blue,
+    border-color-disabled: $grayish-blue,
 
-    bg-hover: #ECF1F3,
+    bg-hover: $light-grayish-blue,
 
-    bg-active: #D1DEE6,
+    bg-active: $another-light-grayish-blue,
   ));
 }
 
@@ -118,39 +74,31 @@
   opacity: .99;
 
   @include button((
-    color: #F77249,
+    color: $bright-red,
     bg: transparent,
-    border-color: #F77249,
+    border-color: $bright-red,
 
-    color-disabled: #FAB6A1,
-    border-color-disabled: #FAB6A1,
+    color-disabled: $very-soft-red,
+    border-color-disabled: $very-soft-red,
 
-    bg-hover: #FDEDE8,
+    bg-hover: $light-grayish-red,
+    border-color-hover: $bright-red,
 
-    bg-active: #FBE1D9,
+    bg-active: $another-light-grayish-red,
   ));
 }
 
+// Used for Grouped Buttons
 .greyOutlined {
+  font-weight: 500;
   @include button((
-    color: $button-content-color,
-    bg: white,
-    border-color: $element-border,
-    bg-hover: $button-hover-background
-  ));
-}
+    color: $dark-grayish-blue,
+    bg: transparent,
+    border-color: $another-light-grayish-blue-3,
 
-.whiteOutlined {
-  font-weight: 600; //semibold
-  opacity: .99;
+    bg-hover: $light-grayish-blue,
 
-  @include button((
-    color: $font-color-base,
-    bg: $grey-darkest,
-    border-color: white,
-    color-hover: $font-color-base,
-    border-color-hover: white,
-    bg-hover: lighten($grey-light, 5%)
+    bg-active: $another-light-grayish-blue,
   ));
 }
 
@@ -159,38 +107,36 @@
 
   @include button((
     color: $white,
-    bg: #1AAB9B,
-    border-color: #1AAB9B,
+    bg: $green,
+    border-color: $green,
 
-    bg-disabled: #B6EDE7,
-    border-color-disabled: #B6EDE7,
+    bg-disabled: $very-soft-cyan,
+    border-color-disabled: $very-soft-cyan,
 
-    bg-hover: #2DC1B1,
-    border-color-hover: #2DC1B1,
+    bg-hover: $strong-cyan,
+    border-color-hover: $strong-cyan,
 
-    bg-active: #139D8D,
-    border-color-active: #139D8D,
+    bg-active: $dark-cyan,
+    border-color-active: $dark-cyan,
   ));
 }
 
 .secondary {
-  opacity: .99;
-
   @include button((
-    color: #546978,
-    bg: #ECF1F3,
-    border-color: #ECF1F3,
+    color: $desaturated-dark-blue,
+    bg: $light-grayish-blue,
+    border-color: $light-grayish-blue,
 
-    color-disabled: #546978,
-    bg-disabled: #ECF1F3,
-    border-color-disabled: #ECF1F3,
+    color-disabled: $desaturated-dark-blue,
+    bg-disabled: $light-grayish-blue,
+    border-color-disabled: $light-grayish-blue,
 
-    bg-hover: #D1DEE6,
-    border-color-hover: #D1DEE6,
+    bg-hover: $another-light-grayish-blue,
+    border-color-hover: $another-light-grayish-blue,
 
-    color-active: #31424E,
-    bg-active: #D1DEE6,
-    border-color-active: #D1DEE6,
+    color-active: $very-dark-desaturated-blue,
+    bg-active: $another-light-grayish-blue,
+    border-color-active: $another-light-grayish-blue
   ));
 }
 
@@ -200,44 +146,18 @@
 
   @include button((
     color: white,
-    bg: #F77249,
-    border-color: #F77249,
+    bg: $bright-red,
+    border-color: $bright-red,
 
-    bg-disabled: #FAB6A1,
-    border-color-disabled: #FAB6A1,
+    bg-disabled: $very-soft-red,
+    border-color-disabled: $very-soft-red,
 
-    bg-hover: #F75524,
-    border-color-hover: #F75524,
+    bg-hover: $vivid-red,
+    border-color-hover: $vivid-red,
 
-    bg-active: #CB3A0D,
-    border-color-active: #CB3A0D,
+    bg-active: $strong-red,
+    border-color-active: $strong-red,
   ));
-}
-
-
-.white {
-  @include button((
-    color: $very-dark-greyish-blue,
-    bg: $whitish,
-    border-color: $white,
-    color-hover: #000,
-    border-color-hover: #ddd,
-    bg-hover: $white
-  ));
-  font-weight: 600; //semibold
-}
-
-.greyWhite {
-
-
-  @include button((
-    color: $white,
-    bg: transparent,
-    border-color: $dark-greyish-blue,
-    color-hover: #000000,
-    border-color-hover: rgba(255, 255, 255, 0.90),
-    bg-hover: rgba(255, 255, 255, 0.90)
-  ))
 }
 
 // ----- size ------
@@ -250,7 +170,7 @@
 }
 
 .md {
-  height: 34px;
+  height: 38px;
 }
 
 .lg {
@@ -287,27 +207,21 @@
   }
 }
 
-.close {
-  $size: 16px;
-  width: $size;
-  height: $size;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 14px;
-  color: $grey-dark;
-  line-height: 0;
-
-  background: white;
+.closeButton {
+  width: 1.75rem;
+  height: 1.75rem;
   border-radius: 100%;
-}
+  padding: 5px;
 
-.darkRed {
-  @include button((
-    color: $errors,
-    border-color: $brown-reddish,
-    border-color-hover: darken($brown-reddish-highlight, 5%),
-  ));
+  &.dangerOutlined {
+    svg {
+      fill: $errors;
+    }
+  }
+
+  &.secondaryOutlined {
+    svg {
+      fill: $desaturated-dark-blue;
+    }
+  }
 }

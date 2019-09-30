@@ -1,3 +1,5 @@
+@import "../../utils/Variables";
+
 .checkbox {
   position: relative;
   display: inline-flex;
@@ -11,12 +13,12 @@
       position: relative;
       display: inline-flex;
       align-items: center;
-      letter-spacing: .4px;
+      border-radius: 3px;
 
       &:before {
         content: "";
-        height: 1rem;
-        width: 1rem;
+        height: 1.25rem;
+        width: 1.25rem;
         display: inline-flex;
         justify-content: center;
         align-items: center;
@@ -33,9 +35,12 @@
 
     &:checked {
       & + span:before {
-        background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAyMSAyMSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHJ4PSIzIiBmaWxsPSIjMUFBQjlCIi8+PC9zdmc+);
+        border-radius: 3px;
+        background-color: $green;
+        padding: 4px;
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUiIGhlaWdodD0iMTMiIHZpZXdCb3g9IjAgMCAxNSAxMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNC45MDg4NyA5LjYzNzE3TDEuOTkyOTUgNi42MjcwNUwxIDcuNjQ0ODZMNC45MDg4NyAxMS42OEwxMy4zIDMuMDE3ODFMMTIuMzE0IDJMNC45MDg4NyA5LjYzNzE3WiIgZmlsbD0id2hpdGUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMS40Ii8+PC9zdmc+);;
         background-position: center;
-        background-size: contain;
+        background-size: auto;
         background-repeat: no-repeat;
       }
     }

@@ -80,7 +80,7 @@ class SuggestedClients extends React.Component {
   public render() {
     return (
       <Panel heading="Get a Wallet">
-        <ul className={list} data-test-id="suggested-clients">
+        <ul className={classnames(single, list)} data-test-id="suggested-clients">
           {
             [Metamask, Parity, Status, Trust].map((provider) => {
               return (
@@ -131,7 +131,7 @@ class NotConnected extends React.Component<{}, { isChecked: boolean, selectedWal
     const provider = getCurrentProviderName();
     return (
       <Panel heading="Connect Wallet">
-        <ul className={list}>
+        <ul className={classnames(single, list)}>
           <ListItem icon={provider.icon}
                     name={provider.name}
                     supported={provider.supported}
@@ -139,8 +139,6 @@ class NotConnected extends React.Component<{}, { isChecked: boolean, selectedWal
                     onSelect={() => this._selectWallet(provider)}
                     tid="web-wallet"
           />
-        </ul>
-        <ul className={list}>
           {
             [...hwWallets].map((hwWallet) =>
               <ListItem key={hwWallet.id}
@@ -165,7 +163,7 @@ class NotConnected extends React.Component<{}, { isChecked: boolean, selectedWal
         </Checkbox>
         <div className={buttonPlaceholder}>
           <Button size="md"
-                  color="primaryOutlined"
+                  color="secondaryOutlined"
                   className={item}
                   disabled={!this._canConnect()}
                   onClick={this._connect}
@@ -215,7 +213,7 @@ class NoClient extends React.Component<{}, { isChecked: boolean, selectedWallet:
   public render() {
     return (
       <Panel heading="Connect Wallet">
-        <ul className={list}>
+        <ul className={classnames(single, list)}>
           <ListItem icon={WebWallet.icon}
                     name={WebWallet.name}
                     supported={WebWallet.supported}
@@ -223,8 +221,6 @@ class NoClient extends React.Component<{}, { isChecked: boolean, selectedWallet:
                     onSelect={this._suggestClients}
                     tid="web-wallet"
           />
-        </ul>
-        <ul className={list}>
           {
             [...hwWallets].map((hwWallet) =>
               <ListItem key={hwWallet.id}
@@ -249,7 +245,7 @@ class NoClient extends React.Component<{}, { isChecked: boolean, selectedWallet:
         </Checkbox>
         <div className={buttonPlaceholder}>
           <Button size="md"
-                  color="primaryOutlined"
+                  color="secondaryOutlined"
                   className={classnames(item)}
                   disabled={!this._canConnect()}
                   onClick={this._connect}
@@ -337,7 +333,7 @@ const Connecting = (props: any) => {
       </div>
       <div className={buttonPlaceholder}>
         <Button size="md"
-                color="dangerOutlined"
+                color="secondaryOutlined"
                 className={classnames(item)}
                 onClick={props.close}
                 data-test-id="connect-wallet"

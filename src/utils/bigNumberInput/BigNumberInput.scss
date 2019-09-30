@@ -3,10 +3,8 @@
 
 .inputBase {
   border: 0;
-  color: $input-number-color;
-  @include fontLatoBold;
+  color: $very-dark-violet;
   font-size: 15px;
-  letter-spacing: 0.5px;
   padding-left: 1em;
   padding-right: .25em;
   text-align: right;

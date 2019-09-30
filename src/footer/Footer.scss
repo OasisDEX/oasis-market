@@ -22,10 +22,8 @@
 
 .footer {
   text-align: center;
-  font-family: $font-main;
   font-size: 14px;
-  color: #B3B3B9;
-  letter-spacing: 0.2px;
+  color: $grayish-blue;
   margin-bottom: 2em;
 
   & > * {
@@ -35,10 +33,10 @@
 
   a {
     text-decoration: none;
-    color: #B3B3B9;
+    color: $grayish-blue;
 
     &:hover{
-      color:#FFF;
+      color: $very-dark-desaturated-blue;
     }
 
     &.iconLink {

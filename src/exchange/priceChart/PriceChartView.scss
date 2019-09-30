@@ -1,6 +1,8 @@
 @import "../../utils/Variables";
 @import "../../utils/Mixins";
 
+$chart-label: $dark-grayish-blue;
+
 // chart colors
 .fallBar,
 .fallStick {
@@ -14,8 +16,8 @@
 }
 
 .riseBar {
-  fill: #E8F8F2; // equals rgba($green, 0.1), but without opacity;
-  background-color: #E8F8F2; // equals rgba($green, 0.1), but without opacity;
+  fill: $light-grayish-cyan-2; // equals rgba($green, 0.1), but without opacity;
+  background-color: $light-grayish-cyan-2; // equals rgba($green, 0.1), but without opacity;
   stroke: $green;
   stroke-width: 1;
 }
@@ -26,8 +28,8 @@
 }
 
 .volume {
-  fill: #ECF1F3;
-  background-color: #ECF1F3;
+  fill: $light-grayish-blue;
+  background-color: $light-grayish-blue;
 }
 
 // bands
@@ -48,7 +50,7 @@
     stroke: saturate($green, 30%);
   }
   &.fallBar {
-    stroke: #ffa799;
+    stroke: $very-light-red;
   }
   &.equal {
     stroke: $grey-lightest;
@@ -60,7 +62,7 @@
     stroke: saturate($green, 20%);
   }
   &.fallStick {
-    stroke: #ffa799;
+    stroke: $very-light-red;
   }
 }
 
@@ -71,25 +73,23 @@
 // Axis main label class is uased as equivalent of
 // :global(.tick)
 .axisYMainLabel {
-  @include fontLatoBold;
+  font-weight: 600;
+  font-size: 12px;
   color: $chart-label;
 }
 
 .axisYVolumeLabel {
-  font-family: $font-additional; // Lato
   color: $chart-label;
   font-size: 12px;
-  font-weight: 500;
 }
 
 .axisXMainLabel {
-  @include fontMontserratMedium;
   color: $chart-label;
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .axisLineMain {
-  stroke: $chart-border;
+  stroke: $element-border;
   stroke-width: 1px;
 }
 
@@ -98,7 +98,7 @@
 }
 
 .axisLineGrid {
-  stroke: $chart-border;
+  stroke: $another-light-grayish-blue-4;
   stroke-width: 1px;
 }
 
@@ -108,7 +108,7 @@
   left: auto;
   top: 0;
 
-  background-color: rgba($grey-darkest, 0.5);
+  background-color: white;
   font-size: 10px;
   padding: 2px 3px;
 

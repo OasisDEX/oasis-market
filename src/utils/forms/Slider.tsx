@@ -21,6 +21,7 @@ export function Slider(props: SliderProps) {
     className,
     {
       [styles.disabled]: disabled,
+      [styles.unblocked]: !blocked,
       [styles.moveOnHover]: moveOnHover,
     }
     )}
