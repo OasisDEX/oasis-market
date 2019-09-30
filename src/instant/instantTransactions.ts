@@ -56,7 +56,7 @@ export function tradePayWithETH(
           ...initialProgress,
           tradeTxStatus: txState.status,
           tradeTxHash: getTxHash(txState),
-          ...extractTradeSummary(txState.receipt.logs),
+          ...extractTradeSummary(state.sellToken, state.buyToken, txState.receipt.logs),
           gasUsed: txState.receipt.gasUsed,
           done: isDone(txState)
         }));
@@ -104,7 +104,7 @@ function doTradePayWithERC20(
       if (txState.status === TxStatus.Success) {
         return of({
           ...progress,
-          ...extractTradeSummary(txState.receipt.logs),
+          ...extractTradeSummary(state.sellToken, state.buyToken, txState.receipt.logs),
           gasUsed: txState.receipt.gasUsed,
           done: true
         });
@@ -274,7 +274,9 @@ export function estimateTradePayWithERC20(
   return calls.tradePayWithERC20EstimateGas({ ...state, proxyAddress } as InstantOrderData);
 }
 
-const extractTradeSummary = (logs: any): { sold: BigNumber, bought: BigNumber } => {
+function extractTradeSummary(
+  sellToken: string, buyToken: string, logs: any
+): { sold: BigNumber, bought: BigNumber } {
   let sold = new BigNumber(0);
   let bought = new BigNumber(0);
   logs.map((log: any) => {
@@ -287,5 +289,5 @@ const extractTradeSummary = (logs: any): { sold: BigNumber, bought: BigNumber } 
     }
   });
 
-  return { sold: amountFromWei(sold, 'DAI'), bought: amountFromWei(bought, 'DAI') };
-};
+  return { sold: amountFromWei(sold, sellToken), bought: amountFromWei(bought, buyToken) };
+}
