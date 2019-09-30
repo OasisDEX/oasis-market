@@ -263,10 +263,9 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
                 {
                   this.props.balances && this.props.balances[this.props.baseToken] &&
                   formatAmount(this.props.balances[this.props.baseToken], this.props.baseToken)
-                }
+                }{' '}
+            <Currency value={this.props.baseToken}/>
           </span>
-          &nbsp;
-          <Currency value={this.props.baseToken}/>
         </Button>
         <Button
           type="button"
@@ -285,10 +284,9 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
                 {
                   this.props.balances && this.props.balances[this.props.quoteToken] &&
                   formatAmount(this.props.balances[this.props.quoteToken], this.props.quoteToken)
-                }
+                }{' '}
+            <Currency value={this.props.quoteToken}/>
           </span>
-          &nbsp;
-          <Currency value={this.props.quoteToken}/>
         </Button>
       </div>
     );
