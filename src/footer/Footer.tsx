@@ -45,6 +45,9 @@ export class TheFooter extends React.Component<FooterProps> {
               <a target="_blank" rel="noopener noreferrer" href="/terms">
                 Legal
               </a>
+              <a target="_blank" rel="noopener noreferrer" href="/privacy">
+                Privacy
+              </a>
               <a target="_blank"
                  rel="noopener noreferrer"
                  href="https://github.com/OasisDEX/oasis-market/issues">
@@ -99,6 +102,9 @@ export class TheFooter extends React.Component<FooterProps> {
               </a>
               <a target="_blank" rel="noopener noreferrer" href="/terms">
                 Legal
+              </a>
+              <a target="_blank" rel="noopener noreferrer" href="/privacy">
+                Privacy
               </a>
               <a target="_blank"
                  rel="noopener noreferrer"
