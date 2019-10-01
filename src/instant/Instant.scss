@@ -126,6 +126,7 @@
 .warnings {
   @extend %errors-base;
   color: #828287;
+  border: rgba(88, 88, 95, 0.4) dashed 1px;
 }
 
 // Asset Picker
