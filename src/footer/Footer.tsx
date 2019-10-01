@@ -97,7 +97,7 @@ export class TheFooter extends React.Component<FooterProps> {
                  href={`${etherscan.url}/address/${address}`}>
                 Market Contract
               </a>
-              <a target="_blank" rel="noopener noreferrer" href="/term">
+              <a target="_blank" rel="noopener noreferrer" href="/terms">
                 Legal
               </a>
               <a target="_blank"
