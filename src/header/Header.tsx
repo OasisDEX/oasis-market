@@ -107,7 +107,10 @@ class Header extends React.Component<HeaderProps> {
         {({ rootUrl }) =>
           <header className={header}>
             <section className={section}>
-              <a href="/" className={logo}>
+              <a href={process.env.REACT_APP_SUBDIR
+                ? process.env.REACT_APP_SUBDIR
+                : '/'} className={logo}
+              >
                 <SvgImage image={OasisDexLogo}/>
               </a>
             </section>
