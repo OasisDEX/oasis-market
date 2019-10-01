@@ -156,7 +156,7 @@ class NotConnected extends React.Component<{}, { isChecked: boolean, selectedWal
         >
           I accept&nbsp;<a target="_blank"
                            rel="noopener noreferrer"
-                           href="/tos.pdf"
+                           href="/terms"
         >
           Terms of Service
         </a>
@@ -238,7 +238,7 @@ class NoClient extends React.Component<{}, { isChecked: boolean, selectedWallet:
         >
           I accept&nbsp;<a target="_blank"
                            rel="noopener noreferrer"
-                           href="/tos.pdf"
+                           href="/terms"
         >
           Terms of Service
         </a>
