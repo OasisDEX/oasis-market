@@ -42,8 +42,11 @@ export class TheFooter extends React.Component<FooterProps> {
                  href={`${etherscan.url}/address/${address}`}>
                 Market Contract
               </a>
-              <a target="_blank" rel="noopener noreferrer" href="/tos.pdf">
+              <a target="_blank" rel="noopener noreferrer" href="/terms">
                 Legal
+              </a>
+              <a target="_blank" rel="noopener noreferrer" href="/privacy">
+                Privacy
               </a>
               <a target="_blank"
                  rel="noopener noreferrer"
@@ -97,8 +100,11 @@ export class TheFooter extends React.Component<FooterProps> {
                  href={`${etherscan.url}/address/${address}`}>
                 Market Contract
               </a>
-              <a target="_blank" rel="noopener noreferrer" href="/tos.pdf">
+              <a target="_blank" rel="noopener noreferrer" href="/terms">
                 Legal
+              </a>
+              <a target="_blank" rel="noopener noreferrer" href="/privacy">
+                Privacy
               </a>
               <a target="_blank"
                  rel="noopener noreferrer"
