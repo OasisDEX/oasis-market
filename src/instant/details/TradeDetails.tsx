@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Approximate } from '../../utils/Approximate';
 import { GasEstimationStatus } from '../../utils/form';
-import { formatAmount } from '../../utils/formatters/format';
+import { formatAmountInstant } from '../../utils/formatters/format';
 import { FormatPercent, Money } from '../../utils/formatters/Formatters';
 import { ProgressIcon } from '../../utils/icons/Icons';
 import { TradeData } from './TradeData';
@@ -52,7 +52,7 @@ export class TradeDetails extends React.Component<TradeDetailsProps> {
                    data-test-id="trade-price"
                    value={
                      <Approximate>
-                       {formatAmount(price, 'USD')} {quotation || ''}
+                       {formatAmountInstant(price, 'USD')} {quotation || ''}
                      </Approximate>
                    }
                    style={{ marginBottom: '2px' }}

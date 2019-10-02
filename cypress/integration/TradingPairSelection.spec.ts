@@ -57,7 +57,7 @@ describe('Trading pair dropdown', () => {
     selectPair(base, quote);
 
     cy.get(tid('create-order-widget', tid('base-balance'))).contains('1,000.00000 REP');
-    cy.get(tid('create-order-widget', tid('quote-balance'))).contains('170.00 DAI');
+    cy.get(tid('create-order-widget', tid('quote-balance'))).contains('170.0000 DAI');
   });
 
   it.skip('should display last price and weekly volume for the newly selected pair',  () => {

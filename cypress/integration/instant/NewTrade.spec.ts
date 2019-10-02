@@ -293,7 +293,7 @@ describe('New trade', () => {
       const trade = new Trade();
       trade.sell('ETH').amount('100');
 
-      trade.resultsInError(`No orders available to sell 100.00000 ETH`, 'top');
+      trade.resultsInError(`No orders available to sell 100.000 ETH`, 'top');
       trade.resultsInError(/Connect wallet.../, 'bottom');
     });
   });

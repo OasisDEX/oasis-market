@@ -46,6 +46,7 @@ import {
   toUserChange,
   UserChange,
 } from '../utils/form';
+import { formatPriceInstant } from '../utils/formatters/format';
 import { calculateTradePrice, getQuote } from '../utils/price';
 import { getSlippageLimit } from '../utils/slippage';
 import { switchSpread } from '../utils/switchSpread';
@@ -860,7 +861,7 @@ function validate(state: InstantFormState): InstantFormState {
 function calculatePriceAndImpact(state: InstantFormState): InstantFormState {
   const { buyAmount, buyToken, sellAmount, sellToken, bestPrice } = state;
   const calculated = buyAmount && sellAmount
-    ? calculateTradePrice(sellToken, sellAmount, buyToken, buyAmount)
+    ? calculateTradePrice(sellToken, sellAmount, buyToken, buyAmount, formatPriceInstant)
     : null;
   const price = calculated ? calculated.price : undefined;
   const quotation = calculated ? calculated.quotation : undefined;
