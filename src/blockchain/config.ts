@@ -80,7 +80,7 @@ export const tokens = asMap('symbol', [
   {
     symbol: 'DAI',
     precision: 18,
-    digits: 2,
+    digits: 4,
     digitsInstant: 2,
     maxSell: '10000000',
     name: 'Dai',
