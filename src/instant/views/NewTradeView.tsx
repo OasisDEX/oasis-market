@@ -6,7 +6,7 @@ import { etherscan, EtherscanConfig } from '../../blockchain/etherscan';
 import accountSvg from '../../icons/account.svg';
 import cogWheelSvg from '../../icons/cog-wheel.svg';
 import swapArrowsSvg from '../../icons/swap-arrows.svg';
-import { formatAmount } from '../../utils/formatters/format';
+import { formatAmountInstant } from '../../utils/formatters/format';
 import { ButtonIcon } from '../../utils/icons/Icons';
 import { SvgImage } from '../../utils/icons/utils';
 import { TopLeftCorner, TopRightCorner } from '../../utils/panel/TopRightCorner';
@@ -47,7 +47,7 @@ function error(msg: Message | undefined) {
     case MessageKind.insufficientAmount:
       return (
         <>
-          You don't have {formatAmount(msg.amount, msg.token)} {msg.token.toUpperCase()} in your wallet
+          You don't have {formatAmountInstant(msg.amount, msg.token)} {msg.token.toUpperCase()} in your wallet
         </>);
     case MessageKind.dustAmount:
       return (
@@ -64,7 +64,7 @@ function error(msg: Message | undefined) {
     case MessageKind.orderbookTotalExceeded:
       return (
         <>
-          No orders available to {msg.side} {formatAmount(msg.amount, msg.token)} {msg.token.toUpperCase()}
+          No orders available to {msg.side} {formatAmountInstant(msg.amount, msg.token)} {msg.token.toUpperCase()}
         </>
       );
     case MessageKind.notConnected:

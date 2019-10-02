@@ -28,6 +28,10 @@ export function formatPrice(amount: BigNumber, token: string): string {
   return amount.toFormat(tokens[token].digits, BigNumber.ROUND_HALF_UP);
 }
 
+export function formatPriceInstant(amount: BigNumber, token: string): string {
+  return amount.toFormat(tokens[token].digitsInstant, BigNumber.ROUND_HALF_UP);
+}
+
 export function formatPriceUp(amount: BigNumber, token: string): string {
   return amount.toFormat(tokens[token].digits, BigNumber.ROUND_UP);
 }
