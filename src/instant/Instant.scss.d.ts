@@ -22,4 +22,3 @@ export const inputApprox: string;
 export const inputPercentage: string;
 export const button: string;
 export const tradingAsset: string;
-export const closeButton: string;

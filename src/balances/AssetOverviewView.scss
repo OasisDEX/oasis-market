@@ -1,9 +1,10 @@
 @import "../utils/Variables";
-@import "../utils/forms/Buttons.mixins";
+@import "../utils/forms/Buttons";
 
 .table {
   th {
-    text-transform: unset;
+    font-weight: 600;
+    text-transform: uppercase;
 
     @include media-breakpoint-down(md) {
       font-size: 10px;
@@ -47,10 +48,6 @@
   // aligned to left with column name "Asset"
   td:nth-child(2) {
     padding-left: 8px;
-
-    @include media-breakpoint-down(sm) {
-      padding-left: 0;
-    }
   }
 
   // those columns contains tall elements,
@@ -78,7 +75,7 @@
 
 .transferBtn {
   background-color: transparent;
-  border: 1px solid $grey-light;
+  border: 1px solid $element-border;
   border-radius: 100%;
   display: inline-flex;
   justify-content: center;
@@ -94,14 +91,7 @@
     cursor: default;
   }
 
-  @include button((
-          color: $font-color-base,
-          bg: $grey-darkest,
-          border-color: $grey-light,
-          color-hover: $font-color-base,
-          border-color-hover: lighten($grey-darkest, 5%),
-          bg-hover: lighten($grey-light, 5%)
-  ));
+  @extend .secondary;
 }
 
 .transferBtnLeft {

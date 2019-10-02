@@ -59,7 +59,7 @@ stories.add('Input group', () => (
       <InputGroupAddon>(USD)</InputGroupAddon>
     </InputGroup>
     <h4>Default - red</h4>
-    <InputGroup color="red" style={{ width: '350px' }}>
+    <InputGroup color="danger" style={{ width: '350px' }}>
       <InputGroupAddon border="right">Amount</InputGroupAddon>
       <BigNumberInput />
       <InputGroupAddon border="both">$</InputGroupAddon>

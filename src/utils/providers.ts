@@ -2,14 +2,14 @@ import { Web3Window } from '../blockchain/web3';
 import coinbaseSvg from '../icons/providers/coinbase.svg';
 import imTokenSvg from '../icons/providers/im-token.svg';
 import ledgerSvg from '../icons/providers/ledger.svg';
-import metamaskWhiteSvg from '../icons/providers/metamask-white.svg';
+import metamaskBlackSvg from '../icons/providers/metamask-black.svg';
 import metamaskSvg from '../icons/providers/metamask.svg';
-import parityWhiteSvg from '../icons/providers/parity-white.svg';
+import parityBlackSvg from '../icons/providers/parity-black.svg';
 import paritySvg from '../icons/providers/parity.svg';
-import statusWhiteSvg from '../icons/providers/status-white.svg';
+import statusBlackSvg from '../icons/providers/status-black.svg';
 import statusSvg from '../icons/providers/status.svg';
 import trezorSvg from '../icons/providers/trezor.svg';
-import trustWhiteSvg from '../icons/providers/trust-white.svg';
+import trustBlackSvg from '../icons/providers/trust-black.svg';
 import trustSvg from '../icons/providers/trust.svg';
 import webWalletSvg from '../icons/providers/web-wallet.svg';
 import { SvgImage } from './icons/utils';
@@ -41,7 +41,7 @@ export const WebWallet = {
 export const Metamask = {
   id: 2,
   icon: SvgImageSimple(metamaskSvg),
-  iconWhite: SvgImageSimple(metamaskWhiteSvg),
+  iconWhite: SvgImageSimple(metamaskBlackSvg),
   alias: 'metamask',
   name: 'Metamask',
   supported: true,
@@ -53,7 +53,7 @@ export const Trust = {
   alias: 'trust',
   name: 'Trust Wallet',
   icon: SvgImageSimple(trustSvg),
-  iconWhite: SvgImageSimple(trustWhiteSvg),
+  iconWhite: SvgImageSimple(trustBlackSvg),
   supported: true,
   website: 'https://trustwallet.com/'
 };
@@ -63,7 +63,7 @@ export const Status = {
   alias: 'status',
   name: 'Status',
   icon: SvgImageSimple(statusSvg),
-  iconWhite: SvgImageSimple(statusWhiteSvg),
+  iconWhite: SvgImageSimple(statusBlackSvg),
   supported: true,
   website: 'https://status.im/'
 };
@@ -81,7 +81,7 @@ export const Parity = {
   alias: 'parity',
   name: 'Parity',
   icon: SvgImageSimple(paritySvg),
-  iconWhite: SvgImageSimple(parityWhiteSvg),
+  iconWhite: SvgImageSimple(parityBlackSvg),
   supported: true,
   website: 'https://www.parity.io/'
 };

@@ -1,8 +1,6 @@
 @import "../Mixins";
 
 .block {
-  @include fontMontserratMedium;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,6 +13,7 @@
 // block version elements
 .icon {
   margin-right: 0.5em;
+  color: $dark-grayish-blue;
 }
 
 .mainInfo {
@@ -24,6 +23,5 @@
 
 .annotate {
   margin-top: 0.8em;
-  letter-spacing: .4px;
   font-size: 15px;
 }

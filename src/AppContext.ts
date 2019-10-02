@@ -7,7 +7,7 @@ import {
   filter,
   first,
   flatMap,
-  map,
+  map, mergeMap,
   shareReplay,
   switchMap
 } from 'rxjs/operators';
@@ -37,7 +37,7 @@ import {
   etherPriceUsd$,
   gasPrice$,
   initializedAccount$,
-  onEveryBlock$
+  onEveryBlock$, tokenPricesInUSD$
 } from './blockchain/network';
 import { user$ } from './blockchain/user';
 import { loadOrderbook$, Orderbook } from './exchange/orderbook/orderbook';
@@ -48,7 +48,9 @@ import {
   memoizeTradingPair,
 } from './exchange/tradingPair/tradingPair';
 
-import { transactions$ } from './blockchain/transactions';
+import * as mixpanel from 'mixpanel-browser';
+import { of } from 'rxjs/index';
+import { transactions$, TxState } from './blockchain/transactions';
 import {
   createAllTrades$,
   createTradesBrowser$,
@@ -122,7 +124,7 @@ export function setupAppContext() {
 
   const combinedBalances$ = createCombinedBalances$(
     context$, initializedAccount$, etherBalance$,
-    balances$, onEveryBlock$, etherPriceUsd$, transactions$
+    balances$, onEveryBlock$, tokenPricesInUSD$, etherPriceUsd$, transactions$
   ).pipe(
     shareReplay(1)
   );
@@ -262,6 +264,25 @@ export function setupAppContext() {
   const transactionNotifier$ =
     createTransactionNotifier$(transactions$, interval(5 * 1000), context$);
   const TransactionNotifierTxRx = connect(TransactionNotifierView, transactionNotifier$);
+
+  const transactionsLog: string[] = [];
+  combineLatest(transactionNotifier$, context$).pipe(
+    mergeMap(([transactionsNotifier, network]) => {
+      return of([transactionsNotifier.transactions, network.name]);
+    })
+  ).subscribe(([transactions, network]) => {
+    (transactions as TxState[]).forEach(tx => {
+      const tx_identify = `${tx.account}${tx.networkId}${tx.status}${tx.txNo}`;
+      if (!(transactionsLog.includes(tx_identify))) {
+        transactionsLog.push(tx_identify);
+        mixpanel.track('notification', {
+          network,
+          product: 'oasis-trade',
+          status: tx.status
+        });
+      }
+    });
+  });
 
   const proxyAddress$ = onEveryBlock$.pipe(
     switchMap(() =>

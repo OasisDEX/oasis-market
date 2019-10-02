@@ -29,30 +29,18 @@ export class PriceChartWithLoading extends React.Component<PriceChartProps> {
         <PanelHeader bordered={true}>
           Price chart
           <ButtonGroup style={{ marginLeft: 'auto' }}>
-            <Button
-              color={ this.props.groupMode === 'byMonth' ? 'whiteOutlined' : 'grey'}
-              size="sm"
-              className={classnames(styles.btn)}
-              onClick={this.handleKindChange('byMonth')}
-            >1M</Button>
-            <Button
-              color={ this.props.groupMode === 'byWeek' ? 'whiteOutlined' : 'grey'}
-              size="sm"
-              className={classnames(styles.btn)}
-              onClick={this.handleKindChange('byWeek')}
-            >1W</Button>
-            <Button
-              color={ this.props.groupMode === 'byDay' ? 'whiteOutlined' : 'grey'}
-              size="sm"
-              className={classnames(styles.btn)}
-              onClick={this.handleKindChange('byDay')}
-            >1D</Button>
-            <Button
-              color={ this.props.groupMode === 'byHour' ? 'whiteOutlined' : 'grey'}
-              size="sm"
-              className={classnames(styles.btn)}
-              onClick={this.handleKindChange('byHour')}
-            >1H</Button>
+            {
+              this.button('1M', 'byMonth')
+            }
+            {
+              this.button('1W', 'byWeek')
+            }
+            {
+              this.button('1D', 'byDay')
+            }
+            {
+              this.button('1H', 'byHour')
+            }
           </ButtonGroup>
         </PanelHeader>
         <WithLoadingIndicator
@@ -61,12 +49,21 @@ export class PriceChartWithLoading extends React.Component<PriceChartProps> {
           loadable={this.props}
         >
           {(points: PriceChartDataPoint[]) => (
-            <PriceChartView data={points} groupMode={this.props.groupMode} />
+            <PriceChartView data={points} groupMode={this.props.groupMode}/>
           )}
         </WithLoadingIndicator>
       </>
     );
   }
+
+  private button = (label: string, groupMode: GroupMode) => (
+    <Button
+      color={this.props.groupMode === groupMode ? 'primary' : 'greyOutlined'}
+      size="sm"
+      className={classnames(styles.btn)}
+      onClick={this.handleKindChange(groupMode)}
+    >{label}</Button>
+  )
 }
 
 export function createPriceChartLoadable$(

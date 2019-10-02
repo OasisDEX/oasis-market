@@ -12,46 +12,36 @@ stories.add('Colors', () => (
     <Button disabled={true}>Default disabled button</Button>
 
     <h3>Green button</h3>
-    <Button color="green">Green enabled button</Button>
+    <Button color="primary">Green enabled button</Button>
     <br/>
-    <Button color="green" disabled={true}>Green disabled button</Button>
+    <Button color="primary" disabled={true}>Green disabled button</Button>
 
     <h3>Red button</h3>
-    <Button color="red">Red enabled button</Button>
+    <Button color="danger">Red enabled button</Button>
     <br/>
-    <Button color="red" disabled={true}>Red disabled button</Button>
+    <Button color="danger" disabled={true}>Red disabled button</Button>
 
-    <h3>White button</h3>
-    <Button color="white">White enabled button</Button>
+    <h3>Secondary button</h3>
+    <Button color="secondary">Secondary enabled button</Button>
     <br/>
-    <Button color="white" disabled={true}>White disabled button</Button>
-
-    <h3>Grey white button</h3>
-    <Button color="greyWhite">Grey white enabled button</Button>
-    <br/>
-    <Button color="greyWhite" disabled={true}>Grey white disabled button</Button>
-
-    <h3>White outlined button</h3>
-    <Button color="whiteOutlined">White outlined enabled button</Button>
-    <br/>
-    <Button color="whiteOutlined" disabled={true}>White outlined disabled button</Button>
+    <Button color="secondary" disabled={true}>Secondary disabled button</Button>
   </div>
 ));
 
 stories.add('Button group', () => (
   <div>
     <ButtonGroup>
-      <Button color="red">Pierwszy</Button>
-      <Button color="green">Drugi</Button>
-      <Button color="red">Trzeci</Button>
+      <Button color="primary">Pierwszy</Button>
+      <Button color="secondary">Drugi</Button>
+      <Button color="danger">Trzeci</Button>
     </ButtonGroup>
     <br/>
     <ButtonGroup>
-      <Button color="grey">Nick Burkhardt</Button>
-      <Button color="grey">Juliette Silverton</Button>
-      <Button color="grey">Eddie Monroe</Button>
-      <Button color="grey">Rosalee Calvert</Button>
-      <Button color="grey">Hank Griffin</Button>
+      <Button color="greyOutlined">Nick Burkhardt</Button>
+      <Button color="greyOutlined">Juliette Silverton</Button>
+      <Button color="greyOutlined">Eddie Monroe</Button>
+      <Button color="greyOutlined">Rosalee Calvert</Button>
+      <Button color="greyOutlined">Hank Griffin</Button>
     </ButtonGroup>
   </div>
 ));
@@ -62,7 +52,6 @@ stories.add('Button size', () => (
     alignItems: 'flex-end',
   }}>
     <Button>Nosize</Button>
-    <Button size="xs">Extra small (size="xs")</Button>
     <Button size="sm">Small (size="sm")</Button>
     <Button size="md">Medium (size="md")</Button>
     <Button size="lg">Medium (size="lg")</Button>

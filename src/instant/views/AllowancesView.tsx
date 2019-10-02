@@ -5,7 +5,6 @@ import { Button, CloseButton } from '../../utils/forms/Buttons';
 import { SvgImage } from '../../utils/icons/utils';
 import { LoadingIndicator } from '../../utils/loadingIndicator/LoadingIndicator';
 import { TopRightCorner } from '../../utils/panel/TopRightCorner';
-import * as instantStyles from '../Instant.scss';
 import {
   InstantFormChangeKind,
   InstantFormState,
@@ -27,7 +26,7 @@ class AssetAllowance extends React.Component<AssetProps> {
     const { isAllowed, asset, inProgress, onClick } = this.props;
 
     return (
-      <Button color="grey"
+      <Button color="secondaryOutlined"
               disabled={inProgress}
               data-test-id={asset.symbol}
               className={styles.asset}
@@ -57,10 +56,9 @@ export class AllowancesView extends React.Component<InstantFormState> {
     const { allowances, toggleAllowance, manualAllowancesProgress } = this.props;
 
     return (
-      <InstantFormWrapper heading={'Unlock Token for Trading'}>
+      <InstantFormWrapper heading={'Unlock Token'}>
         <TopRightCorner>
           <CloseButton theme="danger"
-                       className={instantStyles.closeButton}
                        data-test-id="close"
                        onClick={this.close}
           />

@@ -18,10 +18,10 @@ import * as styles from './AccountView.scss';
 const proxyToolTip = {
   id: 'proxy-tooltip',
   text: 'Proxy is a supporting contract owned by you that groups different actions as one Ethereum transaction.',
-  iconColor: 'white'
+  iconColor: 'grey'
 } as WarningTooltipType;
 
-const activeProxyTooltip = { ...proxyToolTip, iconColor: 'soft-cyan' as 'soft-cyan' };
+const activeProxyTooltip = { ...proxyToolTip, iconColor: 'green' as 'green'};
 
 // tslint:enable
 
@@ -38,8 +38,9 @@ export class AccountView extends React.Component<InstantFormState> {
       <InstantFormWrapper heading={'Account Overview'}>
         <TopLeftCorner>
           <ButtonIcon
+            color="secondaryOutlined"
             onClick={this.switchToNewTrade}
-            className={instantStyles.cornerIcon}
+            className={classnames(instantStyles.cornerIcon, instantStyles.backIcon)}
             image={backSvg}
           />
         </TopLeftCorner>
@@ -59,33 +60,39 @@ export class AccountView extends React.Component<InstantFormState> {
     );
   }
 
-  private onHavingProxy = () => (
-    <>
-      <div className={classnames(styles.row, styles.proxyAvailable)}>
-        <div style={box}>
-          <SvgImage className={styles.accountIcon} image={accountSvg}/>
-          <span data-test-id="proxy-status" className={styles.text}>Proxy available</span>
-          <WarningTooltip {...activeProxyTooltip}/>
+  private onHavingProxy = () => {
+    const allowedTokensCount = this.allowedTokens();
+    return (
+      <>
+        <div className={classnames(styles.row, styles.proxyAvailable)}>
+          <div style={box}>
+            <SvgImage className={styles.accountIcon} image={accountSvg}/>
+            <span data-test-id="proxy-status" className={styles.text}>Proxy available</span>
+            <WarningTooltip {...activeProxyTooltip}/>
+          </div>
         </div>
-      </div>
-      <div className={classnames(styles.row, styles.allowances)}>
+        <div className={classnames(styles.row, styles.allowances)}>
         <span className={styles.text} data-test-id="active-allowances">
           {
-            `${this.allowedTokens()} Tokens enabled for Trading`
+            `${allowedTokensCount} ${allowedTokensCount === 1
+              ? 'Token'
+              : 'Tokens'
+            } enabled for Trading`
           }
         </span>
-        <Button
-          size="sm"
-          color="grey"
-          className={styles.button}
-          data-test-id="set-allowances"
-          onClick={this.switchToAllowances}
-        >
-          Enable Token
-        </Button>
-      </div>
-    </>
-  )
+          <Button
+            size="sm"
+            color="secondaryOutlined"
+            className={styles.button}
+            data-test-id="set-allowances"
+            onClick={this.switchToAllowances}
+          >
+            Enable Token
+          </Button>
+        </div>
+      </>
+    );
+  }
 
   private onMissingProxy = () => {
     const progress = this.props.progress;
@@ -105,7 +112,7 @@ export class AccountView extends React.Component<InstantFormState> {
                 : (
                   <Button
                     size="sm"
-                    color="grey"
+                    color="secondaryOutlined"
                     className={styles.button}
                     data-test-id="create-proxy"
                     onClick={this.props.createProxy}

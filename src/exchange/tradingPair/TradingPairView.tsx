@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import classnames from 'classnames';
+import * as mixpanel from 'mixpanel-browser';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -43,6 +44,15 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
           to={{ pathname, state: { pair } }}
           activeClassName={styles.active}
           className={classnames(styles.dropdownItemLink, styles.pairView)}
+          onClick={() => {
+            mixpanel.track('btn-click', {
+              pair: `${pair.base}${pair.quote}`,
+              id: 'change-asset-pair',
+              product: 'oasis-trade',
+              page: 'Market',
+              section: 'asset-picker',
+            });
+          }}
         >
           <TradingPairView.PairView {...{ pair, marketsDetailsLoadable }} />
         </NavLink>

@@ -18,7 +18,8 @@ const expectAllowanceStatusFor = (token: string, hasAllowance: 'true' | 'false')
 };
 
 const expectAllowedTokensCount = (count: number) => {
-  cy.get(tid('active-allowances')).contains(`${count} Tokens enabled for Trading`);
+  cy.get(tid('active-allowances'))
+    .contains(`${count} ${count === 1 ? 'Token' : 'Tokens'} enabled for Trading`);
 };
 
 const enum AllowanceStatus {

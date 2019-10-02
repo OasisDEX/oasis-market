@@ -4,7 +4,7 @@ import * as React from 'react';
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 import backSvg from '../../icons/back.svg';
 import warningSvg from '../../icons/warning.svg';
-import { BigNumberInput } from '../../utils/bigNumberInput/BigNumberInput';
+import { BigNumberInput, lessThanOrEqual } from '../../utils/bigNumberInput/BigNumberInput';
 import { formatPrice } from '../../utils/formatters/format';
 import { ButtonIcon } from '../../utils/icons/Icons';
 import { SvgImage } from '../../utils/icons/utils';
@@ -25,6 +25,7 @@ export class TradeSettingsView extends React.Component<InstantFormState> {
       <InstantFormWrapper heading="Advanced Settings">
         <TopLeftCorner>
           <ButtonIcon
+            color="secondaryOutlined"
             className={classnames(instantStyles.cornerIcon, instantStyles.backIcon)}
             onClick={this._hideTradeSettings}
             image={backSvg}
@@ -51,7 +52,7 @@ export class TradeSettingsView extends React.Component<InstantFormState> {
                 prefix: ''
               })}
               pipe={
-                lessThanOrEqual(100)
+                lessThanOrEqual(new BigNumber(100))
               }
               guide={true}
               placeholder={slippageLimitInPercentage}
@@ -117,7 +118,3 @@ export class TradeSettingsView extends React.Component<InstantFormState> {
     return price.plus(price.times(slippageLimit));
   }
 }
-
-const lessThanOrEqual = (max: number) => {
-  return (value: number) => value <= max ? value : false;
-};

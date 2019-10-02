@@ -23,7 +23,6 @@ import { Button } from '../utils/forms/Buttons';
 import { SvgImage } from '../utils/icons/utils';
 import { Loadable } from '../utils/loadable';
 import { WithLoadingIndicatorInline } from '../utils/loadingIndicator/LoadingIndicator';
-import Eth2DaiLogo from './Eth2DaiLogo.svg';
 import * as styles from './Header.scss';
 import OasisDexLogo from './OasisDexLogo.svg';
 import {
@@ -46,7 +45,7 @@ const {
   activeNavLink,
   arrowDown,
   dark,
-  light,
+  mild,
   walletConnection,
 } = styles;
 
@@ -108,12 +107,11 @@ class Header extends React.Component<HeaderProps> {
         {({ rootUrl }) =>
           <header className={header}>
             <section className={section}>
-              <a href="/" className={logo}>
-                {
-                  process.env.REACT_APP_OASIS_DEX_ENABLED === '1' ?
-                    <SvgImage image={OasisDexLogo}/> :
-                    <SvgImage image={Eth2DaiLogo}/>
-                }
+              <a href={process.env.REACT_APP_SUBDIR
+                ? process.env.REACT_APP_SUBDIR
+                : '/'} className={logo}
+              >
+                <SvgImage image={OasisDexLogo}/>
               </a>
             </section>
             <section className={classnames(section, sectionNavigation)}>
@@ -184,8 +182,8 @@ class WalletConnectionStatus extends React.Component<WalletConnectionStatusProps
               )
               : (
 
-                <Button color="white"
-                        size="sm"
+                <Button color="secondaryOutlined"
+                        size="lg"
                         onClick={open}
                         data-test-id="new-connection"
                         className={classnames(styles.login, styles.connectWalletButton)}>
@@ -237,8 +235,11 @@ class Status extends React.Component<StatusProps> {
             >
               {label}
             </span>
+            {/* TODO: Unify this with the market dropdown icon. Extract?*/}
+
             <SvgImage image={chevronDownSvg}
-                      className={classnames(arrowDown, light)}/>
+                      className={classnames(arrowDown, mild)}
+            />
           </div>
         );
       }}

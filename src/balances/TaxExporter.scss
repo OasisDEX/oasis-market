@@ -1,18 +1,22 @@
 @import "../utils/Mixins";
 
+$primaryFontColor: $very-dark-violet;
+$secondaryFontColor: $very-dark-grayish-blue;
+
 .taxExporterDescription {
   flex-grow: 1;
   font-size: 14px;
   display: block;
   margin-top: 8px;
   margin-bottom: 8px;
+  color: $secondaryFontColor;
 
   @include media-breakpoint-down(sm) {
     font-size: 12px;
   }
 
   span {
-    color: #fff;
+    color: $primaryFontColor;
     display: block;
     font-size: 15px;
     margin-bottom: 8px;
@@ -21,20 +25,16 @@
       font-size: 14px;
     }
   }
-
-  a {
-    color: #6fc2e9;
-  }
 }
 
 .taxExporterPanelBody {
   display: flex;
   width: 100%;
-  border-top: 1px solid #393942;
 }
 
 .taxExporterButton {
   margin-top: 8px;
+  padding: 5px .833em;
 
   @include media-breakpoint-down(sm) {
     margin-top: 0;

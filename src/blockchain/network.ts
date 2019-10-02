@@ -1,6 +1,7 @@
 // tslint:disable:no-console
 import { BigNumber } from 'bignumber.js';
-import { bindNodeCallback, combineLatest, concat, interval, Observable, of } from 'rxjs';
+import { bindNodeCallback, combineLatest, concat, forkJoin, interval, Observable, of } from 'rxjs';
+import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
 import { ajax } from 'rxjs/ajax';
 import {
   catchError,
@@ -8,6 +9,7 @@ import {
   distinctUntilChanged,
   filter,
   first,
+  last,
   map,
   mergeMap,
   retryWhen,
@@ -122,7 +124,7 @@ export function allowance$(token: string, guy?: string): Observable<boolean> {
         account, guy ? guy : context.otc.address)
     ),
     map((x: BigNumber) => x.gte(MIN_ALLOWANCE)),
-   );
+  );
 }
 
 export type GasPrice$ = Observable<BigNumber>;
@@ -132,6 +134,55 @@ export const gasPrice$: GasPrice$ = onEveryBlock$.pipe(
   map(x => x.mul(1.25)),
   distinctUntilChanged((x: BigNumber, y: BigNumber) => x.eq(y)),
   shareReplay(1),
+);
+
+const tokens = [
+  {
+    symbol: 'DAI', ticker: 'dai-dai'
+  },
+  {
+    symbol: 'ZRX', ticker: 'zrx-0x'
+  },
+  {
+    symbol: 'BAT', ticker: 'bat-basic-attention-token'
+  },
+  {
+    symbol: 'REP', ticker: 'rep-augur'
+  }
+];
+
+export interface Ticker {
+  [label: string]: BigNumber;
+}
+
+// TODO: This should be unified with fetching price for ETH.
+// Either this logic should contain only fetching from 3rd party endpoint
+// or we wait until all of the tokens have PIP deployed.
+export const tokenPricesInUSD$: Observable<Ticker> = onEveryBlock$.pipe(
+  switchMap(
+    () =>
+      forkJoin(
+        tokens.map(
+          (token) => ajax({
+            url: `https://api.coinpaprika.com/v1/tickers/${token.ticker}/`,
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+          }).pipe(
+            map(({ response }) => ({
+              [response.symbol]: new BigNumber(response.quotes.USD.price)
+            })),
+            catchError((error) => {
+              console.debug(`Error fetching price data: ${error}`);
+              return of({});
+            }),
+          )
+        )
+      )
+  ),
+  map((prices) => prices.reduce((a, e) => ({ ...a, ...e }))),
+  shareReplay(1)
 );
 
 export const etherPriceUsd$: Observable<BigNumber> = concat(
@@ -146,16 +197,26 @@ export const etherPriceUsd$: Observable<BigNumber> = concat(
   ),
   onEveryBlock$.pipe(
     switchMap(() => ajax({
-      url: 'https://api.coinmarketcap.com/v1/ticker/ethereum/',
+      url: 'https://api.coinpaprika.com/v1/tickers/eth-ethereum/',
       method: 'GET',
       headers: {
         Accept: 'application/json',
       },
     })),
-    map(({ response }) => new BigNumber(response[0].price_usd)),
+    map(({ response }) => new BigNumber(response.quotes.USD.price)),
     retryWhen(errors => errors.pipe(delayWhen(() => onEveryBlock$.pipe(skip(1))))),
   ),
 ).pipe(
   distinctUntilChanged((x: BigNumber, y: BigNumber) => x.eq(y)),
   shareReplay(1),
 );
+
+export function waitUntil<T>(
+  value: Observable<T>, condition: (v: T) => boolean, maxRetries = 5, generator$ = onEveryBlock$,
+): Observable<T> {
+  return generator$.pipe(
+    switchMap(() => value),
+    takeWhileInclusive((v, i) => i < maxRetries && !condition(v)),
+    last(),
+  );
+}

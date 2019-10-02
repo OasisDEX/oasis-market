@@ -326,7 +326,9 @@ function applyChange(state: OfferFormState,
         ...state,
         amount: change.value,
         ...change.value && state.price
-          ? { total: change.value.multipliedBy(state.price) }
+          ? {
+            total: change.value.multipliedBy(state.price)
+          }
           : {},
         gasEstimationStatus: GasEstimationStatus.unset
       };
@@ -335,7 +337,9 @@ function applyChange(state: OfferFormState,
         ...state,
         price: change.value,
         ...change.value && state.amount
-          ? { total: change.value.multipliedBy(state.amount) }
+          ? {
+            total:  change.value.multipliedBy(state.amount)
+          }
           : {},
         gasEstimationStatus: GasEstimationStatus.unset
       };

@@ -8,9 +8,9 @@
 
 .inline {
   display: inline-flex;
-  width: 20px;
+  width: 1rem;
   flex-grow: 0; // reset loading's flex-grow: 1
-  min-height: 20px;
+  min-height: 1rem;
   //margin-top: -4px;
   background-size: contain;
 }

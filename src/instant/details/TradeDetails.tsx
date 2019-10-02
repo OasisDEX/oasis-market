@@ -13,7 +13,7 @@ import * as styles from './TradeDetails.scss';
 // tslint:disable
 const priceImpactTooltip = {
   id: 'price-impact',
-  text: 'The difference between the best current price on the Eth2Dai order book and the estimated price of your order.'
+  text: 'The difference between the best current price on the Oasis Trade order book and the estimated price of your order.'
 };
 const slippageLimitTooltip = {
   id: 'slippage-limit',
@@ -70,8 +70,8 @@ export class TradeDetails extends React.Component<TradeDetailsProps> {
         <TradeData label="Gas cost"
                    data-test-id="trade-gas-cost"
                    value={
-                     gasEstimationStatus === GasEstimationStatus.error ?
-                       'error' :
+                     gasEstimationStatus === GasEstimationStatus.error ? 'error' :
+                     gasEstimationStatus === GasEstimationStatus.unknown ? 'N/A' :
                        gasEstimationUsd
                          ? (
                            <Approximate data-vis-reg-hide={true}>

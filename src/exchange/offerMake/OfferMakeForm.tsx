@@ -4,9 +4,10 @@ import * as ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 
+import * as mixpanel from 'mixpanel-browser';
 import { tokens } from '../../blockchain/config';
 import { routerContext } from '../../Main';
-import { BigNumberInput } from '../../utils/bigNumberInput/BigNumberInput';
+import { BigNumberInput, lessThanOrEqual } from '../../utils/bigNumberInput/BigNumberInput';
 import { FormChangeKind, OfferMatchType } from '../../utils/form';
 import { formatAmount, formatPrice } from '../../utils/formatters/format';
 import { FormatAmount, FormatPercent } from '../../utils/formatters/Formatters';
@@ -32,7 +33,7 @@ import * as styles from './OfferMakeForm.scss';
 
 export class OfferMakeForm extends React.Component<OfferFormState> {
 
-  public orderTypes: {[key in OfferMatchType]: string} = {
+  public orderTypes: { [key in OfferMatchType]: string } = {
     limitOrder: 'Limit order type',
     direct: 'Average price fill or kill order type',
   };
@@ -116,8 +117,8 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
   private slippageLimit() {
     return (
       <React.Fragment>
-        { this.slippageLimitGroup() }
-        <Error field="slippageLimit" messages={this.props.messages} />
+        {this.slippageLimitGroup()}
+        <Error field="slippageLimit" messages={this.props.messages}/>
       </React.Fragment>
     );
   }
@@ -139,14 +140,14 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
                 checked={this.props.matchType === OfferMatchType.limitOrder}
                 onChange={this.handleOrderTypeChange}
               >
-                  { this.orderTypes.limitOrder }
+                {this.orderTypes.limitOrder}
               </Radio>
               <Muted className={styles.pickerDescription}>
                 The order is allowed to rest on the book and can
                 be filled only at the specified price or better
               </Muted>
             </div>
-            <Hr />
+            <Hr/>
             <div className={styles.pickerOrderType}>
               <Radio
                 dataTestId="fillOrKill"
@@ -155,19 +156,19 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
                 checked={this.props.matchType === OfferMatchType.direct}
                 onChange={this.handleOrderTypeChange}
               >
-                  { this.orderTypes.direct }
+                {this.orderTypes.direct}
               </Radio>
               <Muted className={styles.pickerDescription}>
                 The order is executed in its entirety such that the average fill price is
                 the limit price or better, otherwise it is canceled
               </Muted>
-              { this.slippageLimit() }
+              {this.slippageLimit()}
             </div>
           </div>
         </form>
       </PanelBody>
       <PanelFooter>
-        { this.pickerDone() }
+        {this.pickerDone()}
       </PanelFooter>
     </div>;
   }
@@ -176,28 +177,28 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
     return <div data-test-id="create-order-widget">
       <PanelHeader bordered={true}>
         Create order
-        { this.headerButtons() }
+        {this.headerButtons()}
       </PanelHeader>
 
       <PanelBody paddingVertical={true}>
         <form onSubmit={this.handleSubmit}>
-          { this.orderType() }
-          { this.balanceButtons() }
+          {this.orderType()}
+          {this.balanceButtons()}
 
           {
             this.props.matchType !== OfferMatchType.direct &&
             this.price()
           }
-          { this.props.matchType === OfferMatchType.direct &&
+          {this.props.matchType === OfferMatchType.direct &&
           this.directSummary()
           }
 
-          { this.amount() }
+          {this.amount()}
 
-          { this.gasCost() }
-          { this.total() }
+          {this.gasCost()}
+          {this.total()}
 
-          { this.submitButton() }
+          {this.submitButton()}
         </form>
       </PanelBody>
     </div>;
@@ -211,7 +212,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
           data-test-id="new-buy-order"
           className={styles.btn}
           onClick={() => this.handleKindChange(OfferType.buy)}
-          color={ this.props.kind === OfferType.buy ? 'green' : 'grey' }
+          color={this.props.kind === OfferType.buy ? 'primary' : 'greyOutlined'}
           disabled={disabled}
           size="sm"
         >Buy</Button>
@@ -219,7 +220,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
           data-test-id="new-sell-order"
           className={styles.btn}
           onClick={() => this.handleKindChange(OfferType.sell)}
-          color={ this.props.kind === OfferType.sell ? 'red' : 'grey' }
+          color={this.props.kind === OfferType.sell ? 'danger' : 'greyOutlined'}
           disabled={disabled}
           size="sm"
         >Sell</Button>
@@ -244,38 +245,50 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
       disabled;
 
     return (
-    <div className={styles.ownedResourcesInfoBox}>
-      <Button
-        type="button"
-        onClick={this.handleSetMax}
-        size="lg"
-        block={true}
-        disabled={setMaxSellDisabled}
-        className={styles.balanceBtn}
-      >
-        { this.props.baseToken && tokens[this.props.baseToken].icon }
-        <span style={{ lineHeight: 1 }} data-test-id="base-balance">
-                { this.props.balances && this.props.balances[this.props.baseToken] &&
-                formatAmount(this.props.balances[this.props.baseToken], this.props.baseToken)
-                } <Currency value={this.props.baseToken} />
-              </span>
-      </Button>
-      <Button
-        type="button"
-        onClick={this.handleSetMax}
-        size="lg"
-        block={true}
-        disabled={setMaxBuyDisabled}
-        className={styles.balanceBtn}
-      >
-        { this.props.quoteToken && tokens[this.props.quoteToken].icon }
-        <span style={{ lineHeight: 1 }} data-test-id="quote-balance">
-                { this.props.balances && this.props.balances[this.props.quoteToken] &&
-                formatAmount(this.props.balances[this.props.quoteToken], this.props.quoteToken)
-                } <Currency value={this.props.quoteToken} />
-              </span>
-      </Button>
-    </div>
+      <div className={styles.ownedResourcesInfoBox}>
+        <Button
+          type="button"
+          onClick={this.handleSetMax}
+          size="md"
+          color="secondaryOutlined"
+          disabled={setMaxSellDisabled}
+          className={styles.balanceBtn}
+        >
+          <span className={styles.icon}>
+            {
+              this.props.baseToken && tokens[this.props.baseToken].icon
+            }
+          </span>
+          <span data-test-id="base-balance">
+                {
+                  this.props.balances && this.props.balances[this.props.baseToken] &&
+                  formatAmount(this.props.balances[this.props.baseToken], this.props.baseToken)
+                }{' '}
+            <Currency value={this.props.baseToken}/>
+          </span>
+        </Button>
+        <Button
+          type="button"
+          onClick={this.handleSetMax}
+          size="md"
+          color="secondaryOutlined"
+          disabled={setMaxBuyDisabled}
+          className={styles.balanceBtn}
+        >
+          <span className={styles.icon}>
+            {
+              this.props.quoteToken && tokens[this.props.quoteToken].icon
+            }
+          </span>
+          <span data-test-id="quote-balance">
+                {
+                  this.props.balances && this.props.balances[this.props.quoteToken] &&
+                  formatAmount(this.props.balances[this.props.quoteToken], this.props.quoteToken)
+                }{' '}
+            <Currency value={this.props.quoteToken}/>
+          </span>
+        </Button>
+      </div>
     );
   }
 
@@ -285,7 +298,8 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
       <div className={styles.summary} style={{ marginBottom: '16px' }}>
         <Button
           block={true}
-          size="lg"
+          size="md"
+          color="secondaryOutlined"
           data-test-id="select-order-type"
           type="button"
           onClick={this.handleOpenPicker}
@@ -300,8 +314,8 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
   private amount() {
     return (
       <div>
-        { this.amountGroup() }
-        <Error field="amount" messages={this.props.messages} />
+        {this.amountGroup()}
+        <Error field="amount" messages={this.props.messages}/>
       </div>
     );
   }
@@ -309,9 +323,9 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
   private price() {
     return (
       <React.Fragment>
-        <Hr color="dark" className={styles.hrMargin}/>
-        { this.priceGroup() }
-        <Error field="price" messages={this.props.messages} />
+        <Hr color="light" className={styles.hrMargin}/>
+        {this.priceGroup()}
+        <Error field="price" messages={this.props.messages}/>
       </React.Fragment>
     );
   }
@@ -326,7 +340,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
                    gasEstimationEth={this.props.gasEstimationEth}
           />
         </div>
-        <Error field="gas" messages={this.props.messages} />
+        <Error field="gas" messages={this.props.messages}/>
       </React.Fragment>
     );
   }
@@ -337,14 +351,14 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
         <div data-test-id="type-total" className={styles.summary}>
           <span><Muted>Total</Muted></span>
           <span>
-              <FormatAmount
-                value={this.props.total || new BigNumber(0)} token={this.props.quoteToken}
-              />
+    <FormatAmount
+      value={this.props.total || new BigNumber(0)} token={this.props.quoteToken}
+    />
             &#x20;
             <Currency value={this.props.quoteToken}/>
-          </span>
+    </span>
         </div>
-        <Error field="total" messages={this.props.messages} />
+        <Error field="total" messages={this.props.messages}/>
       </React.Fragment>
     );
   }
@@ -356,8 +370,17 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
         className={styles.confirmButton}
         type="submit"
         value="submit"
-        color={this.props.kind === OfferType.buy ? 'green' : 'red' }
+        color={this.props.kind === OfferType.buy ? 'primary' : 'danger'}
         disabled={this.props.stage !== 'readyToProceed'}
+        onClick={() => {
+          mixpanel.track('btn-click', {
+            id: 'initiate-trade',
+            product: 'oasis-trade',
+            page: 'Market',
+            section: 'create-order',
+            kind: this.props.kind
+          });
+        }}
       >
         {this.props.kind} {this.props.baseToken}
       </Button>
@@ -376,9 +399,17 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
         className={styles.confirmButton}
         type="submit"
         value="submit"
-        // color={this.props.kind === 'buy' ? 'green' : 'red' }
+        color={this.props.kind === 'buy' ? 'primary' : 'danger'}
         disabled={disabled}
-        onClick={this.handleOpenPicker}
+        onClick={() => {
+          mixpanel.track('btn-click', {
+            id: 'submit-order-type',
+            product: 'oasis-trade',
+            page: 'Market',
+            section: 'choose-order-type',
+          });
+          this.handleOpenPicker();
+        }}
       >
         Done
       </Button>
@@ -404,6 +435,9 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
             prefix: ''
           })}
           onChange={this.handleAmountChange}
+          pipe={
+            lessThanOrEqual(maxTokenValue(this.props.baseToken))
+          }
           value={
             (this.props.amount || null) &&
             formatAmount(this.props.amount as BigNumber, this.props.baseToken)
@@ -413,7 +447,10 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
           className={styles.input}
           disabled={this.props.stage === 'waitingForApproval'}
         />
-        <InputGroupAddon className={styles.inputCurrencyAddon} onClick={this.handleAmountFocus}>
+        <InputGroupAddon className={styles.inputCurrencyAddon}
+                         onClick={this.handleAmountFocus}
+                         disabled={this.props.stage === 'waitingForApproval'}
+        >
           {this.props.baseToken}
         </InputGroupAddon>
       </div>
@@ -423,9 +460,9 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
 
   private priceGroup() {
     return (
-      <InputGroup hasError={ (this.props.messages || [])
-          .filter((message: Message) => message.field === 'price')
-          .length > 0}>
+      <InputGroup hasError={(this.props.messages || [])
+        .filter((message: Message) => message.field === 'price')
+        .length > 0}>
         <InputGroupAddon className={styles.inputHeader}>Price</InputGroupAddon>
         <div className={styles.inputTail}>
           <BigNumberInput
@@ -439,6 +476,9 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
               decimalLimit: this.props.quoteTokenDigits,
               prefix: ''
             })}
+            pipe={
+              lessThanOrEqual(maxTokenValue(this.props.quoteToken))
+            }
             onChange={this.handlePriceChange}
             value={
               (this.props.price || null) &&
@@ -449,7 +489,10 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
             className={styles.input}
             disabled={this.props.stage === 'waitingForApproval'}
           />
-          <InputGroupAddon className={styles.inputCurrencyAddon} onClick={this.handlePriceFocus}>
+          <InputGroupAddon className={styles.inputCurrencyAddon}
+                           onClick={this.handlePriceFocus}
+                           disabled={this.props.stage === 'waitingForApproval'}
+          >
             {this.props.quoteToken}
           </InputGroupAddon>
         </div>
@@ -463,7 +506,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
     return (
       <InputGroup
         sizer="md"
-        hasError={ (this.props.messages || [])
+        hasError={(this.props.messages || [])
           .filter((message: Message) => message.field === 'slippageLimit')
           .length > 0}
         disabled={!enabled}
@@ -477,9 +520,11 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
             type="text"
             mask={createNumberMask({
               allowDecimal: true,
-              decimalLimit: 5,
               prefix: ''
             })}
+            pipe={
+              lessThanOrEqual(new BigNumber(100))
+            }
             onChange={this.handleSlippageLimitChange}
             value={
               (this.props.slippageLimit || null) &&
@@ -529,13 +574,16 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
   }
 }
 
+const maxTokenValue = (token: string) => new BigNumber(tokens[token].maxSell)
+  .minus(new BigNumber(1));
+
 const Error = ({ field, messages } : { field: string, messages?: Message[] }) => {
   const myMsg = (messages || [])
     .filter((message: Message) => message.field === field)
     .sort((m1, m2) => m2.priority - m1.priority)
     .map(msg => messageContent(msg));
   return (
-    <ErrorMessage messages={myMsg} />
+    <ErrorMessage messages={myMsg}/>
   );
 };
 
@@ -543,15 +591,15 @@ function messageContent(msg: Message) {
   switch (msg.kind) {
     case MessageKind.noAllowance:
       return <span>
-        {`Unlock ${msg.token} for Trading in the `}
+    {`Unlock ${msg.token} for Trading in the `}
         <routerContext.Consumer>
-        { ({ rootUrl }) =>
-          <Link to={`${rootUrl}account`} style={{ whiteSpace: 'nowrap' }}>Account Page</Link>
-        }
-        </routerContext.Consumer>
-      </span>;
+    {({ rootUrl }) =>
+      <Link to={`${rootUrl}account`} style={{ whiteSpace: 'nowrap' }}>Account Page</Link>
+    }
+    </routerContext.Consumer>
+    </span>;
     case MessageKind.insufficientAmount:
-      return  <>
+      return <>
         {`Your ${msg.token} balance is too low to fund this order`}
       </>;
     case MessageKind.dustAmount:

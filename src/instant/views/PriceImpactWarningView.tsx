@@ -1,9 +1,9 @@
 import classnames from 'classnames';
+import * as mixpanel from 'mixpanel-browser';
 import * as React from 'react';
 import { FormatPercent } from '../../utils/formatters/Formatters';
 import { CloseButton } from '../../utils/forms/Buttons';
 import { TopRightCorner } from '../../utils/panel/TopRightCorner';
-import * as instantStyles from '../Instant.scss';
 import { InstantFormChangeKind, InstantFormState, ViewKind } from '../instantForm';
 import { InstantFormWrapper } from '../InstantFormWrapper';
 import * as styles from './PriceImpactWarningView.scss';
@@ -36,8 +36,8 @@ export class PriceImpactWarningView extends React.Component<InstantFormState> {
                           btnAction={this.onAcknowledge}
                           btnDataTestId="proceed-with-order">
         <TopRightCorner>
-          <CloseButton className={instantStyles.closeButton}
-                       theme="danger" data-test-id="dismiss-warning"
+          <CloseButton theme="danger"
+                       data-test-id="dismiss-warning"
                        onClick={this.onDismiss}/>
         </TopRightCorner>
         <div className={styles.container}>
@@ -64,6 +64,13 @@ export class PriceImpactWarningView extends React.Component<InstantFormState> {
   }
 
   private onAcknowledge = () => {
+    mixpanel.track('btn-click', {
+      id: 'initiate-trade',
+      product: 'oasis-trade',
+      page: 'Instant',
+      section: 'order-details',
+      case: 'price-impact-warning'
+    });
     this.props.submit(this.props);
     this.props.change({
       kind: InstantFormChangeKind.viewChange,

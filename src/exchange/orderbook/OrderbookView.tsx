@@ -6,6 +6,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilKeyChanged, map, startWith } from 'rxjs/operators';
 
+import * as mixpanel from 'mixpanel-browser';
 import { FormChangeKind, PickOfferChange } from '../../utils/form';
 import { FormatAmount, FormatPriceOrder } from '../../utils/formatters/Formatters';
 import { Button } from '../../utils/forms/Buttons';
@@ -122,16 +123,22 @@ export class OrderbookView extends React.Component<Props> {
           <div style={{ marginLeft: 'auto', display: 'flex' }}>
             <MediaQuery maxWidth={992}>
               {(matches) => {
-                let isDisabled = false;
 
                 if (matches) {
-                  isDisabled = true;
+                  return <></>;
                 }
 
                 return <Button
-                  disabled={isDisabled}
                   className={styles.switchBtn}
-                  onClick={this.changeChartListView}
+                  onClick={() => {
+                    mixpanel.track('btn-click', {
+                      id: 'change-orderbook-view',
+                      product: 'oasis-trade',
+                      page: 'Market',
+                      section: 'orderbook',
+                    });
+                    this.changeChartListView();
+                  }}
                   data-test-id="orderbook-type-list"
                 >
                   <SvgImage image={depthChartSvg}/>
@@ -206,7 +213,7 @@ export class OrderbookView extends React.Component<Props> {
 
                       {/* better don't remove me! */}
                       <CSSTransition key="0" classNames="order" timeout={1000}>
-                        <RowHighlighted>
+                        <RowHighlighted className={styles.spreadRow}>
                           <td ref={el => this.centerRow = el || undefined}>
                             {orderbook.spread
                               ? <FormatAmount value={orderbook.spread}

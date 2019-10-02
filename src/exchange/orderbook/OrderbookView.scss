@@ -16,12 +16,14 @@
   padding: 0;
   width: 30px;
   height: 30px;
-  fill: white;
+  background: white;
+  border: 1px solid $element-border;
 }
 
 
 .spreadRow {
   background-color: rgba(white, 0.02);
+  border-top: 1px solid $element-border;
 }
 
 .orderbookTable {

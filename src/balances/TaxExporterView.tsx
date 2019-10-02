@@ -1,3 +1,4 @@
+import * as mixpanel from 'mixpanel-browser';
 import * as React from 'react';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/internal/operators';
@@ -28,11 +29,20 @@ export class TaxExporterView extends React.Component<TaxExporterViewProps, TaxEx
         <PanelBody paddingVertical={true} className={styles.taxExporterPanelBody}>
         <Muted className={styles.taxExporterDescription}>
           <span>Export your trades from Oasis Contracts (2018-2019)</span>
-          From eth2dai.com, oasis.direct, oasisdex.com and cdp.makerdao.com
+          From oasis.app/trade, oasis.direct, oasisdex.com and cdp.makerdao.com
         </Muted>
         <Button
           size="sm"
-          onClick={this.exportTrades}
+          color="secondaryOutlined"
+          onClick={() => {
+            mixpanel.track('btn-click', {
+              id: 'export-trades',
+              product: 'oasis-trade',
+              page: 'Account',
+              section: 'history-export'
+            });
+            this.exportTrades();
+          }}
           className={styles.taxExporterButton}
         >
           {this.state.inProgress ? <ProgressIcon className={styles.progressIcon}/> : 'Export'}

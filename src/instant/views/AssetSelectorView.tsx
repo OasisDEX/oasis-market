@@ -20,7 +20,6 @@ class AssetSelectorView extends React.Component<InstantFormState & {side: OfferT
       <section className={classnames(instantStyles.panel, panelStyling.panel)}>
         <TopRightCorner>
           <CloseButton theme="danger"
-                       className={instantStyles.closeButton}
                        onClick={this.hideAssets}
           />
         </TopRightCorner>

@@ -2,7 +2,7 @@
 
 // ---------border box --------------
 .borderBox {
-  border: 1px solid $grey-light;
+  border: 1px solid $element-border;
   border-radius: $border-radius;
 }
 
@@ -28,9 +28,9 @@
 }
 
 .lightHr {
-  border-color: rgba($white, 0.2);
+  border-color: $element-border;
 }
 
 .darkHr {
-  border-color: $grey-dark;
+  border-color: $element-border;
 }

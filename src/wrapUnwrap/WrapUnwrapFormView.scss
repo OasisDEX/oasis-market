@@ -16,7 +16,7 @@
   align-items: center;
 
   @include media-breakpoint-down(md) {
-    font-size:14px;
+    font-size: 14px;
   }
 }
 
@@ -57,7 +57,7 @@
 .warningText {
   font-size: 14px;
 
-  @include media-breakpoint-down(md){
+  @include media-breakpoint-down(md) {
     display: inline-flex;
     align-items: center;
   }
@@ -69,10 +69,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
 
-.btn:disabled {
-  color: #87878c;
+  button {
+    padding: 5px .833em;
+  }
 }
 
 // ---------- input group modifiers
@@ -91,7 +91,7 @@
 
 .inputTail {
   display: inline-flex;
-  border-left: 1px solid $grey-light;
+  border-left: 1px solid $element-border;
   width: 100%;
 
   &:hover {
@@ -122,7 +122,7 @@
   &Body {
     height: 390px;
 
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       height: 340px;
     }
   }

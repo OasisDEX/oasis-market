@@ -1,25 +1,26 @@
 @import "../Mixins";
 @import "../Variables";
 
+$input-border: $element-border;
+
 .inputGroup {
   display: flex;
-  background-color: $grey-darkest;
 
   & > * {
-    border-top: 1px solid $grey-light;
-    border-bottom: 1px solid $grey-light;
+    border-top: 1px solid $input-border;
+    border-bottom: 1px solid $input-border;
   }
 
   & > *:first-child {
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
-    border-left: 1px solid $grey-light;
+    border-left: 1px solid $input-border;
   }
 
   & > *:last-child {
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
-    border-right: 1px solid $grey-light;
+    border-right: 1px solid $input-border;
   }
 }
 
@@ -29,6 +30,10 @@
   justify-content: center;
   padding: 5px 20px;
   font-size: 14px;
+
+  &[disabled] {
+    background-color: rgb(235, 235, 228);
+  }
 }
 
 // ----------- sizes
@@ -50,14 +55,14 @@
 }
 
 .grey {
-  border-color: $grey-light;
+  border-color: $input-border;
 }
 
-.red {
+.danger {
   border-color: $red;
 }
 
 .disabled {
-  border-color: $disabledBorderColor;
-  color: $disabledColor;
+  border-color: $disabled-border-color;
+  color: $disabled;
 }

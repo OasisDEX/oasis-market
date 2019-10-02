@@ -3,15 +3,14 @@
 @import "./Buttons.mixins";
 
 .button {
-  @include fontMontserratMedium;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: transparent;
   border: 1px solid transparent;
-  border-radius: $border-radius/2;
+  border-radius: $border-radius;
   cursor: pointer;
-  font-size: 12px;
-  text-transform: uppercase;
-  padding: 5px 0.833em;
-  letter-spacing: .8px;
+  text-transform: capitalize;
 
   &:hover {
     cursor: pointer;
@@ -21,13 +20,6 @@
   &:hover.disabled {
     cursor: default;
   }
-
-  &[disabled],
-  &.disabled {
-    border-color: $button-border-disabled;
-    background: transparent;
-    font-weight: 500;
-  }
 }
 
 .buttonGroup {
@@ -36,113 +28,157 @@
     border-bottom-left-radius: 0;
     margin-left: -1px;
   }
+
   > .button:not(:last-child) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
 }
+
 // --------------- color -----------
 
-@mixin button($map) {
-
-  color: map-get($map, color);
-  border-color: map-get($map, border-color);
-  background-color: map-get($map, bg);
-
-  &:hover:enabled:not(.disabled),
-  &:focus:enabled:not(.disabled),
-  &:active:enabled:not(.disabled) {
-    color: map-get($map, color-hover);
-    background-color: map-get($map, bg-hover);
-    border-color: map-get($map, border-color-hover);
-  }
-}
-
-
-.grey {
-  @include button((
-          color: $font-color-base,
-          bg: $grey-darkest,
-          border-color: $grey-light,
-          color-hover: $font-color-base,
-    border-color-hover: lighten($button-border-hover, 2%),
-  ));
-}
-
-.whiteOutlined {
-  font-weight: 600; //semibold
+.primaryOutlined {
   opacity: .99;
 
   @include button((
-          color: $font-color-base,
-          bg: $grey-darkest,
-          border-color: white,
-          color-hover: $font-color-base,
-          border-color-hover: white,
-          bg-hover: lighten($grey-light, 5%)
+    color: $green,
+    bg: transparent,
+    border-color: $green,
+
+    color-disabled: $lime-green,
+    border-color-disabled: $lime-green,
+
+    bg-hover: $light-grayish-cyan,
+
+    bg-active: $very-soft-cyan,
   ));
 }
 
-.green {
-  font-weight: 600;
+.secondaryOutlined {
+
+  @include button((
+    color: $desaturated-dark-blue,
+    bg: transparent,
+    border-color: $grayish-blue,
+
+    color-disabled: $grayish-blue,
+    border-color-disabled: $grayish-blue,
+
+    bg-hover: $light-grayish-blue,
+
+    bg-active: $another-light-grayish-blue,
+  ));
+}
+
+.dangerOutlined {
   opacity: .99;
+
   @include button((
-          color: $font-color-base,
-          bg: $green,
-          border-color: $green,
-          color-hover: $font-color-base,
-          border-color-hover: darken($green, 5%),
-          bg-hover: darken($green, 5%)
+    color: $bright-red,
+    bg: transparent,
+    border-color: $bright-red,
+
+    color-disabled: $very-soft-red,
+    border-color-disabled: $very-soft-red,
+
+    bg-hover: $light-grayish-red,
+    border-color-hover: $bright-red,
+
+    bg-active: $another-light-grayish-red,
   ));
 }
 
+// Used for Grouped Buttons
+.greyOutlined {
+  font-weight: 500;
+  @include button((
+    color: $dark-grayish-blue,
+    bg: transparent,
+    border-color: $another-light-grayish-blue-3,
 
-.red {
-  font-weight: 600;
+    bg-hover: $light-grayish-blue,
+
+    bg-active: $another-light-grayish-blue,
+  ));
+}
+
+.primary {
   opacity: .99;
-
-  @include button((
-          color: $font-color-base,
-          bg: $red,
-          border-color: $red,
-          color-hover: $font-color-base,
-          border-color-hover: darken($red, 5%),
-          bg-hover: darken($red, 5%)
-  ));
-}
-
-
-.white {
-  @include button((
-    color: $very-dark-greyish-blue,
-    bg: $whitish,
-    border-color: $white,
-    color-hover: #000,
-    border-color-hover: #ddd,
-    bg-hover: $white
-  ));
-  font-weight: 600; //semibold
-}
-
-.greyWhite{
-
 
   @include button((
     color: $white,
-    bg: transparent,
-    border-color: $dark-greyish-blue,
-    color-hover: #000000,
-    border-color-hover: rgba(255, 255, 255, 0.90),
-    bg-hover: rgba(255, 255, 255, 0.90)
-  ))
+    bg: $green,
+    border-color: $green,
+
+    bg-disabled: $very-soft-cyan,
+    border-color-disabled: $very-soft-cyan,
+
+    bg-hover: $strong-cyan,
+    border-color-hover: $strong-cyan,
+
+    bg-active: $dark-cyan,
+    border-color-active: $dark-cyan,
+  ));
+}
+
+.secondary {
+  @include button((
+    color: $desaturated-dark-blue,
+    bg: $light-grayish-blue,
+    border-color: $light-grayish-blue,
+
+    color-disabled: $desaturated-dark-blue,
+    bg-disabled: $light-grayish-blue,
+    border-color-disabled: $light-grayish-blue,
+
+    bg-hover: $another-light-grayish-blue,
+    border-color-hover: $another-light-grayish-blue,
+
+    color-active: $very-dark-desaturated-blue,
+    bg-active: $another-light-grayish-blue,
+    border-color-active: $another-light-grayish-blue
+  ));
+}
+
+
+.danger {
+  opacity: .99;
+
+  @include button((
+    color: white,
+    bg: $bright-red,
+    border-color: $bright-red,
+
+    bg-disabled: $very-soft-red,
+    border-color-disabled: $very-soft-red,
+
+    bg-hover: $vivid-red,
+    border-color-hover: $vivid-red,
+
+    bg-active: $strong-red,
+    border-color-active: $strong-red,
+  ));
 }
 
 // ----- size ------
-@include formInputSizes();
+.xs {
+  height: 22px;
+}
+
+.sm {
+  height: 30px;
+}
+
+.md {
+  height: 38px;
+}
+
+.lg {
+  height: 48px;
+}
 
 .unsized {
-  @include formInputSizes('unsized');
-  padding: 0;
+  height: auto;
 }
 
 .full {
@@ -171,27 +207,21 @@
   }
 }
 
-.close {
-  $size: 16px;
-  width: $size;
-  height: $size;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 14px;
-  color: $grey-dark;
-  line-height: 0;
-
-  background: white;
+.closeButton {
+  width: 1.75rem;
+  height: 1.75rem;
   border-radius: 100%;
-}
+  padding: 5px;
 
-.darkRed {
-  @include button((
-    color: $errors,
-    border-color: $brown-reddish,
-    border-color-hover: darken($brown-reddish-highlight, 5%),
-  ));
+  &.dangerOutlined {
+    svg {
+      fill: $errors;
+    }
+  }
+
+  &.secondaryOutlined {
+    svg {
+      fill: $desaturated-dark-blue;
+    }
+  }
 }

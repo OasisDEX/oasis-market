@@ -6,12 +6,10 @@
   $padding-horizontal: 20px;
   $padding-right-extra: 6px;
 
-  @include fontMontserratMedium;
   border: none;
   background-color: transparent;
   color: $font-color-base;
   font-size: 14px;
-  letter-spacing: 0.5px;
   line-height: 1;
   padding: $padding-vertical $padding-horizontal+$padding-right-extra $padding-vertical $padding-horizontal;
   text-transform: uppercase;
@@ -22,19 +20,19 @@
   }
 
   &:disabled {
-    color: $grey-lightest;
+    color: $disabled;
   }
 
   -moz-appearance: none;
   -webkit-appearance: none;
 
   option {
-    background-color: $grey-dark;
+    background-color: $background-on-hover;
   }
 }
 
 .wrapperBordered {
-  border: 1px solid $grey-light;
+  border: 1px solid $element-border;
   border-radius: 2px;
 }
 
@@ -52,7 +50,7 @@
   // .wrapper
   background-image: url("./icon_arrow_down_grey.svg");
   // .wrapperBordered
-  border-color: $grey-dark;
+  border-color: $disabled-border-color;
 
 }
 

@@ -5,7 +5,7 @@ import * as styles from './InputGroup.scss';
 
 type InputGroupProps =
   React.HTMLAttributes<HTMLDivElement> &
-  { color?: 'red' | 'grey',
+  { color?: 'danger' | 'grey',
     sizer?: 'sm' | 'md' | 'lg' | 'unsized',
     disabled?: boolean,
     hasError?: boolean };
@@ -16,7 +16,7 @@ export const InputGroup = (props: InputGroupProps) => {
     <div className={classnames(styles.inputGroup,
                                className,
                                styles[color || 'grey'], {
-                                 [styles.red]: hasError,
+                                 [styles.danger]: hasError,
                                  [styles.disabled]: disabled,
                                  [styles[sizer || 'unsized']]: sizer !== undefined && sizer,
                                }

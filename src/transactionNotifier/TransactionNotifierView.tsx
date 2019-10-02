@@ -7,8 +7,7 @@ import {
   TxState,
   TxStatus
 } from '../blockchain/transactions';
-import crossSvg from '../icons/cross.svg';
-import { SvgImage } from '../utils/icons/utils';
+import { CloseButton } from '../utils/forms/Buttons';
 import { Timer } from '../utils/Timer';
 import { UnreachableCaseError } from '../utils/UnreachableCaseError';
 import * as styles from './TransactionNotifier.scss';
@@ -72,13 +71,9 @@ export const Notification: React.SFC<NotificationProps> = ({
       )}
       <div className={styles.title}>{description}</div>
       <div className={styles.description}>{describeTxStatus(transaction, etherscan)}</div>
-      <a tabIndex={0}
-         onClick={onDismiss}
-         className={styles.cross}
-         data-test-id="notification-cross"
-      >
-        <SvgImage image={crossSvg} />
-      </a>
+      <CloseButton onClick={onDismiss}
+                   className={styles.cross}
+                   data-test-id="notification-cross"/>
     </div>
   );
 };

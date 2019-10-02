@@ -53,7 +53,6 @@ import { pluginDevModeHelpers } from './instantDevModeHelpers';
 import {
   estimateTradePayWithERC20,
   estimateTradePayWithETH,
-  estimateTradeReadonly,
   tradePayWithERC20,
   tradePayWithETH,
 } from './instantTransactions';
@@ -465,10 +464,6 @@ function applyChange(state: InstantFormState, change: InstantFormChange): Instan
       return {
         ...state,
         context: change.context,
-        slippageLimit: getSlippageLimit(
-          change.context,
-          getQuote(weth2eth(state.sellToken), weth2eth(state.buyToken))
-        )
       };
     case FormChangeKind.userChange:
       return {
@@ -576,35 +571,35 @@ function getBestPrice(
   );
 }
 
-function estimateGas(calls$_: Calls$, readCalls$: ReadCalls$, state: InstantFormState) {
-  return state.user && state.user.account ?
-    doGasEstimation(calls$_, readCalls$, state, gasEstimation) :
-    doGasEstimation(undefined, readCalls$, state, (_calls, readCalls, state_) =>
-      state.tradeEvaluationStatus !== TradeEvaluationStatus.calculated
-      || !state.buyAmount
-      || !state.sellAmount
-        ? undefined
-        : estimateTradeReadonly(readCalls, state_)
-    );
+function estimateGas(calls$_: Calls$, state: InstantFormState) {
+  if (state.tradeEvaluationStatus !== TradeEvaluationStatus.calculated
+  || !state.buyAmount
+  || !state.sellAmount) {
+    return of(state);
+  }
+  return state.user &&
+    state.user.account &&
+    !state.message &&
+    (state.sellToken === 'ETH' ||
+      (!!state.proxyAddress && state.allowances && state.allowances[state.sellToken])
+    ) ?
+      doGasEstimation(calls$_, undefined, state, gasEstimation) :
+      of({ ...state, gasEstimationStatus: GasEstimationStatus.unknown });
 }
 
 function gasEstimation(
   calls: Calls,
-  readCalls: ReadCalls,
+  _readCalls: ReadCalls | undefined,
   state: InstantFormState
 ): Observable<number> | undefined {
-  return state.tradeEvaluationStatus !== TradeEvaluationStatus.calculated
-  || !state.buyAmount
-  || !state.sellAmount
-    ? undefined
-    : calls.proxyAddress().pipe(
-      switchMap(proxyAddress => {
-        const sell = state.sellToken === 'ETH'
-          ? estimateTradePayWithETH
-          : estimateTradePayWithERC20;
-        return sell(calls, readCalls, proxyAddress, state);
-      })
-    );
+  return calls.proxyAddress().pipe(
+    switchMap(proxyAddress => {
+      const sell = state.sellToken === 'ETH'
+        ? estimateTradePayWithETH
+        : estimateTradePayWithERC20;
+      return sell(calls, proxyAddress, state);
+    })
+  );
 }
 
 function evaluateTrade(
@@ -1081,7 +1076,10 @@ function toContextChange(context$: Observable<NetworkConfig>): Observable<Contex
 function isReadyToProceed(state: InstantFormState): InstantFormState {
   return {
     ...state,
-    readyToProceed: !state.message && state.gasEstimationStatus === GasEstimationStatus.calculated
+    readyToProceed: !state.message && (
+      state.gasEstimationStatus === GasEstimationStatus.calculated ||
+      state.gasEstimationStatus === GasEstimationStatus.unknown
+    ),
   };
 }
 
@@ -1174,7 +1172,7 @@ export function createFormController$(
       mergeTradeEvaluation
     ),
     map(validate),
-    switchMap(curry(estimateGas)(params.calls$, params.readCalls$)),
+    switchMap(curry(estimateGas)(params.calls$)),
     map(calculatePriceAndImpact),
     map(isReadyToProceed),
     scan(freezeIfInProgress),

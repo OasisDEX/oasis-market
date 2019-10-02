@@ -18,23 +18,23 @@
 
 // chart colors
 .sellChart {
-  fill: $red;
-  background-color: $red;
+  fill: $soft-red-2;
+  background-color: $soft-red-2;
 }
 
 .sellChartDark {
-  fill: $red-dark;
-  background-color: $red-dark;
+  fill: $orange;
+  background-color: $orange;
 }
 
 .buyChart {
-  fill: $green;
-  background-color: $green;
+  fill: $strong-cyan-2;
+  background-color: $strong-cyan-2;
 }
 
 .buyChartDark {
-  fill: $green-dark;
-  background-color: $green-dark;
+  fill: $green;
+  background-color: $green;
 }
 
 .hidden {
@@ -44,34 +44,35 @@
 // Axis main label class is uased as equivalent of
 // :global(.tick)
 .axisMainLabel {
-  @include fontLatoBold;
+  font-weight: 700;
+  color: $grey-lightest;
 }
 
 .axisLineMain {
-  stroke: #636369;
+  stroke: $another-light-grayish-blue-3;
   stroke-width: 2px;
 }
 
 .axisLineAdditional {
-  stroke: #444;
+  stroke: $another-light-grayish-blue-3;
   stroke-width: 1px;
 }
 
 .axisYLineAdditional {
-  stroke: #444;
+  stroke: $grayish-blue;
   stroke-width: 0.5;
 }
 
 .axisYTokenLabel {
-  @include fontMontserratSemibold;
+  font-weight: 600;
   color: $grey-lightest;
   font-size: 10px;
 }
 
 // info box styles
 .infoBox {
-  background-color: $grey-darkest;
-  border: 1px solid $red;
+  background-color: white;
+  border: 1px solid $orange;
   display: table;
   font-size: 10px;
   padding: 8px;
@@ -79,13 +80,13 @@
 }
 
 .infoBoxRed {
-  border-color: #D55D4C;
-  stroke: #D55D4C;
+  border-color: $orange;
+  stroke: $orange
 }
 
 .infoBoxGreen {
-  border-color: #1F9E71;
-  stroke: #1F9E71;
+  border-color: $green;
+  stroke: $green;
 }
 
 .sellText {
@@ -93,7 +94,7 @@
 }
 
 .buyText {
-  color: $green;
+  color: $strong-cyan-2;
 }
 
 .infoSummary {
@@ -124,7 +125,9 @@
 
 .smallLegend {
   align-items: center;
-  background-color: $grey-darkest;
+  background-color: white;
+  border: 1px solid $grayish-blue;
+  border-radius: 2px;
   display: inline-flex;
   justify-content: flex-end;
   font-size: 10px;
@@ -137,13 +140,13 @@
 }
 
 .dotSell {
-  fill: #F06856;
-  stroke-width: 1;
-  stroke: white;
+  fill: white;
+  stroke-width: 1.5;
+  stroke: $orange;
 }
 
 .dotBuy {
-  fill: $green;
-  stroke-width: 1;
-  stroke: white;
+  fill: white;
+  stroke-width: 1.5;
+  stroke: $green
 }

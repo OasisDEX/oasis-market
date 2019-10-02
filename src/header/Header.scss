@@ -68,9 +68,6 @@ $header-media-breakpoint: 800px;
   .item + .item {
     margin-left: -1px;
 
-    &:hover {
-
-    }
     .navLink {
       border-left-color: transparent;
     }
@@ -99,21 +96,20 @@ $header-media-breakpoint: 800px;
 
   height: 40px;
 
-  border: 1px solid rgba($white, 0.1);
-  color: $white;
+  border: 1px solid $element-border;
+  background: $white;
   border-radius: 0;
 }
 
 .navLink {
   @extend .navElement;
-  border-color: $darker-greyish-blue;
   text-decoration: none;
   width: 108px;
-  color: $grey-lightest;
+  color: $desaturated-dark-blue;
 
   &:hover {
     background-clip: padding-box;
-    background-color: rgba($white, 0.1);
+    background-color: $background-on-hover;
     cursor: pointer;
   }
 
@@ -127,18 +123,28 @@ $header-media-breakpoint: 800px;
   &:hover {
     z-index: 2;
     color: white;
-    border: 1px solid $lighter-dark-gray-blue !important;
-    background: initial;
+  }
+
+  & {
+    border: 1px solid $green ;
+    background: $green;
+  }
+
+  &:hover {
+    border: 1px solid darken($green, 5%);
+    background: darken($green, 5%);
   }
 }
 
 .account {
+  color: $desaturated-dark-blue;
+  font-size: 14px;
   width: 196px;
   border-radius: $border-radius;
-  margin-right: 0px;
+  margin-right: 0;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: $background-on-hover;
     cursor: pointer;
   }
 
@@ -149,7 +155,7 @@ $header-media-breakpoint: 800px;
 
   & span, & .arrowDown {
     @include media-breakpoint-down($header-media-breakpoint) {
-      display: none
+      display: none !important;
     }
   }
 }
@@ -175,19 +181,7 @@ $header-media-breakpoint: 800px;
   width: 196px;
   height: 38px;
   font-size: 16px !important;
-  text-transform: capitalize;
-  letter-spacing: 0.8px;
-
-  border-radius: 4px;
-
-  @include button((
-    color: #263238,
-    bg: $white,
-    border-color: $white,
-    color-hover: #263238,
-    border-color-hover: $whitish,
-    bg-hover: $whitish
-  ));
+  background: white;
 
   @include media-breakpoint-down($header-media-breakpoint) {
     width: 32px;
@@ -216,8 +210,8 @@ $header-media-breakpoint: 800px;
 }
 
 .networkIndicator.main {
-  background-color: $lime-green;
-  border: 1px solid $lime-green;
+  background-color: $green;
+  border: 1px solid $green;
 }
 
 .arrowDown {
@@ -227,11 +221,15 @@ $header-media-breakpoint: 800px;
   display: inherit;
 
   &.dark svg path {
-    fill: #263238;
+    fill: $very-dark-grayish-blue;
+  }
+
+  &.mild svg path {
+    fill: $grayish-blue;
   }
 
   &.light svg path {
-    fill: #FFFFFF;
+    fill: $white;
   }
 }
 
