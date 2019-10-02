@@ -5,7 +5,8 @@ export const calculateTradePrice = (
   sellToken: string,
   sellAmount: BigNumber,
   buyToken: string,
-  buyAmount: BigNumber
+  buyAmount: BigNumber,
+  formatter ?: (amount: BigNumber, token:string) => string
 ) => {
   return (
     sellToken.toLowerCase() === 'dai'
@@ -13,12 +14,16 @@ export const calculateTradePrice = (
   )
     ?
   {
-    price: new BigNumber(formatPrice(sellAmount.div(buyAmount), sellToken)),
+    price: new BigNumber(formatter
+      ? formatter(sellAmount.div(buyAmount), sellToken)
+      : formatPrice(sellAmount.div(buyAmount), sellToken)),
     quotation: `${buyToken}/${sellToken}`
   }
     :
   {
-    price: new BigNumber(formatPrice(buyAmount.div(sellAmount), buyToken)),
+    price: new BigNumber(formatter
+        ? formatter(buyAmount.div(sellAmount), buyToken)
+        : formatPrice(buyAmount.div(sellAmount), buyToken)),
     quotation: `${sellToken}/${buyToken}`
   };
 };

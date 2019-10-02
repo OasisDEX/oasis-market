@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import * as React from 'react';
 import { amountFromWei } from '../../blockchain/utils';
 import { OfferType } from '../../exchange/orderbook/orderbook';
+import { formatPriceInstant } from '../../utils/formatters/format';
 import { calculateTradePrice } from '../../utils/price';
 import { CurrentPrice } from '../CurrentPrice';
 import { TradeSummary } from '../details/TradeSummary';
@@ -24,7 +25,7 @@ export class TradeSummaryView extends React.Component<InstantFormState> {
     let calcPrice = new BigNumber(0);
     let quotation = '';
     if (sold && bought) {
-      const quote = calculateTradePrice(sellToken, sold, buyToken, bought);
+      const quote = calculateTradePrice(sellToken, sold, buyToken, bought, formatPriceInstant);
       calcPrice = quote.price;
       quotation = quote.quotation;
     }
