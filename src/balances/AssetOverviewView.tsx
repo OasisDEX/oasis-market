@@ -29,6 +29,8 @@ export interface AssetsOverviewActionProps  {
   wrapUnwrapForm$: (formKind: WrapUnwrapFormKind) => Observable<WrapUnwrapFormState>;
   approve: (token: string) => Observable<TxState>;
   disapprove: (token: string) => Observable<TxState>;
+  swapDAI: () => any;
+  swapMDAI: () => any;
 }
 
 export type AssetsOverviewExtraProps =
@@ -63,6 +65,7 @@ export class AssetsOverviewViewInternal
 {
 
   public render() {
+    console.log(this.props);
     return (
       <Table className={styles.table} align="left">
         <thead>
@@ -157,6 +160,50 @@ export class AssetsOverviewViewInternal
               >
                 Unwrap
               </Button>
+              }
+              {
+                combinedBalance.name === 'DAI' &&
+                <Button
+                  data-test-id="open-wrap-form"
+                  color="secondary"
+                  size="xs"
+                  className={styles.wrapUnwrapBtn}
+                  block={true}
+                  onClick={() => {
+                    mixpanel.track('btn-click', {
+                      id: 'wrap-eth',
+                      product: 'oasis-trade',
+                      page: 'Account',
+                      section: 'asset-overview'
+                    });
+                    this.props.swapDAI();
+                  }}
+                  disabled={this.props.etherBalance.eq(zero)}
+                >
+                  Upgrade
+                </Button>
+              }
+              {
+                combinedBalance.name === 'MDAI' &&
+                <Button
+                  data-test-id="open-wrap-form"
+                  color="secondary"
+                  size="xs"
+                  className={styles.wrapUnwrapBtn}
+                  block={true}
+                  onClick={() => {
+                    mixpanel.track('btn-click', {
+                      id: 'wrap-eth',
+                      product: 'oasis-trade',
+                      page: 'Account',
+                      section: 'asset-overview'
+                    });
+                    this.props.swapMDAI();
+                  }}
+                  disabled={this.props.etherBalance.eq(zero)}
+                >
+                  Degrade
+                </Button>
               }
             </td>
             <td data-test-id={`${combinedBalance.name}-balance`}

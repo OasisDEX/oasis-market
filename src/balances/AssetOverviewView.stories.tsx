@@ -33,6 +33,8 @@ const defaultBalancesProps = {
   open: () => null,
   approve: (_token: string) => of({} as TxState),
   disapprove: (_token: string) => of({} as TxState),
+  swapDAI: () => false,
+  swapMDAI: () => false,
   etherBalance: zero,
   etherValueInUsd: zero,
   wrapUnwrapForm$: () => of({} as WrapUnwrapFormState),
