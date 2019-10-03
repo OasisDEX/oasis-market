@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash';
 import { curry } from 'ramda';
 import * as React from 'react';
-import { BehaviorSubject, combineLatest, interval, Observable } from 'rxjs';
+import { BehaviorSubject, bindNodeCallback, combineLatest, interval, Observable } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
@@ -9,7 +9,7 @@ import {
   flatMap,
   map, mergeMap,
   shareReplay,
-  switchMap
+  switchMap, take
 } from 'rxjs/operators';
 import {
   AssetOverviewView,
@@ -48,9 +48,14 @@ import {
   memoizeTradingPair,
 } from './exchange/tradingPair/tradingPair';
 
+import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
 import { of } from 'rxjs/index';
+import * as dsProxy from './blockchain/abi/ds-proxy.abi.json';
+import * as migrationProxyActions from './blockchain/abi/migration-proxy-actions.abi.json';
 import { transactions$, TxState } from './blockchain/transactions';
+import { amountToWei } from './blockchain/utils';
+import { web3 } from './blockchain/web3';
 import {
   createAllTrades$,
   createTradesBrowser$,
@@ -140,6 +145,36 @@ export function setupAppContext() {
   const approve = createWalletApprove(calls$, gasPrice$);
   const disapprove = createWalletDisapprove(calls$, gasPrice$);
 
+  const swapDAI = () => {
+    const migrationProxyActionsAddress = '0x1abd563a0156e3983bbb8e0a37d61e5b0ce4339d';
+    const migrationAddress = '0xd18abc7ab304952ec23dd7495fb3e7d0ee571c2d';
+    combineLatest(proxyAddress$, account$).pipe(
+      switchMap(([accountAddress, proxyAddress]) => {
+        console.log(accountAddress, proxyAddress);
+        return bindNodeCallback(
+          web3.eth.contract(dsProxy as any).at(proxyAddress!).execute['address,bytes'](
+            migrationProxyActionsAddress, // migration proxy actions addresss
+            web3.eth.contract(migrationProxyActions as any)
+              .at(migrationProxyActionsAddress!)
+              .swapSaiToDai
+              .getData(
+                migrationAddress,
+                amountToWei(new BigNumber(10), 'DAI').toFixed(0)
+              )
+          ).sendTransaction
+        )(
+          {
+            from: accountAddress, // my address
+            gas: 50000000
+          }
+        );
+      })
+    ).subscribe();
+
+    return false;
+  };
+  const swapMDAI = () => false;
+
   const AssetOverviewViewRxTx =
     inject(
       withModal<AssetsOverviewActionProps, AssetsOverviewExtraProps>(
@@ -148,7 +183,7 @@ export function setupAppContext() {
           authorizablify(() => loadablifyLight(combinedBalances$))
         )
       ),
-      { approve, disapprove, wrapUnwrapForm$ }
+      { approve, disapprove, wrapUnwrapForm$, swapDAI, swapMDAI }
     );
 
   const loadOrderbook = memoizeTradingPair(curry(loadOrderbook$)(context$, onEveryBlock$));
