@@ -9,7 +9,7 @@ import {
   last,
   map,
   scan,
-  switchMap
+  switchMap, take
 } from 'rxjs/operators';
 
 import { shareReplay } from 'rxjs/internal/operators';
@@ -289,4 +289,22 @@ export function createWalletDisapprove(calls$: Calls$, gasPrice$: GasPrice$) {
     r.subscribe();
     return r;
   };
+}
+
+export function createSaiSwap(calls$: Calls$, proxyAddress$: Observable<string>) {
+  return (amount: BigNumber) => combineLatest(calls$, proxyAddress$).pipe(
+    take(1),
+    switchMap(([calls, proxyAddress]) => {
+      return calls.swapSaiToDai({ proxyAddress, amount });
+    })
+  ).subscribe();
+}
+
+export function createDaiSwap(calls$: Calls$, proxyAddress$: Observable<string>) {
+  return (amount: BigNumber) => combineLatest(calls$, proxyAddress$).pipe(
+    take(1),
+    switchMap(([calls, proxyAddress]) => {
+      return calls.swapDaiToSai({ proxyAddress, amount });
+    })
+  ).subscribe();
 }

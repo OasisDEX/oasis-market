@@ -20,6 +20,7 @@ import {
   tradePayWithETHNoProxy, tradePayWithETHWithProxy
 } from './instant';
 import { cancelOffer, offerMake, offerMakeDirect } from './offerMake';
+import { swapDaiToSai, swapSaiToDai } from './swapCalls';
 import { unwrap, wrap } from './wrapUnwrapCalls';
 
 function calls([context, account]: [NetworkConfig, string]) {
@@ -52,6 +53,8 @@ function calls([context, account]: [NetworkConfig, string]) {
     approveProxy: sendTransaction(approveProxy),
     approveProxyEstimateGas: estimateGas(approveProxy),
     disapproveProxy: sendTransaction(disapproveProxy),
+    swapSaiToDai : sendTransaction(swapSaiToDai),
+    swapDaiToSai : sendTransaction(swapDaiToSai),
     setOwner: sendTransaction(setOwner),
   };
 }

@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import * as React from 'react';
 import { Observable } from 'rxjs/internal/Observable';
 
+import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
 import { tokens } from '../blockchain/config';
 import { TxState } from '../blockchain/transactions';
@@ -29,8 +30,8 @@ export interface AssetsOverviewActionProps  {
   wrapUnwrapForm$: (formKind: WrapUnwrapFormKind) => Observable<WrapUnwrapFormState>;
   approve: (token: string) => Observable<TxState>;
   disapprove: (token: string) => Observable<TxState>;
-  swapDAI: () => any;
-  swapMDAI: () => any;
+  swapSai: (amount: BigNumber) => any;
+  swapDai: (amount: BigNumber) => any;
 }
 
 export type AssetsOverviewExtraProps =
@@ -65,7 +66,6 @@ export class AssetsOverviewViewInternal
 {
 
   public render() {
-    console.log(this.props);
     return (
       <Table className={styles.table} align="left">
         <thead>
@@ -176,11 +176,11 @@ export class AssetsOverviewViewInternal
                       page: 'Account',
                       section: 'asset-overview'
                     });
-                    this.props.swapDAI();
+                    this.props.swapSai(new BigNumber(1));
                   }}
                   disabled={this.props.etherBalance.eq(zero)}
                 >
-                  Upgrade
+                  Swap DAI
                 </Button>
               }
               {
@@ -198,11 +198,11 @@ export class AssetsOverviewViewInternal
                       page: 'Account',
                       section: 'asset-overview'
                     });
-                    this.props.swapMDAI();
+                    this.props.swapDai(new BigNumber(1));
                   }}
                   disabled={this.props.etherBalance.eq(zero)}
                 >
-                  Degrade
+                  Swap MDAI
                 </Button>
               }
             </td>
