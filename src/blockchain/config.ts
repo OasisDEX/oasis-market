@@ -223,6 +223,12 @@ const protoMain = {
   get instantProxyCreationAndExecute() {
     return load(proxyCreationAndExecute, '0x793ebbe21607e4f04788f89c7a9b97320773ec59');
   },
+  get migration() {
+    return '';
+  },
+  get migrationProxyActions() {
+    return '';
+  },
   oasisDataService: {
     url: 'https://cache.eth2dai.com/api/v1'
   },
@@ -277,6 +283,12 @@ const kovan: NetworkConfig = {
   get instantProxyCreationAndExecute() {
     return load(proxyCreationAndExecute, '0xee419971e63734fed782cfe49110b1544ae8a773');
   },
+  get migration() {
+    return '0xd18abc7ab304952ec23dd7495fb3e7d0ee571c2d';
+  },
+  get migrationProxyActions() {
+    return '0x211d3beb0b077a1679e6bd83ecab48dd187ec99d';
+  },
   oasisDataService: {
     url: 'https://kovan-cache.eth2dai.com/api/v1'
   },
@@ -327,6 +339,12 @@ const localnet: NetworkConfig =   {
   },
   get instantProxyCreationAndExecute() {
     return load(proxyCreationAndExecute, '0x947308140e877E8EeBcCED93B522407A24278c6A');
+  },
+  get migration() {
+    return '';
+  },
+  get migrationProxyActions() {
+    return '';
   },
   oasisDataService: {
     url: 'http://localhost:3001/v1'
