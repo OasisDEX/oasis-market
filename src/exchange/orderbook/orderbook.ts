@@ -28,6 +28,7 @@ export interface Orderbook {
   blockNumber: number;
   sell: Offer[];
   spread?: BigNumber;
+  spreadPercentage?: BigNumber;
   buy: Offer[];
 }
 
@@ -156,21 +157,29 @@ export function loadOrderbook$(
     })),
     map(({ blockNumber, buy, sell }) => {
       // console.log('corrected orderbook length for block:', blockNumber, buy.length, sell.length);
-      const spread =
-        !isEmpty(sell) && !isEmpty(buy)
-          ? sell[0].price.minus(buy[0].price)
-          : undefined;
 
-      return {
+      return addSpread({
         tradingPair,
         blockNumber,
         buy,
-        spread,
         sell
-      };
+      });
     }),
     shareReplay(1),
   );
+}
+
+export function addSpread({ buy, sell, ...rest }: Orderbook) {
+  return {
+    buy,
+    sell,
+    ...(!isEmpty(sell) && !isEmpty(buy) ? {
+      spread: sell[0].price.minus(buy[0].price),
+      spreadPercentage: sell[0].price.minus(buy[0].price)
+        .div(sell[0].price.plus(buy[0].price).div(2))
+    } : {}),
+    ...rest
+  };
 }
 
 const DUST_ORDER_THRESHOLD = '0.000000000001'; // 10^15

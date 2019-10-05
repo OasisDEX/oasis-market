@@ -40,6 +40,8 @@ const defParams = {
   user$: of(defaultUser),
 };
 
+console.log('emptyOrderBook:', emptyOrderBook);
+
 const controllerWithFakeOrderBook = (buys: any = [], sells: any = []) => {
   const orderbook = createFakeOrderbook(buys, sells);
   orderbook.buy.forEach((v, i) => v.offerId = new BigNumber(i + 1));
