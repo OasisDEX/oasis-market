@@ -170,15 +170,16 @@ export function loadOrderbook$(
 }
 
 export function addSpread({ buy, sell, ...rest }: Orderbook) {
+  const spread = !isEmpty(sell) && !isEmpty(buy) ? {
+    spread: sell[0].price.minus(buy[0].price),
+    spreadPercentage: sell[0].price.minus(buy[0].price)
+      .div(sell[0].price.plus(buy[0].price).div(2))
+  } : {};
   return {
     buy,
     sell,
-    ...(!isEmpty(sell) && !isEmpty(buy) ? {
-      spread: sell[0].price.minus(buy[0].price),
-      spreadPercentage: sell[0].price.minus(buy[0].price)
-        .div(sell[0].price.plus(buy[0].price).div(2))
-    } : {}),
-    ...rest
+    ...rest,
+    ...spread,
   };
 }
 
