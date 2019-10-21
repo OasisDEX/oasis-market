@@ -11,6 +11,8 @@ import { TxMetaKind } from './txMeta';
 export interface SwapData {
   proxyAddress: string;
   amount: BigNumber;
+  gas?: number;
+  gasPrice?: BigNumber;
 }
 
 const execute = (proxyAddress: string) => web3.eth.contract(dsProxy as any)
@@ -26,7 +28,7 @@ export const swapSaiToDai: TransactionDef<SwapData> = {
       .swapSaiToDai
       .getData(
         context.migration,
-        amountToWei(amount, 'DAI').toFixed(0)
+        amountToWei(amount, 'SAI').toFixed(0)
       )
   ],
   kind: TxMetaKind.swapDai,
@@ -43,7 +45,7 @@ export const swapDaiToSai: TransactionDef<SwapData> = {
       .swapDaiToSai
       .getData(
         context.migration,
-        amountToWei(amount, 'MDAI').toFixed(0)
+        amountToWei(amount, 'DAI').toFixed(0)
       )
   ],
   kind: TxMetaKind.swapSai,

@@ -74,10 +74,11 @@ export function createBalances$(
   );
 }
 
-export function createWethBalances$(
+export function  createTokenBalances$(
   context$: Observable<NetworkConfig>,
   initializedAccount$: Observable<string>,
   onEveryBlock$: Observable<number>,
+  token: string
 ) {
   return combineLatest(
     context$,
@@ -85,7 +86,7 @@ export function createWethBalances$(
     onEveryBlock$
   ).pipe(
     switchMap(([context, account]) =>
-      balance$(context, 'WETH', account)),
+      balance$(context, token, account)),
     distinctUntilChanged(isEqual)
   );
 }
