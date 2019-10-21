@@ -78,24 +78,24 @@ export const tokens = asMap('symbol', [
     iconColor: SvgImageSimple(ethCircleSvg),
   },
   {
-    symbol: 'DAI',
+    symbol: 'SAI',
     precision: 18,
     digits: 4,
     digitsInstant: 2 ,
     maxSell: '10000000',
-    name: 'Dai',
+    name: 'Sai',
     icon: SvgImageSimple(daiSvg),
     // iconInverse: SvgImageSimple(daiInverseSvg),
     iconCircle: SvgImageSimple(daiCircleSvg),
     iconColor: SvgImageSimple(daiColorSvg),
   },
   {
-    symbol: 'MDAI',
+    symbol: 'DAI',
     precision: 18,
     digits: 4,
     digitsInstant: 2,
     maxSell: '10000000',
-    name: 'MCD Dai',
+    name: 'Dai',
     icon: SvgImageSimple(daiSvg),
     // iconInverse: SvgImageSimple(daiInverseSvg),
     iconCircle: SvgImageSimple(daiCircleSvg),
@@ -205,6 +205,7 @@ const protoMain = {
   get tokens() {
     return asMap('token', [
       loadToken('WETH', eth, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+      loadToken('SAI', erc20, '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'),
       loadToken('DAI', erc20, '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'),
       loadToken('REP', erc20, '0x1985365e9f78359a9B6AD760e32412f4a445E862'),
       loadToken('ZRX', erc20, '0xe41d2489571d322189246dafa5ebde1f4699f498'),
@@ -264,8 +265,8 @@ const kovan: NetworkConfig = {
   get tokens() {
     return asMap('token', [
       loadToken('WETH', eth, '0xd0a1e359811322d97991e03f863a0c30c2cf029c'),
-      loadToken('DAI', erc20, '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'),
-      loadToken('MDAI', erc20, '0x1f9beaf12d8db1e50ea8a5ed53fb970462386aa0'),
+      loadToken('SAI', erc20, '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'),
+      loadToken('DAI', erc20, '0x1f9beaf12d8db1e50ea8a5ed53fb970462386aa0'),
       loadToken('REP', erc20, '0xc7aa227823789e363f29679f23f7e8f6d9904a9b'),
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
@@ -320,6 +321,7 @@ const localnet: NetworkConfig =   {
   get tokens() {
     return asMap('token', [
       loadToken('WETH', eth, '0x28085cefa9103d3a55fb5afccf07ed2038d31cd4'),
+      loadToken('SAI', erc20, '0xff500c51399a282f4563f2713ffcbe9e53cfb6fa'),
       loadToken('DAI', erc20, '0xff500c51399a282f4563f2713ffcbe9e53cfb6fa'),
       // loadToken('MKR', erc20, '0xe80C262f63df9376d2ce9eDd373832EDc9FCA46E'),
       // loadToken('DGD', erc20, '0x2f42E9A9BA1A8BfE0a46a7b116aD5b0D16d2B105'),

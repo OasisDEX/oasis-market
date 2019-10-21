@@ -162,6 +162,28 @@ export class AssetsOverviewViewInternal
               </Button>
               }
               {
+                combinedBalance.name === 'SAI' &&
+                <Button
+                  data-test-id="open-wrap-form"
+                  color="secondary"
+                  size="xs"
+                  className={styles.wrapUnwrapBtn}
+                  block={true}
+                  onClick={() => {
+                    mixpanel.track('btn-click', {
+                      id: 'wrap-eth',
+                      product: 'oasis-trade',
+                      page: 'Account',
+                      section: 'asset-overview'
+                    });
+                    this.wrapSai();
+                  }}
+                  disabled={this.props.etherBalance.eq(zero)}
+                >
+                  Convert to DAI
+                </Button>
+              }
+              {
                 combinedBalance.name === 'DAI' &&
                 <Button
                   data-test-id="open-wrap-form"
@@ -176,33 +198,11 @@ export class AssetsOverviewViewInternal
                       page: 'Account',
                       section: 'asset-overview'
                     });
-                    this.props.swapSai(new BigNumber(1));
+                    this.unwrapSai();
                   }}
                   disabled={this.props.etherBalance.eq(zero)}
                 >
-                  Swap DAI
-                </Button>
-              }
-              {
-                combinedBalance.name === 'MDAI' &&
-                <Button
-                  data-test-id="open-wrap-form"
-                  color="secondary"
-                  size="xs"
-                  className={styles.wrapUnwrapBtn}
-                  block={true}
-                  onClick={() => {
-                    mixpanel.track('btn-click', {
-                      id: 'wrap-eth',
-                      product: 'oasis-trade',
-                      page: 'Account',
-                      section: 'asset-overview'
-                    });
-                    this.props.swapDai(new BigNumber(1));
-                  }}
-                  disabled={this.props.etherBalance.eq(zero)}
-                >
-                  Swap MDAI
+                  Convert to SAI
                 </Button>
               }
             </td>
@@ -239,5 +239,13 @@ export class AssetsOverviewViewInternal
 
   private unwrap() {
     this.openWrapUnwrap(WrapUnwrapFormKind.unwrap);
+  }
+
+  private wrapSai() {
+    this.openWrapUnwrap(WrapUnwrapFormKind.wrapSai);
+  }
+
+  private unwrapSai() {
+    this.openWrapUnwrap(WrapUnwrapFormKind.unwrapSai);
   }
 }

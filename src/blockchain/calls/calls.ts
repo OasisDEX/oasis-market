@@ -54,7 +54,9 @@ function calls([context, account]: [NetworkConfig, string]) {
     approveProxyEstimateGas: estimateGas(approveProxy),
     disapproveProxy: sendTransaction(disapproveProxy),
     swapSaiToDai : sendTransaction(swapSaiToDai),
+    swapSaiToDaiEstimateGas: estimateGas(swapSaiToDai),
     swapDaiToSai : sendTransaction(swapDaiToSai),
+    swapDaiToSaiEstimateGas: estimateGas(swapDaiToSai),
     setOwner: sendTransaction(setOwner),
   };
 }

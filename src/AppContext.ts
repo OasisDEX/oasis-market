@@ -22,9 +22,9 @@ import {
   createBalances$,
   createCombinedBalances$, createDaiSwap,
   createDustLimits$, createProxyAllowances$, createSaiSwap,
+  createTokenBalances$,
   createWalletApprove,
   createWalletDisapprove,
-  createWethBalances$,
 } from './balances/balances';
 import { createTaxExport$ } from './balances/taxExporter';
 import { TaxExporterView } from './balances/TaxExporterView';
@@ -140,10 +140,21 @@ export function setupAppContext() {
     map(([balances, etherBalance]) => ({ ...balances, ETH: etherBalance })),
   );
 
-  const wethBalance$ = createWethBalances$(context$, initializedAccount$, onEveryBlock$);
+  const wethBalance$ = createTokenBalances$(context$, initializedAccount$, onEveryBlock$, 'WETH');
+  const saiBalance$ = createTokenBalances$(context$, initializedAccount$, onEveryBlock$, 'SAI');
+  const daiBalance$ = createTokenBalances$(context$, initializedAccount$, onEveryBlock$, 'DAI');
 
   const wrapUnwrapForm$ =
-    curry(createWrapUnwrapForm$)(gasPrice$, etherPriceUsd$, etherBalance$, wethBalance$, calls$);
+    curry(createWrapUnwrapForm$)(
+      gasPrice$,
+      etherPriceUsd$,
+      etherBalance$,
+      wethBalance$,
+      saiBalance$,
+      daiBalance$,
+      proxyAddress$,
+      calls$
+    );
 
   const approve = createWalletApprove(calls$, gasPrice$);
   const disapprove = createWalletDisapprove(calls$, gasPrice$);
