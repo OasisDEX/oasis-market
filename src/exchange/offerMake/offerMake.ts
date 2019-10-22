@@ -61,6 +61,7 @@ function formStageChange(stage: FormStage): FormStageChange {
 
 export enum MessageKind {
   noAllowance = 'noAllowance',
+  deprecatedMarket = 'deprecatedMarket',
   insufficientAmount = 'insufficientAmount',
   incredibleAmount = 'incredibleAmount',
   dustAmount = 'dustAmount',
@@ -88,7 +89,8 @@ export type Message = {
     MessageKind.slippageLimitToLow |
     MessageKind.slippageLimitNotSet |
     MessageKind.orderbookTotalExceeded |
-    MessageKind.notConnected
+    MessageKind.notConnected |
+    MessageKind.deprecatedMarket
   field: string;
   priority: number;
 };
@@ -501,6 +503,13 @@ function validate(state: OfferFormState): OfferFormState {
     if (!state.user || !state.user.account) {
       messages.push({
         kind: MessageKind.notConnected,
+        field: 'total',
+        priority: 1000,
+      });
+    }
+    if (state.quoteToken === 'SAI') {
+      messages.push({
+        kind: MessageKind.deprecatedMarket,
         field: 'total',
         priority: 1000,
       });

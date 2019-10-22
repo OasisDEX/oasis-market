@@ -237,6 +237,14 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
       );
     }
 
+    if (this.props.quoteToken === 'SAI') {
+      return (
+        <div className={styles.noResourcesInfoBox}>
+          <span>SAI markets will be deprecated</span>
+        </div>
+      );
+    }
+
     const disabled = this.props.stage === 'waitingForApproval';
     const setMaxSellDisabled = this.props.kind === OfferType.buy || disabled;
     const setMaxBuyDisabled = this.props.kind === OfferType.sell ||
@@ -617,6 +625,10 @@ function messageContent(msg: Message) {
     case MessageKind.notConnected:
       return <>
         {`Connect to create Orders`}
+      </>;
+    case MessageKind.deprecatedMarket:
+      return <>
+        {`Please use a DAI market`}
       </>;
     case MessageKind.slippageLimitToLow:
       return <>
