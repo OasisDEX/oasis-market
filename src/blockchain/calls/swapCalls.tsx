@@ -7,6 +7,7 @@ import { amountToWei } from '../utils';
 import { web3 } from '../web3';
 import { TransactionDef } from './callsHelpers';
 import { TxMetaKind } from './txMeta';
+import {FormatAmount} from "../../utils/formatters/Formatters";
 
 export interface SwapData {
   proxyAddress: string;
@@ -33,7 +34,9 @@ export const swapSaiToDai: TransactionDef<SwapData> = {
   ],
   kind: TxMetaKind.swapDai,
   options: () => ({ gas: 5000000 }),
-  description: () => <>Swapping DAI for MCD DAI</>,
+  description: ({ amount }) => <>
+    Swapping DAI <FormatAmount value={amount} token={'SAI'}/> for MCD DAI
+  </>,
 };
 
 export const swapDaiToSai: TransactionDef<SwapData> = {

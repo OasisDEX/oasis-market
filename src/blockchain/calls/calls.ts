@@ -31,6 +31,7 @@ function calls([context, account]: [NetworkConfig, string]) {
 
   return {
     cancelOffer: sendTransactionWithGasConstraints(cancelOffer),
+    cancelOffer2: sendTransaction(cancelOffer),
     offerMake: sendTransaction(offerMake),
     offerMakeDirect: sendTransaction(offerMakeDirect),
     offerMakeEstimateGas: estimateGas(offerMake),

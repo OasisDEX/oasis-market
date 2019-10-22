@@ -8,8 +8,8 @@ import {
   first,
   flatMap,
   map, mergeMap,
-  shareReplay,
-  switchMap,
+  shareReplay, startWith,
+  switchMap, tap,
 } from 'rxjs/operators';
 import {
   AssetOverviewView,
@@ -112,6 +112,8 @@ import { inject } from './utils/inject';
 import { Loadable, LoadableWithTradingPair, loadablifyLight, } from './utils/loadable';
 import { withModal } from './utils/modal';
 import { createWrapUnwrapForm$ } from './wrapUnwrap/wrapUnwrapForm';
+import {createExchangeMigration$, ExchangeMigrationStatus} from "./exchange/migration/exchangeMigration";
+import {allowances} from "./instant/views/AccountView.scss";
 
 export function setupAppContext() {
 
@@ -333,6 +335,40 @@ export function setupAppContext() {
   const TaxExporterTxRx = inject(TaxExporterView, {
     export: () => createTaxExport$(context$, initializedAccount$)
   });
+
+  const exchangeMigration$ = createExchangeMigration$(
+    initializedAccount$,
+    loadOrderbook,
+    saiBalance$,
+    createProxyAllowances$(
+      context$,
+      initializedAccount$,
+      proxyAddress$.pipe(
+        filter(address => !!address),
+      ),
+      onEveryBlock$
+    ).pipe(
+      startWith({})
+    ),
+    proxyAddress$,
+    calls$
+  );
+
+  (window as any).exchangeMigration = () => {
+    exchangeMigration$
+      .pipe(
+        tap(s => {
+          if (s.status === ExchangeMigrationStatus.ready) {
+            s.start();
+          }
+        })
+      )
+      .subscribe({
+        next: v => console.log('Migration state:', v),
+        error: err => console.log('Migration error:', err),
+        complete: () => console.log('Migration complete!')
+      });
+  };
 
   return {
     AllTradesTxRx,
