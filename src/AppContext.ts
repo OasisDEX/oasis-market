@@ -70,6 +70,10 @@ import {
   createYesterdayPrice$,
   createYesterdayPriceChange$,
 } from './exchange/exchange';
+import {
+  createExchangeMigration$,
+  ExchangeMigrationStatus
+} from './exchange/migration/exchangeMigration';
 import { createMyClosedTrades$ } from './exchange/myTrades/closedTrades';
 import {
   createMyCurrentTrades$,
@@ -112,8 +116,6 @@ import { inject } from './utils/inject';
 import { Loadable, LoadableWithTradingPair, loadablifyLight, } from './utils/loadable';
 import { withModal } from './utils/modal';
 import { createWrapUnwrapForm$ } from './wrapUnwrap/wrapUnwrapForm';
-import {createExchangeMigration$, ExchangeMigrationStatus} from "./exchange/migration/exchangeMigration";
-import {allowances} from "./instant/views/AccountView.scss";
 
 export function setupAppContext() {
 

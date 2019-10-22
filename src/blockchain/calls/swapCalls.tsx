@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import * as React from 'react';
+import { FormatAmount } from '../../utils/formatters/Formatters';
 import * as dsProxy from '../abi/ds-proxy.abi.json';
 import * as migrationProxyActions from '../abi/migration-proxy-actions.abi.json';
 import { NetworkConfig } from '../config';
@@ -7,7 +8,6 @@ import { amountToWei } from '../utils';
 import { web3 } from '../web3';
 import { TransactionDef } from './callsHelpers';
 import { TxMetaKind } from './txMeta';
-import {FormatAmount} from "../../utils/formatters/Formatters";
 
 export interface SwapData {
   proxyAddress: string;
