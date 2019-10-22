@@ -203,11 +203,11 @@ function next(
 
 function initialize(
   proxyAddress$: Observable<string | undefined>,
-  initializedAccount: string,
+  _initializedAccount: string,
   orders: Offer[],
   saiBalance: BigNumber,
-  saiAllowance: boolean,
-  daiAllowance: boolean,
+  _saiAllowance: boolean,
+  _daiAllowance: boolean,
   proxyAddress: string | undefined,
   calls: Calls
 ): Observable<ExchangeMigrationState> {
@@ -229,7 +229,7 @@ function initialize(
     { kind: ExchangeMigrationTxKind.sai2dai, amount: saiBalance }
   ];
 
-  const state = new Subject();
+  const state = new Subject<ExchangeMigrationState>();
 
   const initial: ExchangeMigrationState = {
     pending: operations,
