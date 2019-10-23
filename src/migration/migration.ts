@@ -2,12 +2,12 @@ import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
 import { combineLatest, Observable, of, Subject, throwError } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
-import { Allowances } from '../../balances/balances';
-import { Calls, Calls$ } from '../../blockchain/calls/calls';
-import { getTxHash, TxState, TxStatus } from '../../blockchain/transactions';
-import { zero } from '../../utils/zero';
-import { Offer, Orderbook } from '../orderbook/orderbook';
-import { TradingPair } from '../tradingPair/tradingPair';
+import { Allowances } from '../balances/balances';
+import { Calls, Calls$ } from '../blockchain/calls/calls';
+import { getTxHash, TxState, TxStatus } from '../blockchain/transactions';
+import { zero } from '../utils/zero';
+import { Offer, Orderbook } from '../exchange/orderbook/orderbook';
+import { TradingPair } from '../exchange/tradingPair/tradingPair';
 import { inductor } from './inductor';
 
 enum ExchangeMigrationTxKind {
@@ -72,7 +72,7 @@ interface ExchangeMigrationInitializingState {
   status: ExchangeMigrationStatus.initializing;
 }
 
-type ExchangeMigrationState =
+export type ExchangeMigrationState =
   ExchangeMigrationInitializingState
 | ExchangeMigrationReadyState
 | ExchangeMigrationInProgressState
