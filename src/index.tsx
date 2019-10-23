@@ -89,7 +89,7 @@ const root: HTMLElement = document.getElementById('root')!;
 
 if (process.env.NODE_ENV === 'production') {
   Raven.config(
-    'https://4bb7de4b582a448b9b65d164cda10013@sentry.io/1730755'
+    'https://36da3ac6c7324ffebcfb2e99529f9e08@sentry.io/1793301'
   ).install();
   Raven.context(() => ReactDOM.render(<AppTxRx/>, root));
 } else {
