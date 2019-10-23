@@ -1,10 +1,11 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
 import { combineLatest, Observable, of, Subject, throwError } from 'rxjs';
-import { first, map, startWith, switchMap } from 'rxjs/operators';
+import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import { Allowances } from '../../balances/balances';
 import { Calls, Calls$ } from '../../blockchain/calls/calls';
 import { getTxHash, TxState, TxStatus } from '../../blockchain/transactions';
+import { zero } from '../../utils/zero';
 import { Offer, Orderbook } from '../orderbook/orderbook';
 import { TradingPair } from '../tradingPair/tradingPair';
 import { inductor } from './inductor';
@@ -12,6 +13,7 @@ import { inductor } from './inductor';
 enum ExchangeMigrationTxKind {
   cancel = 'cancel',
   createProxy = 'createProxy',
+  allowance4Proxy = 'allowance4Proxy',
   sai2dai = 'sai2dai'
 }
 
@@ -24,12 +26,21 @@ interface CreateProxyOperation {
   kind: ExchangeMigrationTxKind.createProxy;
 }
 
+interface Allowance4ProxyOperation {
+  kind: ExchangeMigrationTxKind.allowance4Proxy;
+  token: string;
+}
+
 interface SAI2DAIOperation {
   kind: ExchangeMigrationTxKind.sai2dai;
   amount: BigNumber;
 }
 
-type ExchangeMigrationOperation = CancelOperation | CreateProxyOperation | SAI2DAIOperation;
+type ExchangeMigrationOperation =
+  CancelOperation |
+  CreateProxyOperation |
+  SAI2DAIOperation |
+  Allowance4ProxyOperation;
 
 type ExchangeMigrationOperationInProgress = ({
   txStatus: TxStatus;
@@ -57,10 +68,13 @@ interface ExchangeMigrationInProgressState {
   done: ExchangeMigrationOperationInProgress[];
 }
 
-type ExchangeMigrationState = {
-  status: ExchangeMigrationStatus.initializing
-} |
-  ExchangeMigrationReadyState
+interface ExchangeMigrationInitializingState {
+  status: ExchangeMigrationStatus.initializing;
+}
+
+type ExchangeMigrationState =
+  ExchangeMigrationInitializingState
+| ExchangeMigrationReadyState
 | ExchangeMigrationInProgressState
 | {
   status: ExchangeMigrationStatus.done | ExchangeMigrationStatus.fiasco;
@@ -95,33 +109,36 @@ function allowance$(allowances$: Observable<Allowances>, token: string) {
 }
 
 export function createExchangeMigration$(
-  initializedAccount$: Observable<string>,
-  loadOrderbook: (tp: TradingPair) => Observable<Orderbook>,
-  saiBalance$: Observable<BigNumber>,
-  allowances$: Observable<Allowances>,
-  proxyAddress$: Observable<string | undefined>,
-  calls$: Calls$
+  proxyAddress$: Observable<string>,
+  calls$: Calls$,
+  operations$: Observable<ExchangeMigrationOperation[]>,
 ): Observable<ExchangeMigrationState> {
-
-  const orders$ = openSAIOrders$(initializedAccount$, loadOrderbook);
-  const saiAllowance$ = allowance$(allowances$, 'SAI');
-  const daiAllowance$ = allowance$(allowances$, 'DAI');
-
   return combineLatest(
-    initializedAccount$,
-    orders$,
-    saiBalance$,
-    saiAllowance$,
-    daiAllowance$,
-    proxyAddress$,
-    calls$
+    calls$,
+    operations$
   ).pipe(
     first(),
-    // @ts-ignore
-    switchMap(args => initialize(proxyAddress$, ...args)),
+    switchMap(([calls, operations]) => {
+      const state = new Subject<ExchangeMigrationState>();
+
+      const initial: ExchangeMigrationState = {
+        pending: operations,
+        start: () => {
+          inductor(
+            initial,
+            curry(next)(proxyAddress$, calls),
+          ).subscribe(state);
+        },
+        status: ExchangeMigrationStatus.ready,
+      };
+
+      return state.pipe(
+        startWith(initial)
+      );
+    }),
     startWith({
       status: ExchangeMigrationStatus.initializing
-    })
+    } as ExchangeMigrationInitializingState)
   );
 }
 
@@ -143,18 +160,31 @@ function startTransaction(
     case ExchangeMigrationTxKind.sai2dai:
       return proxyAddress$.pipe(
         first(),
+        filter(proxyAddress => !!proxyAddress),
         switchMap(proxyAddress => {
-          if (!proxyAddress) {
-            return throwError('No proxy');
-          }
+          // if (!proxyAddress) {
+          //   return throwError('No proxy');
+          // }
           return calls.swapSaiToDai({
-            proxyAddress,
+            proxyAddress: proxyAddress!,
             amount: o.amount
           });
         })
       );
-    // default:
-    //   return throwError(`Can't handle operation: ${o.kind}`);
+    case ExchangeMigrationTxKind.allowance4Proxy:
+      return proxyAddress$.pipe(
+        first(),
+        filter(proxyAddress => !!proxyAddress),
+        switchMap(proxyAddress => {
+          // if (!proxyAddress) {
+          //   return throwError('No proxy');
+          // }
+          return calls.approveProxy({
+            proxyAddress: proxyAddress!,
+            token: o.token
+          });
+        })
+      );
   }
 }
 
@@ -181,15 +211,34 @@ function next(
   state: ExchangeMigrationState
 ): Observable<ExchangeMigrationState> | undefined {
   if (state.status === ExchangeMigrationStatus.ready) {
+    if (state.pending.length === 0) {
+      return of({
+        done: [],
+        status: ExchangeMigrationStatus.done
+      } as ExchangeMigrationState);
+    }
     const [current, ...pending] = state.pending;
     return start(proxyAddress$, calls, current, pending, []);
   }
 
   if (state.status === ExchangeMigrationStatus.inProgress) {
-    if (state.current.txStatus === TxStatus.Success) {
+    if (
+      state.current.txStatus === TxStatus.Success &&
+      state.pending.length > 0
+    ) {
       const [current, ...pending] = state.pending;
       const done = [...state.done, state.current];
       return start(proxyAddress$, calls, current, pending, done);
+    }
+
+    if (
+      state.current.txStatus === TxStatus.Success &&
+      state.pending.length === 0
+    ) {
+      return of({
+        done: [...state.done, state.current],
+        status: ExchangeMigrationStatus.done
+      } as ExchangeMigrationState);
     }
 
     return of({
@@ -201,48 +250,66 @@ function next(
   return undefined;
 }
 
-function initialize(
+export function createExchangeMigrationOps$(
+  initializedAccount$: Observable<string>,
+  loadOrderbook: (tp: TradingPair) => Observable<Orderbook>,
+  saiBalance$: Observable<BigNumber>,
+  allowances$: Observable<Allowances>,
   proxyAddress$: Observable<string | undefined>,
-  _initializedAccount: string,
+): Observable<ExchangeMigrationOperation[]> {
+
+  const orders$ = openSAIOrders$(initializedAccount$, loadOrderbook);
+  const saiAllowance$ = allowance$(allowances$, 'SAI');
+  // const daiAllowance$ = allowance$(allowances$, 'DAI');
+
+  return combineLatest(
+    orders$,
+    saiBalance$,
+    saiAllowance$,
+    // daiAllowance$,
+    proxyAddress$,
+  ).pipe(
+    // @ts-ignore
+    map(args => exchangeMigrationOps(...args)),
+    first()
+  );
+}
+
+function exchangeMigrationOps(
   orders: Offer[],
   saiBalance: BigNumber,
-  _saiAllowance: boolean,
-  _daiAllowance: boolean,
+  saiAllowance: boolean,
+  // _daiAllowance: boolean,
   proxyAddress: string | undefined,
-  calls: Calls
-): Observable<ExchangeMigrationState> {
+): ExchangeMigrationOperation[] {
 
-  const cancelOperations: CancelOperation[] = orders.map(
+  if (saiBalance.eq(zero)) {
+    return [];
+  }
+
+  const cancelOps: CancelOperation[] = orders.map(
     offer => ({
       offer,
       kind: ExchangeMigrationTxKind.cancel
     } as CancelOperation)
   );
 
-  const proxyOperations: CreateProxyOperation[] = proxyAddress ? [] : [
-    { kind: ExchangeMigrationTxKind.createProxy }
+  const proxyOps: CreateProxyOperation[] = proxyAddress ? [] : [
+    { kind: ExchangeMigrationTxKind.createProxy },
   ];
 
-  const operations: ExchangeMigrationOperation[] = [
-    ...cancelOperations,
-    ...proxyOperations,
+  const saiAllowanceOps: Allowance4ProxyOperation[] = saiAllowance ? [] : [
+    { kind: ExchangeMigrationTxKind.allowance4Proxy, token: 'SAI' }
+  ];
+
+  const sai2DaiOps: SAI2DAIOperation[] = saiBalance.gt(zero) ? [
     { kind: ExchangeMigrationTxKind.sai2dai, amount: saiBalance }
+  ] : [];
+
+  return [
+    ...cancelOps,
+    ...proxyOps,
+    ...saiAllowanceOps,
+    ...sai2DaiOps
   ];
-
-  const state = new Subject<ExchangeMigrationState>();
-
-  const initial: ExchangeMigrationState = {
-    pending: operations,
-    start: () => {
-      inductor(
-        initial,
-        curry(next)(proxyAddress$, calls),
-      ).subscribe(state);
-    },
-    status: ExchangeMigrationStatus.ready,
-  };
-
-  return state.pipe(
-    startWith(initial)
-  );
 }
