@@ -73,7 +73,7 @@ import {
 import {
   createExchangeMigration$, createExchangeMigrationOps$,
   ExchangeMigrationStatus
-} from './exchange/migration/exchangeMigration';
+} from './migration/migration';
 import { createMyClosedTrades$ } from './exchange/myTrades/closedTrades';
 import {
   createMyCurrentTrades$,
