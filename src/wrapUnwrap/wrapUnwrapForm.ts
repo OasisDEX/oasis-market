@@ -195,8 +195,8 @@ function estimateGasPrice(
 
 function checkIfIsReadyToProceed(state: WrapUnwrapFormState) {
   const readyToProceed = state.amount &&
-    state.messages.length === 0 &&
-    state.gasEstimationStatus === GasEstimationStatus.calculated;
+    state.messages.length === 0;
+    // && state.gasEstimationStatus === GasEstimationStatus.calculated;
   return {
     ...state,
     readyToProceed,

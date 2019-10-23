@@ -13,7 +13,9 @@ export function inductor<T>(seed: T, next: (p: T) => Observable<T> | undefined):
         },
         error: err => s.error(err),
         complete: () => {
-          child.unsubscribe();
+          if (child) {
+            child.unsubscribe();
+          }
           const nextObservable = last && next(last);
           if (nextObservable === undefined) {
             s.complete();
@@ -31,7 +33,9 @@ export function inductor<T>(seed: T, next: (p: T) => Observable<T> | undefined):
     }
 
     return () => {
-      child.unsubscribe();
+      if (child) {
+        child.unsubscribe();
+      }
     };
   });
 }

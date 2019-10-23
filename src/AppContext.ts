@@ -71,7 +71,7 @@ import {
   createYesterdayPriceChange$,
 } from './exchange/exchange';
 import {
-  createExchangeMigration$,
+  createExchangeMigration$, createExchangeMigrationOps$,
   ExchangeMigrationStatus
 } from './exchange/migration/exchangeMigration';
 import { createMyClosedTrades$ } from './exchange/myTrades/closedTrades';
@@ -338,7 +338,7 @@ export function setupAppContext() {
     export: () => createTaxExport$(context$, initializedAccount$)
   });
 
-  const exchangeMigration$ = createExchangeMigration$(
+  const exchangeMigrationOps$ = createExchangeMigrationOps$(
     initializedAccount$,
     loadOrderbook,
     saiBalance$,
@@ -353,7 +353,12 @@ export function setupAppContext() {
       startWith({})
     ),
     proxyAddress$,
-    calls$
+  );
+
+  const exchangeMigration$ = createExchangeMigration$(
+    proxyAddress$,
+    calls$,
+    exchangeMigrationOps$
   );
 
   (window as any).exchangeMigration = () => {
