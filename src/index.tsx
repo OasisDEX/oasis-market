@@ -87,9 +87,9 @@ const AppTxRx = connect(App, props$);
 
 const root: HTMLElement = document.getElementById('root')!;
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_SENTRY_DNS) {
   Raven.config(
-    'https://36da3ac6c7324ffebcfb2e99529f9e08@sentry.io/1793301'
+    process.env.REACT_APP_SENTRY_DNS
   ).install();
   Raven.context(() => ReactDOM.render(<AppTxRx/>, root));
 } else {
