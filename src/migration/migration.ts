@@ -10,7 +10,7 @@ import { TradingPair } from '../exchange/tradingPair/tradingPair';
 import { zero } from '../utils/zero';
 import { inductor } from './inductor';
 
-enum ExchangeMigrationTxKind {
+export enum ExchangeMigrationTxKind {
   cancel = 'cancel',
   createProxy = 'createProxy',
   allowance4Proxy = 'allowance4Proxy',

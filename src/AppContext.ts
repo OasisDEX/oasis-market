@@ -372,7 +372,7 @@ export function setupAppContext() {
       ),
       loadablifyLight<ExchangeMigrationState>(exchangeMigration$)
     )
-  );
+    );
 
   (window as any).exchangeMigration = () => {
     exchangeMigration$

@@ -39,10 +39,13 @@ export function withModal<O, P extends ModalOpenerProps>(
           <Wrapped { ...{ ...this.props as any, open: this.open } as Readonly<P> }/>
         </ReRenderBarrier>
         {this.state.modalType !== undefined &&
+        // This fix is taken from xDex
+        // There is an issue with clicking on the child component.
+        // It closes the modal.
         ReactDOM.createPortal(
-          <div onClick={this.close}>
-            <this.state.modalType {...{ close: this.close }}/>
-          </div>,
+          <this.state.modalType
+            {...{ close: this.close }}
+          />,
           document.body)}
       </React.Fragment>;
     }
