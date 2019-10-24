@@ -119,7 +119,6 @@ import { inject } from './utils/inject';
 import { Loadable, LoadableWithTradingPair, loadablifyLight, } from './utils/loadable';
 import { ModalOpenerProps, withModal } from './utils/modal';
 import { createWrapUnwrapForm$ } from './wrapUnwrap/wrapUnwrapForm';
-import { ComponentType } from "react";
 
 export function setupAppContext() {
 
@@ -365,15 +364,14 @@ export function setupAppContext() {
     exchangeMigrationOps$
   );
 
-  const PartialMigrationButton = inject<{ migration$: Observable<ExchangeMigrationState> }, any>(
-    MigrationButton,
-    { migration$: exchangeMigration$ }
-  );
-
-  const MigrationTxRx: ComponentType<MigrationButtonProps>
-    = connect<Loadable<ExchangeMigrationState>, any>(
-    PartialMigrationButton,
-    loadablifyLight<ExchangeMigrationState>(exchangeMigration$)
+  const MigrationTxRx = withModal(
+    connect<Loadable<ExchangeMigrationState>, any>(
+      inject<{ migration$: Observable<ExchangeMigrationState> }, any>(
+        MigrationButton,
+        { migration$: exchangeMigration$ }
+      ),
+      loadablifyLight<ExchangeMigrationState>(exchangeMigration$)
+    )
   );
 
   (window as any).exchangeMigration = () => {
@@ -406,7 +404,6 @@ export function setupAppContext() {
     TheFooterTxRx,
     TaxExporterTxRx,
     MigrationTxRx,
-    PartialMigrationButton
   };
 }
 

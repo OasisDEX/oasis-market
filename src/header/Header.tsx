@@ -135,12 +135,6 @@ class Header extends React.Component<HeaderProps> {
                   <MigrationTxRx/>
                 }
               </theAppContext.Consumer>
-              <theAppContext.Consumer>
-                {({ PartialMigrationButton }) =>
-                  // @ts-ignore
-                  <PartialMigrationButton/>
-                }
-              </theAppContext.Consumer>
             </section>
 
             <section className={classnames(section, sectionStatus)}>
