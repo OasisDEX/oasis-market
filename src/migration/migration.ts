@@ -1,13 +1,13 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
-import { combineLatest, Observable, of, Subject, throwError } from 'rxjs';
-import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { filter, first, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
 import { getTxHash, TxState, TxStatus } from '../blockchain/transactions';
-import { zero } from '../utils/zero';
 import { Offer, Orderbook } from '../exchange/orderbook/orderbook';
 import { TradingPair } from '../exchange/tradingPair/tradingPair';
+import { zero } from '../utils/zero';
 import { inductor } from './inductor';
 
 enum ExchangeMigrationTxKind {

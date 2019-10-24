@@ -49,6 +49,7 @@ import {
 } from './exchange/tradingPair/tradingPair';
 
 import * as mixpanel from 'mixpanel-browser';
+import { Simulate } from 'react-dom/test-utils';
 import { of } from 'rxjs/index';
 import { transactions$, TxState } from './blockchain/transactions';
 import {
@@ -70,10 +71,6 @@ import {
   createYesterdayPrice$,
   createYesterdayPriceChange$,
 } from './exchange/exchange';
-import {
-  createExchangeMigration$, createExchangeMigrationOps$,
-  ExchangeMigrationStatus
-} from './migration/migration';
 import { createMyClosedTrades$ } from './exchange/myTrades/closedTrades';
 import {
   createMyCurrentTrades$,
@@ -108,14 +105,21 @@ import { createFooter$, TheFooter } from './footer/Footer';
 import { Network } from './header/Network';
 import { createFormController$ as createInstantFormController$ } from './instant/instantForm';
 import { InstantViewPanel } from './instant/InstantViewPanel';
+import {
+  createExchangeMigration$,
+  createExchangeMigrationOps$, ExchangeMigrationState,
+  ExchangeMigrationStatus
+} from './migration/migration';
+import { MigrationButton, MigrationButtonProps } from './migration/MigrationView';
 import { createTransactionNotifier$ } from './transactionNotifier/transactionNotifier';
 import { TransactionNotifierView } from './transactionNotifier/TransactionNotifierView';
 import { Authorizable, authorizablify } from './utils/authorizable';
 import { connect } from './utils/connect';
 import { inject } from './utils/inject';
 import { Loadable, LoadableWithTradingPair, loadablifyLight, } from './utils/loadable';
-import { withModal } from './utils/modal';
+import { ModalOpenerProps, withModal } from './utils/modal';
 import { createWrapUnwrapForm$ } from './wrapUnwrap/wrapUnwrapForm';
+import { ComponentType } from "react";
 
 export function setupAppContext() {
 
@@ -361,6 +365,17 @@ export function setupAppContext() {
     exchangeMigrationOps$
   );
 
+  const PartialMigrationButton = inject<{ migration$: Observable<ExchangeMigrationState> }, any>(
+    MigrationButton,
+    { migration$: exchangeMigration$ }
+  );
+
+  const MigrationTxRx: ComponentType<MigrationButtonProps>
+    = connect<Loadable<ExchangeMigrationState>, any>(
+    PartialMigrationButton,
+    loadablifyLight<ExchangeMigrationState>(exchangeMigration$)
+  );
+
   (window as any).exchangeMigration = () => {
     exchangeMigration$
       .pipe(
@@ -389,7 +404,9 @@ export function setupAppContext() {
     TransactionNotifierTxRx,
     NetworkTxRx,
     TheFooterTxRx,
-    TaxExporterTxRx
+    TaxExporterTxRx,
+    MigrationTxRx,
+    PartialMigrationButton
   };
 }
 
@@ -435,9 +452,10 @@ function offerMake(
 
   const OrderbookPanelTxRx = connect(
     inject<OrderbookPanelProps, SubViewsProps>(
-      OrderbookPanel,
-      { DepthChartWithLoadingTxRx, OrderbookViewTxRx }),
-    orderbookPanel$);
+      OrderbookPanel, { DepthChartWithLoadingTxRx, OrderbookViewTxRx }
+    ),
+    orderbookPanel$
+  );
 
   return {
     OfferMakePanelTxRx,
