@@ -22,6 +22,7 @@ export const logo: string;
 export const section: string;
 export const sectionNavigation: string;
 export const sectionStatus: string;
+export const sectionMigration: string;
 export const nav: string;
 export const list: string;
 export const item: string;

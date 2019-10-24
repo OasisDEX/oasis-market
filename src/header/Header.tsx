@@ -18,6 +18,7 @@ import { WalletStatus, walletStatus$ } from '../blockchain/wallet';
 import { web3Status$ } from '../blockchain/web3';
 import chevronDownSvg from '../icons/chevron-down.svg';
 import { routerContext } from '../Main';
+import { MigrationButton } from '../migration/MigrationView';
 import { connect } from '../utils/connect';
 import { Button } from '../utils/forms/Buttons';
 import { SvgImage } from '../utils/icons/utils';
@@ -38,6 +39,7 @@ const {
   item,
   section,
   sectionStatus,
+  sectionMigration,
   sectionNavigation,
   logo,
   navElement,
@@ -125,6 +127,22 @@ class Header extends React.Component<HeaderProps> {
                 </div>
               </nav>
             </section>
+
+            <section className={classnames(section, sectionMigration)}>
+              <theAppContext.Consumer>
+                {({ MigrationTxRx }) =>
+                  // @ts-ignore
+                  <MigrationTxRx/>
+                }
+              </theAppContext.Consumer>
+              <theAppContext.Consumer>
+                {({ PartialMigrationButton }) =>
+                  // @ts-ignore
+                  <PartialMigrationButton/>
+                }
+              </theAppContext.Consumer>
+            </section>
+
             <section className={classnames(section, sectionStatus)}>
               <WalletConnectionStatusRx/>
             </section>

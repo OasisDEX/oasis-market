@@ -48,6 +48,11 @@ $header-media-breakpoint: 800px;
       justify-content: flex-end;
     }
   }
+
+  &Migration {
+    margin-right: 1rem;
+    margin-left: auto;
+  }
 }
 
 .nav, .list, .item {
