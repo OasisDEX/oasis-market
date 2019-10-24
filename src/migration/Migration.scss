@@ -1,0 +1,19 @@
+@import "../utils/Mixins";
+@import "../utils/Variables";
+
+@include modal();
+
+.modalChild {
+  width: 100%;
+  max-width: 650px;
+}
+
+.modalButtonsPlaceholder {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    max-width: 100px;
+  }
+}
