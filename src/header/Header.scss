@@ -2,7 +2,7 @@
 @import "../utils/Variables";
 @import "../utils/forms/Buttons";
 
-$header-media-breakpoint: 860px;
+$header-media-breakpoint: 880px;
 
 :global(.paper) {
   @include media-breakpoint-down($header-media-breakpoint) {
@@ -207,7 +207,7 @@ $header-media-breakpoint: 860px;
   margin-right: 1rem;
   border-radius: 100%;
 
-  @include media-breakpoint-down($header-media-breakpoint){
+  @include media-breakpoint-down(sm){
     margin-right: .5rem;
   }
 }
