@@ -357,24 +357,25 @@ export function setupAppContext() {
     proxyAddress$,
   );
 
-  const exchangeMigration$ = createExchangeMigration$(
+  const migration$ = createExchangeMigration$(
     proxyAddress$,
     calls$,
     exchangeMigrationOps$
   );
 
-  const MigrationTxRx = withModal(
-    connect<Loadable<ExchangeMigrationState>, any>(
-      inject<{ migration$: Observable<ExchangeMigrationState> }, any>(
-        MigrationButton,
-        { migration$: exchangeMigration$ }
+  const MigrationTxRx =
+    inject<{ migration$: Observable<ExchangeMigrationState> }, any>(
+      withModal(
+        connect<Loadable<ExchangeMigrationState>, any>(
+          MigrationButton,
+          loadablifyLight<ExchangeMigrationState>(migration$)
+        )
       ),
-      loadablifyLight<ExchangeMigrationState>(exchangeMigration$)
-    )
+      { migration$ }
     );
 
   (window as any).exchangeMigration = () => {
-    exchangeMigration$
+    migration$
       .pipe(
         tap(s => {
           if (s.status === ExchangeMigrationStatus.ready) {
