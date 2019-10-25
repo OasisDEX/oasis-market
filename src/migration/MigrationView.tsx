@@ -8,7 +8,11 @@ import { WithLoadingIndicator } from '../utils/loadingIndicator/LoadingIndicator
 import { ModalOpenerProps, ModalProps } from '../utils/modal';
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '../utils/panel/Panel';
 // import { MTAccountState } from '../state/mtAccount';
-import { ExchangeMigrationState, ExchangeMigrationStatus, ExchangeMigrationTxKind } from './migration';
+import {
+  ExchangeMigrationState,
+  ExchangeMigrationStatus,
+  ExchangeMigrationTxKind
+} from './migration';
 // import { MTSetupFormState, MTSetupProgressState } from './mtSetupForm';
 import * as styles from './Migration.scss';
 
@@ -21,7 +25,7 @@ const MigrationOpsDescription = {
   [ExchangeMigrationTxKind.createProxy]: 'Create Proxy',
   [ExchangeMigrationTxKind.allowance4Proxy]: 'Setting Allowance',
   [ExchangeMigrationTxKind.sai2dai]: 'Migrating Sai To Dai',
-}
+};
 
 export class MigrationButton extends React.Component<MigrationButtonProps & ModalOpenerProps> {
   public render() {
@@ -58,10 +62,11 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
 const OpRowStyle = {
   display: 'flex',
   justifyContent: 'space-between'
-}
+};
 
 export class MigrationModal extends React.Component<ExchangeMigrationState & ModalProps> {
   public render() {
+    console.log(this.props);
     return (
       <ReactModal
         ariaHideApp={false}
@@ -170,7 +175,6 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
               Close
             </Button>
             {
-              this.props.status === ExchangeMigrationStatus.ready &&
               <Button size="md"
                       color="primary"
                       block={true}
@@ -178,7 +182,11 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
                         this.props.status !== ExchangeMigrationStatus.ready
                       }
                       onClick={
-                        this.props.start
+                        () => {
+                          if (this.props.status === ExchangeMigrationStatus.ready) {
+                            this.props.start();
+                          }
+                        }
                       }
               >
                 Start
