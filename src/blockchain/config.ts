@@ -39,12 +39,16 @@ import { web3 } from './web3';
 
 export const tradingPairs: TradingPair[] = [
   { base: 'WETH', quote: 'DAI' },
+  { base: 'WETH', quote: 'SAI' },
   ...process.env.REACT_APP_OASIS_DEX_ENABLED !== '1' ? [] : [
     // { base: 'MKR', quote: 'DAI' },
     // { base: 'MKR', quote: 'WETH' },
     { base: 'REP', quote: 'DAI' },
     { base: 'ZRX', quote: 'DAI' },
-    { base: 'BAT', quote: 'DAI' }
+    { base: 'BAT', quote: 'DAI' },
+    { base: 'REP', quote: 'SAI' },
+    { base: 'ZRX', quote: 'SAI' },
+    { base: 'BAT', quote: 'SAI' },
   ]
 ];
 
