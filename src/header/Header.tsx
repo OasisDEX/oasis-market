@@ -126,16 +126,6 @@ class Header extends React.Component<HeaderProps> {
                 </div>
               </nav>
             </section>
-
-            <section className={classnames(section, sectionMigration)}>
-              <theAppContext.Consumer>
-                {({ MigrationTxRx }) =>
-                  // @ts-ignore
-                  <MigrationTxRx/>
-                }
-              </theAppContext.Consumer>
-            </section>
-
             <section className={classnames(section, sectionStatus)}>
               <WalletConnectionStatusRx/>
             </section>
@@ -182,6 +172,12 @@ class WalletConnectionStatus extends React.Component<WalletConnectionStatusProps
             {({ NetworkTxRx }) =>
               // @ts-ignore
               <NetworkTxRx/>
+            }
+          </theAppContext.Consumer>
+          <theAppContext.Consumer>
+            {({ MigrationTxRx }) =>
+              // @ts-ignore
+              <MigrationTxRx/>
             }
           </theAppContext.Consumer>
           {

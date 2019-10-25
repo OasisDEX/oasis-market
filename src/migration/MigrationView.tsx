@@ -32,17 +32,16 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
     return <WithLoadingIndicator loadable={this.props}>
       {
         (migrationState: any) => {
-          console.log(migrationState.pending);
           return migrationState.pending && migrationState.pending.length
             ? (
               <Button size="md"
-                      color="danger"
+                      className={styles.redeemBtn}
                       disabled={
                         migrationState.status !== ExchangeMigrationStatus.ready
                       }
                       onClick={() => this.setup()}
               >
-                Migrate
+                Redeem Dai
               </Button>
             )
             : <></>;
