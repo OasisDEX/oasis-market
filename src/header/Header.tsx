@@ -38,7 +38,6 @@ const {
   item,
   section,
   sectionStatus,
-  sectionMigration,
   sectionNavigation,
   logo,
   navElement,
