@@ -1,9 +1,11 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { Ord } from 'ramda';
+import { combineLatest, from, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
+import { tradingPairs } from '../blockchain/config';
 import { getTxHash, TxState, TxStatus } from '../blockchain/transactions';
 import { Offer, Orderbook } from '../exchange/orderbook/orderbook';
 import { TradingPair } from '../exchange/tradingPair/tradingPair';
@@ -90,15 +92,22 @@ function openSAIOrders$(
   loadOrderbook: (tp: TradingPair) => Observable<Orderbook>,
 ) {
   // TODO: iterate over all SAI markets!?
-  return  combineLatest(
+  return combineLatest(
     initializedAccount$,
-    loadOrderbook({ base: 'WETH', quote: 'SAI' }),
+    ...tradingPairs
+      .filter(pair => pair.quote === 'SAI')
+      .map(pair => loadOrderbook(pair)),
   ).pipe(
-    map(([account, orderbook]) =>
-      orderbook.buy.filter(offerOf(account))
-        .concat(
-          orderbook.sell.filter(offerOf(account)))
-    )
+    map(([account, ...rest]: [string, Orderbook]) => {
+      return rest
+        .map((orderbook) =>
+          orderbook.buy.filter(offerOf(account))
+            .concat(
+              orderbook.sell.filter(offerOf(account))))
+        .reduce(
+          (allOrders, fromGivenOrderbook) => [...allOrders, ...fromGivenOrderbook], []
+        );
+    })
   );
 }
 
