@@ -1,7 +1,28 @@
 @import "../utils/Mixins";
+@import "../utils/forms/Buttons.mixins";
 @import "../utils/Variables";
+@import "../header/Header";
 
 @include modal();
+
+.redeemBtn {
+  margin-right: 1rem;
+
+  @include button((
+    color: $white,
+    bg: $vivid-orange,
+    border-color: $vivid-orange,
+
+    bg-hover: $soft-orange,
+    border-color-hover: $soft-orange
+  ));
+
+  @include media-breakpoint-down($header-media-breakpoint) {
+    height: 32px;
+    margin-right: .5rem;
+    font-size: 13px;
+  }
+}
 
 .modalChild {
   width: 100%;
