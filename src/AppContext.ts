@@ -49,7 +49,6 @@ import {
 } from './exchange/tradingPair/tradingPair';
 
 import * as mixpanel from 'mixpanel-browser';
-import { Simulate } from 'react-dom/test-utils';
 import { of } from 'rxjs/index';
 import { transactions$, TxState } from './blockchain/transactions';
 import {
@@ -110,14 +109,14 @@ import {
   createExchangeMigrationOps$, ExchangeMigrationState,
   ExchangeMigrationStatus
 } from './migration/migration';
-import { MigrationButton, MigrationButtonProps } from './migration/MigrationView';
+import { MigrationButton } from './migration/MigrationView';
 import { createTransactionNotifier$ } from './transactionNotifier/transactionNotifier';
 import { TransactionNotifierView } from './transactionNotifier/TransactionNotifierView';
 import { Authorizable, authorizablify } from './utils/authorizable';
 import { connect } from './utils/connect';
 import { inject } from './utils/inject';
 import { Loadable, LoadableWithTradingPair, loadablifyLight, } from './utils/loadable';
-import { ModalOpenerProps, withModal } from './utils/modal';
+import { withModal } from './utils/modal';
 import { createWrapUnwrapForm$ } from './wrapUnwrap/wrapUnwrapForm';
 
 export function setupAppContext() {
