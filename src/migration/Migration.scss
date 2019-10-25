@@ -7,19 +7,21 @@
 
 .redeemBtn {
   margin-right: 1rem;
+  padding: 0 1rem;
 
   @include button((
     color: $white,
     bg: $vivid-orange,
     border-color: $vivid-orange,
 
-    bg-hover: $soft-orange,
-    border-color-hover: $soft-orange
+    bg-hover: $bright-orange,
+    border-color-hover: $bright-orange
   ));
 
   @include media-breakpoint-down($header-media-breakpoint) {
     height: 32px;
     margin-right: .5rem;
+    padding: 0 .5rem;
     font-size: 13px;
   }
 }
