@@ -2,7 +2,7 @@
 @import "../utils/Variables";
 @import "../utils/forms/Buttons";
 
-$header-media-breakpoint: 880 px;
+$header-media-breakpoint: 880px;
 
 :global(.paper) {
   @include media-breakpoint-down($header-media-breakpoint) {

@@ -6,7 +6,7 @@ import { Button, CloseButton } from '../utils/forms/Buttons';
 import { Loadable } from '../utils/loadable';
 import { WithLoadingIndicator } from '../utils/loadingIndicator/LoadingIndicator';
 import { ModalOpenerProps, ModalProps } from '../utils/modal';
-import { Panel, PanelBody, PanelHeader } from '../utils/panel/Panel';
+import { Panel, PanelBody, PanelFooter, PanelHeader } from '../utils/panel/Panel';
 import { TopRightCorner } from '../utils/panel/TopRightCorner';
 
 import {
@@ -91,8 +91,48 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
   }
 }
 
-export class MigrationModal extends React.Component<ExchangeMigrationState & ModalProps> {
+enum MigrationViews {
+  initial = 'initial',
+  cancelOrders = 'cancelOrders',
+  migration = 'migration',
+}
+
+export class MigrationModal extends React.Component<ExchangeMigrationState & ModalProps,
+  { view: MigrationViews }> {
+
+  public constructor(props: any) {
+    super(props);
+    this.state = {
+      view: MigrationViews.initial
+    };
+  }
+
   public render() {
+    const view = (() => {
+      switch (this.state.view) {
+        case MigrationViews.cancelOrders:
+          return this.cancelOrders();
+        case MigrationViews.migration:
+          return this.migration();
+        default:
+          return this.initialView();
+      }
+    })();
+
+    return <ReactModal
+      ariaHideApp={false}
+      isOpen={true}
+      className={styles.modal}
+      overlayClassName={styles.modalOverlay}
+      closeTimeoutMS={250}
+    >
+      {
+        view
+      }
+    </ReactModal>;
+  }
+
+  private initialView = () => {
     const orders: Offer[] = this.props.status === ExchangeMigrationStatus.ready
       ? this.props.pending
         .filter((op) => op.kind === ExchangeMigrationTxKind.cancel)
@@ -109,27 +149,67 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
     }
 
     return (
-      <ReactModal
-        ariaHideApp={false}
-        isOpen={true}
-        className={styles.modal}
-        overlayClassName={styles.modalOverlay}
-        closeTimeoutMS={250}
-      >
-        <Panel footerBordered={true} className={styles.modalChild}>
-          <PanelHeader bordered={true} className={styles.panelHeader}>
-            Oasis Multi Collateral Dai Migration
-            <TopRightCorner>
-              <CloseButton theme="danger" onClick={this.props.close}/>
-            </TopRightCorner>
-          </PanelHeader>
-          <PanelBody paddingVertical={true} className={styles.panelBody}>
-            {this.callToCancelOrders(orders.length)}
-            {this.callToRedeemDai(amount)}
-          </PanelBody>
-        </Panel>
-      </ReactModal>
+      <Panel footerBordered={true} className={styles.modalChild}>
+        <PanelHeader bordered={true} className={styles.panelHeader}>
+          Oasis Multi Collateral Dai Migration
+          <TopRightCorner>
+            <CloseButton theme="danger" onClick={this.props.close}/>
+          </TopRightCorner>
+        </PanelHeader>
+        <PanelBody paddingVertical={true} className={styles.panelBody}>
+          {this.callToCancelOrders(orders.length)}
+          {this.callToRedeemDai(amount)}
+        </PanelBody>
+      </Panel>
     );
+  }
+
+  private cancelOrders = () => {
+    return <Panel className={styles.modalChild}>
+      <PanelHeader bordered={true} className={styles.panelHeader}>
+        Oasis Multi Collateral Dai Migration
+        <TopRightCorner>
+          <CloseButton theme="danger" onClick={this.props.close}/>
+        </TopRightCorner>
+      </PanelHeader>
+      <PanelBody paddingVertical={true} className={styles.panelBody}>
+        Orders!!!
+      </PanelBody>
+      <PanelFooter bordered={true}
+                   className={styles.panelFooter}
+      >
+        <Button size="sm"
+                color="secondaryOutlined"
+                onClick={() => this.setState({ view: MigrationViews.initial })}
+        >
+          Back
+        </Button>
+      </PanelFooter>
+    </Panel>;
+  }
+
+  private migration = () => {
+    return <Panel className={styles.modalChild}>
+      <PanelHeader bordered={true} className={styles.panelHeader}>
+        Oasis Multi Collateral Dai Migration
+        <TopRightCorner>
+          <CloseButton theme="danger" onClick={this.props.close}/>
+        </TopRightCorner>
+      </PanelHeader>
+      <PanelBody paddingVertical={true} className={styles.panelBody}>
+        Migrations!!!
+      </PanelBody>
+      <PanelFooter bordered={true}
+                   className={styles.panelFooter}
+      >
+        <Button size="sm"
+                color="secondaryOutlined"
+                onClick={() => this.setState({ view: MigrationViews.initial })}
+        >
+          Back
+        </Button>
+      </PanelFooter>
+    </Panel>;
   }
 
   private callToCancelOrders = (ordersCount: number) => (
@@ -140,7 +220,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
                    }
                    data={`${ordersCount} Available Orders`}
                    btnLabel="Cancel Orders"
-                   btnAction={() => false}
+                   btnAction={() => this.setState({ view: MigrationViews.cancelOrders })}
     />
   )
 
@@ -152,7 +232,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
                    }
                    data={`${amountToRedeem.valueOf()} DAI to redeem`}
                    btnLabel="Redeem Dai"
-                   btnAction={() => false}
+                   btnAction={() => this.setState({ view: MigrationViews.migration })}
     />
   )
 }

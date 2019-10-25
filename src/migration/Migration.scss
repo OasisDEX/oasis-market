@@ -12,7 +12,6 @@
     color: $white,
     bg: $vivid-orange,
     border-color: $vivid-orange,
-
     bg-hover: $bright-orange,
     border-color-hover: $bright-orange
   ));
@@ -74,6 +73,16 @@
   justify-content: space-between;
   height: 100%;
   padding: 1.5rem;
+}
+
+.panelFooter {
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+
+  button {
+    height: 34px
+  }
 }
 
 .modalChild {
