@@ -15,6 +15,8 @@ import {
   ExchangeMigrationTxKind
 } from './migration';
 
+import { BigNumber } from 'bignumber.js';
+import { Offer } from '../exchange/orderbook/orderbook';
 import * as styles from './Migration.scss';
 
 export type MigrationButtonProps = Loadable<ExchangeMigrationState> & {
@@ -91,6 +93,21 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
 
 export class MigrationModal extends React.Component<ExchangeMigrationState & ModalProps> {
   public render() {
+    const orders: Offer[] = this.props.status === ExchangeMigrationStatus.ready
+      ? this.props.pending
+        .filter((op) => op.kind === ExchangeMigrationTxKind.cancel)
+        .map((op) => (op as { offer: Offer }).offer)
+      : [];
+
+    let amount = new BigNumber(0);
+    if (this.props.status === ExchangeMigrationStatus.ready) {
+      const pendingMigration = this.props.pending
+        .find((op) => op.kind === ExchangeMigrationTxKind.sai2dai) as { amount: BigNumber };
+      if (pendingMigration) {
+        amount = new BigNumber(pendingMigration.amount);
+      }
+    }
+
     return (
       <ReactModal
         ariaHideApp={false}
@@ -107,33 +124,33 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
             </TopRightCorner>
           </PanelHeader>
           <PanelBody paddingVertical={true} className={styles.panelBody}>
-            {this.callToCancelOrders()}
-            {this.callToRedeemDai()}
+            {this.callToCancelOrders(orders.length)}
+            {this.callToRedeemDai(amount)}
           </PanelBody>
         </Panel>
       </ReactModal>
     );
   }
 
-  private callToCancelOrders = () => (
+  private callToCancelOrders = (ordersCount: number) => (
     <CallForAction title="Cancel Resting Orders"
                    description={
                      `Cancel all your Resting Orders before
                               redeeming your Multi Collateral Dai (DAI)`
                    }
-                   data="3 Available Orders"
+                   data={`${ordersCount} Available Orders`}
                    btnLabel="Cancel Orders"
                    btnAction={() => false}
     />
   )
 
-  private callToRedeemDai = () => (
+  private callToRedeemDai = (amountToRedeem: BigNumber) => (
     <CallForAction title="Multi Collateral Dai Redeemer"
                    description={
                      `Redeem your Single Collateral Dai (SAI) for
                               Multi Collateral Dai (DAI)`
                    }
-                   data="306.8940 DAI to redeem"
+                   data={`${amountToRedeem.valueOf()} DAI to redeem`}
                    btnLabel="Redeem Dai"
                    btnAction={() => false}
     />
