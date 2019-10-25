@@ -2,18 +2,19 @@ import * as React from 'react';
 import * as ReactModal from 'react-modal';
 import { Observable } from 'rxjs';
 import { connect } from '../utils/connect';
-import { Button } from '../utils/forms/Buttons';
+import { Button, CloseButton } from '../utils/forms/Buttons';
 import { Loadable } from '../utils/loadable';
 import { WithLoadingIndicator } from '../utils/loadingIndicator/LoadingIndicator';
 import { ModalOpenerProps, ModalProps } from '../utils/modal';
-import { Panel, PanelBody, PanelFooter, PanelHeader } from '../utils/panel/Panel';
-// import { MTAccountState } from '../state/mtAccount';
+import { Panel, PanelBody, PanelHeader } from '../utils/panel/Panel';
+import { TopRightCorner } from '../utils/panel/TopRightCorner';
+
 import {
   ExchangeMigrationState,
   ExchangeMigrationStatus,
   ExchangeMigrationTxKind
 } from './migration';
-// import { MTSetupFormState, MTSetupProgressState } from './mtSetupForm';
+
 import * as styles from './Migration.scss';
 
 export type MigrationButtonProps = Loadable<ExchangeMigrationState> & {
@@ -26,6 +27,36 @@ const MigrationOpsDescription = {
   [ExchangeMigrationTxKind.allowance4Proxy]: 'Setting Allowance',
   [ExchangeMigrationTxKind.sai2dai]: 'Migrating Sai To Dai',
 };
+
+interface CallForActionProps {
+  title: string;
+  description: string;
+  data: any;
+  btnLabel: string;
+  btnAction: () => void;
+}
+
+class CallForAction extends React.Component<CallForActionProps> {
+  public render() {
+    const { title, description, data, btnLabel, btnAction } = this.props;
+    return (
+      <div className={styles.process}>
+        <h6 className={styles.title}>{title}</h6>
+        <p className={styles.description}>
+          {description}
+        </p>
+        <span className={styles.data}>{data}</span>
+        <Button size="sm"
+                color="primary"
+                className={styles.actionBtn}
+                onClick={btnAction}
+        >
+          {btnLabel}
+        </Button>
+      </div>
+    );
+  }
+}
 
 export class MigrationButton extends React.Component<MigrationButtonProps & ModalOpenerProps> {
   public render() {
@@ -58,14 +89,8 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
   }
 }
 
-const OpRowStyle = {
-  display: 'flex',
-  justifyContent: 'space-between'
-};
-
 export class MigrationModal extends React.Component<ExchangeMigrationState & ModalProps> {
   public render() {
-    console.log(this.props);
     return (
       <ReactModal
         ariaHideApp={false}
@@ -74,126 +99,43 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         overlayClassName={styles.modalOverlay}
         closeTimeoutMS={250}
       >
-        <Panel className={styles.modalChild}>
-          <PanelHeader bordered={true}>Migration Process</PanelHeader>
-          <PanelBody paddingVertical={true}>
-            {
-              this.props.status === ExchangeMigrationStatus.ready
-              && this.props.pending.map(
-                (step) => (
-                  <div style={OpRowStyle}>
-                    <span>
-                      {
-                        MigrationOpsDescription[step.kind]
-                      }
-                    </span>
-                    <span>
-                      Pending ...
-                    </span>
-                  </div>
-                )
-              )
-            }
-            {
-              this.props.status === ExchangeMigrationStatus.inProgress
-              && this.props.done.map(
-                (step) => (
-                  <div style={OpRowStyle}>
-                    <span>
-                      {
-                        MigrationOpsDescription[step.kind]
-                      }
-                    </span>
-                    <span>
-                      {
-                        step.txStatus
-                      }
-                    </span>
-                  </div>
-                )
-              )
-            }
-            {
-              this.props.status === ExchangeMigrationStatus.inProgress
-              && <div style={OpRowStyle}>
-                    <span>
-                      {
-                        MigrationOpsDescription[this.props.current.kind]
-                      }
-                    </span>
-                <span>
-                      {
-                        this.props.current.txStatus
-                      }
-                    </span>
-              </div>
-            }
-            {
-              this.props.status === ExchangeMigrationStatus.inProgress
-              && this.props.pending.map(
-                (step) => (
-                  <div style={OpRowStyle}>
-                    <span>
-                      {
-                        MigrationOpsDescription[step.kind]
-                      }
-                    </span>
-                    <span>
-                      Pending ...
-                    </span>
-                  </div>
-                )
-              )
-            }
-            {
-              this.props.status === ExchangeMigrationStatus.fiasco &&
-              (
-                <div>
-                  Migration Progress Was Interrupted !
-                </div>
-              )
-            }
-            {
-              this.props.status === ExchangeMigrationStatus.done &&
-              (
-                <div>
-                  Migration Completed Successfully !
-                </div>
-              )
-            }
-            <pre>
-            {/*{JSON.stringify(this.props, null, 2)}*/}
-          </pre>
+        <Panel footerBordered={true} className={styles.modalChild}>
+          <PanelHeader bordered={true} className={styles.panelHeader}>
+            Oasis Multi Collateral Dai Migration
+            <TopRightCorner>
+              <CloseButton theme="danger" onClick={this.props.close}/>
+            </TopRightCorner>
+          </PanelHeader>
+          <PanelBody paddingVertical={true} className={styles.panelBody}>
+            {this.callToCancelOrders()}
+            {this.callToRedeemDai()}
           </PanelBody>
-          <PanelFooter className={styles.modalButtonsPlaceholder}>
-            <Button size="md"
-                    color="dangerOutlined"
-                    block={true}
-                    onClick={this.props.close}
-            >
-              Close
-            </Button>
-            {
-              <Button size="md"
-                      color="primary"
-                      block={true}
-                      disabled={
-                        this.props.status !== ExchangeMigrationStatus.ready
-                      }
-                      onClick={
-                        () => {
-                          if (this.props.status === ExchangeMigrationStatus.ready) {
-                            this.props.start();
-                          }
-                        }
-                      }
-              >
-                Start
-              </Button>
-            }
-          </PanelFooter>
         </Panel>
       </ReactModal>
     );
   }
+
+  private callToCancelOrders = () => (
+    <CallForAction title="Cancel Resting Orders"
+                   description={
+                     `Cancel all your Resting Orders before
+                              redeeming your Multi Collateral Dai (DAI)`
+                   }
+                   data="3 Available Orders"
+                   btnLabel="Cancel Orders"
+                   btnAction={() => false}
+    />
+  )
+
+  private callToRedeemDai = () => (
+    <CallForAction title="Multi Collateral Dai Redeemer"
+                   description={
+                     `Redeem your Single Collateral Dai (SAI) for
+                              Multi Collateral Dai (DAI)`
+                   }
+                   data="306.8940 DAI to redeem"
+                   btnLabel="Redeem Dai"
+                   btnAction={() => false}
+    />
+  )
 }
