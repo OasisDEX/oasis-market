@@ -51,4 +51,5 @@ export const data: string;
 export const actionBtn: string;
 export const panelHeader: string;
 export const panelBody: string;
+export const panelFooter: string;
 export const modalButtonsPlaceholder: string;
