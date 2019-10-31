@@ -1,10 +1,12 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { combineLatest, noop, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
+import { CancelData } from '../blockchain/calls/offerMake';
 import { tradingPairs } from '../blockchain/config';
+import { GasPrice$ } from '../blockchain/network';
 import { getTxHash, TxState, TxStatus } from '../blockchain/transactions';
 import { TradeWithStatus } from '../exchange/myTrades/openTrades';
 import { Offer, Orderbook } from '../exchange/orderbook/orderbook';
@@ -58,6 +60,7 @@ export enum ExchangeMigrationStatus {
 }
 
 interface ExchangeMigrationReadyState {
+  cancelOffer: (cancelData: CancelData) => any;
   status: ExchangeMigrationStatus.ready;
   pending: ExchangeMigrationOperation[];
   orders: TradeWithStatus[];
@@ -65,6 +68,7 @@ interface ExchangeMigrationReadyState {
 }
 
 interface ExchangeMigrationInProgressState {
+  cancelOffer: (cancelData: CancelData) => any;
   orders: TradeWithStatus[];
   status: ExchangeMigrationStatus.inProgress;
   pending: ExchangeMigrationOperation[];
@@ -78,12 +82,12 @@ interface ExchangeMigrationInitializingState {
 
 export type ExchangeMigrationState =
   ExchangeMigrationInitializingState
-| ExchangeMigrationReadyState
-| ExchangeMigrationInProgressState
-| {
-  status: ExchangeMigrationStatus.done | ExchangeMigrationStatus.fiasco;
-  done: ExchangeMigrationOperationInProgress[];
-};
+  | ExchangeMigrationReadyState
+  | ExchangeMigrationInProgressState
+  | {
+    status: ExchangeMigrationStatus.done | ExchangeMigrationStatus.fiasco;
+    done: ExchangeMigrationOperationInProgress[];
+  };
 
 function allowance$(allowances$: Observable<Allowances>, token: string) {
   return allowances$.pipe(
@@ -108,6 +112,8 @@ export function createExchangeMigration$(
       const initial: ExchangeMigrationState = {
         orders,
         pending: operations,
+        cancelOffer: (cancelData: CancelData) =>
+          calls.cancelOffer2(cancelData).subscribe(noop),
         start: () => {
           inductor(
             initial,
@@ -122,7 +128,8 @@ export function createExchangeMigration$(
       );
     }),
     startWith({
-      status: ExchangeMigrationStatus.initializing
+      status: ExchangeMigrationStatus.initializing,
+      cancelOffer: (cancelData: CancelData) => false,
     } as ExchangeMigrationInitializingState)
   );
 }

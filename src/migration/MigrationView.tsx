@@ -100,6 +100,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
   }
 
   public render() {
+    console.log(this.props);
     const orders: TradeWithStatus[] = (this.props.status === ExchangeMigrationStatus.ready
       || this.props.status === ExchangeMigrationStatus.inProgress)
       ? this.props.orders
@@ -205,7 +206,17 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
                     <td>
                       <Button size="sm"
                               color="secondaryOutlined"
-                              onClick={() => false}
+                              onClick={() => {
+                                if (this.props.status === ExchangeMigrationStatus.ready
+                                  || this.props.status === ExchangeMigrationStatus.inProgress) {
+                                  this.props.cancelOffer({
+                                    offerId: order.offerId,
+                                    type: order.act,
+                                    amount: order.baseAmount,
+                                    token: order.baseToken
+                                  });
+                                }
+                              }}
                       >
                         Cancel
                       </Button>

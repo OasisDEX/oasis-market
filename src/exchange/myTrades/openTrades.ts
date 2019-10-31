@@ -9,10 +9,10 @@ import {
   TxState,
   TxStatus
 } from '../../blockchain/transactions';
+import { Omit } from '../../utils/omit';
 import { Offer, OfferType, Orderbook } from '../orderbook/orderbook';
 import { compareTrades, Trade, TradeRole } from '../trades';
 import { TradingPair } from '../tradingPair/tradingPair';
-import { Omit } from "../../utils/omit";
 
 export enum TradeStatus {
   beingCancelled = 'beingCancelled',
