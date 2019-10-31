@@ -12,7 +12,7 @@ import {
   InstantFormState,
   Progress,
   ProgressChange,
-  ProgressKind
+  ProgressKind, sai2dai
 } from './instantForm';
 
 function progressChange(progress?: Progress): ProgressChange {
@@ -84,6 +84,18 @@ function doTradePayWithERC20(
     proxyAddress,
   } as InstantOrderData).pipe(
     switchMap(gasEstimation => {
+
+      if (state.sellToken === 'SAI') {
+        throw new Error('Not implemented !');
+        return calls.tradePayWithERC20({
+          ...state,
+          proxyAddress,
+          gasEstimation,
+          sellToken: sai2dai(state.sellToken),
+          gasPrice: state.gasPrice,
+        } as InstantOrderData);
+      }
+
       return calls.tradePayWithERC20({
         ...state,
         proxyAddress,

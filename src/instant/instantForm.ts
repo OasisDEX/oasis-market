@@ -515,13 +515,17 @@ function evaluateBuy(calls: ReadCalls, state: InstantFormState) {
   });
 
   return calls.otcGetPayAmount({
-    sellToken,
     buyToken,
+    sellToken: sai2dai(sellToken),
     amount: buyAmount,
   }).pipe(
     switchMap(sellAmount => of(sellAmount.isZero() ? errorItem() : { sellAmount })),
     catchError(error => of(errorItem(error))),
   );
+}
+
+export function sai2dai(token: string) {
+  return token === 'SAI' ? 'DAI' : token;
 }
 
 function evaluateSell(calls: ReadCalls, state: InstantFormState) {
@@ -546,9 +550,9 @@ function evaluateSell(calls: ReadCalls, state: InstantFormState) {
   });
 
   return calls.otcGetBuyAmount({
-    sellToken,
     buyToken,
     amount: sellAmount,
+    sellToken: sai2dai(sellToken)
   }).pipe(
     switchMap(buyAmount => of(buyAmount.isZero() ? errorItem() : { buyAmount })),
     catchError(error => of(errorItem(error))),
@@ -633,6 +637,12 @@ function evaluateTrade(
     });
   }
 
+  // console.log(
+  //   state.kind,
+  //   state.buyToken, state.buyAmount && state.buyAmount.toString(),
+  //   state.sellToken, state.sellAmount && state.sellAmount.toString()
+  // );
+
   return theCalls$.pipe(
     first(),
     switchMap(calls =>
@@ -640,7 +650,7 @@ function evaluateTrade(
         state.kind === OfferType.buy ? evaluateBuy(calls, state) : evaluateSell(calls, state),
         // tslint:disable-next-line:max-line-length
         // This is some suspicious case. This way it works like we had on OD but needs in-depth investigation.
-        getBestPrice(calls, state.buyToken, state.sellToken)
+        getBestPrice(calls, state.buyToken, sai2dai(state.sellToken))
       )
     ),
     map(([evaluation, bestPrice]) => ({
@@ -859,9 +869,10 @@ function validate(state: InstantFormState): InstantFormState {
 }
 
 function calculatePriceAndImpact(state: InstantFormState): InstantFormState {
+
   const { buyAmount, buyToken, sellAmount, sellToken, bestPrice } = state;
   const calculated = buyAmount && sellAmount
-    ? calculateTradePrice(sellToken, sellAmount, buyToken, buyAmount, formatPriceInstant)
+    ? calculateTradePrice(sai2dai(sellToken), sellAmount, buyToken, buyAmount, formatPriceInstant)
     : null;
   const price = calculated ? calculated.price : undefined;
   const quotation = calculated ? calculated.quotation : undefined;
@@ -872,6 +883,12 @@ function calculatePriceAndImpact(state: InstantFormState): InstantFormState {
       .div(bestPrice)
       .times(100) :
     undefined;
+
+  // console.log('price',
+  //             price && price.toString(),
+  //             bestPrice && bestPrice.toString(),
+  //             quotation && quotation.toString()
+  // );
 
   return {
     ...state,
@@ -1146,8 +1163,8 @@ export function createFormController$(
     createProxy,
     toggleAllowance,
     change: manualChange$.next.bind(manualChange$),
-    buyToken: 'DAI',
-    sellToken: 'ETH',
+    buyToken: 'WETH',
+    sellToken: 'SAI',
     gasEstimationStatus: GasEstimationStatus.unset,
     tradeEvaluationStatus: TradeEvaluationStatus.unset,
     slippageLimit: new BigNumber('0.05'),
