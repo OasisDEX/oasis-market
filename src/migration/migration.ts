@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
-import { combineLatest, noop, Observable, of, Subject } from 'rxjs';
+import {BehaviorSubject, combineLatest, noop, Observable, of, Subject} from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
@@ -101,36 +101,38 @@ export function createExchangeMigration$(
   operations$: Observable<ExchangeMigrationOperation[]>,
   orders$: Observable<TradeWithStatus[]>
 ): Observable<ExchangeMigrationState> {
+
+  const state$ = new BehaviorSubject<ExchangeMigrationState>({
+    status: ExchangeMigrationStatus.initializing,
+    cancelOffer: (cancelData: CancelData) => false,
+  } as ExchangeMigrationInitializingState);
+
   return combineLatest(
     calls$,
     operations$,
-    orders$
+    orders$,
+    state$
   ).pipe(
-    first(),
-    switchMap(([calls, operations, orders]) => {
-      const state = new Subject<ExchangeMigrationState>();
-      const initial: ExchangeMigrationState = {
-        orders,
-        pending: operations,
-        cancelOffer: (cancelData: CancelData) =>
-          calls.cancelOffer2(cancelData).subscribe(noop),
-        start: () => {
-          inductor(
-            initial,
-            curry(next)(proxyAddress$, calls),
-          ).subscribe(state);
-        },
-        status: ExchangeMigrationStatus.ready,
-      };
-
-      return state.pipe(
-        startWith(initial)
-      );
+    map(([calls, operations, orders, state]) => {
+      if (state.status === ExchangeMigrationStatus.initializing) {
+        const ready = {
+          orders,
+          pending: operations,
+          cancelOffer: (cancelData: CancelData) =>
+            calls.cancelOffer2(cancelData).subscribe(noop),
+          start: () => {
+            inductor(
+              ready,
+              curry(next)(proxyAddress$, calls),
+            ).subscribe(state$);
+          },
+          status: ExchangeMigrationStatus.ready,
+        } as ExchangeMigrationState;
+        return ready;
+      }
+      return state;
     }),
-    startWith({
-      status: ExchangeMigrationStatus.initializing,
-      cancelOffer: (cancelData: CancelData) => false,
-    } as ExchangeMigrationInitializingState)
+    startWith()
   );
 }
 
