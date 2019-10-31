@@ -198,7 +198,6 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
       context.instantProxyCreationAndExecute.address,
       method.getData(...params)
     ];
-
   },
   options: ({
     gasPrice,
@@ -217,6 +216,70 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
         Create Buy Order <Money value={buyAmount} token={buyToken}/>
       </>
 };
+
+export const migrateTradePayWithERC20: TransactionDef<InstantOrderData> = {
+  call: ({ proxyAddress }: InstantOrderData) => {
+    return web3.eth.contract(dsProxy as any).at(proxyAddress!).execute['address,bytes'];
+  },
+  prepareArgs: (
+    {
+      kind,
+      buyToken, buyAmount,
+      sellToken, sellAmount,
+      slippageLimit,
+    }: InstantOrderData,
+    context: NetworkConfig
+  ) => {
+    if (sellToken === 'ETH') {
+      throw new Error('Pay with ETH not handled here!');
+    }
+
+    const method = kind === OfferType.sell ?
+      buyToken === 'ETH' ?
+        context.instantProxyCreationAndExecute.contract.sellAllAmountBuyEth :
+        context.instantProxyCreationAndExecute.contract.sellAllAmount
+      :
+      buyToken === 'ETH' ?
+        context.instantProxyCreationAndExecute.contract.buyAllAmountBuyEth :
+        context.instantProxyCreationAndExecute.contract.buyAllAmount;
+
+    const params = kind === OfferType.sell ? [
+      context.otc.address,
+      context.tokens[sellToken].address,
+      amountToWei(sellAmount, sellToken).toFixed(0),
+      context.tokens[eth2weth(buyToken)].address,
+      amountToWei(fixBuyAmount(buyAmount, slippageLimit), buyToken).toFixed(0),
+    ] : [
+      context.otc.address,
+      context.tokens[eth2weth(buyToken)].address,
+      amountToWei(buyAmount, buyToken).toFixed(0),
+      context.tokens[sellToken].address,
+      amountToWei(fixSellAmount(sellAmount, slippageLimit), sellToken).toFixed(0),
+    ];
+
+    return [
+      context.instantProxyCreationAndExecute.address,
+      method.getData(...params)
+    ];
+  },
+  options: ({
+              gasPrice,
+              gasEstimation
+            }: InstantOrderData) => ({
+    gasPrice,
+    gas: gasEstimation,
+  }),
+  kind: TxMetaKind.tradePayWithERC20,
+  description: ({ kind, buyToken, buyAmount, sellToken, sellAmount }: InstantOrderData) =>
+    kind === 'sell' ?
+      <>
+        Create Sell Order <Money value={sellAmount} token={sellToken}/>
+      </> :
+      <>
+        Create Buy Order <Money value={buyAmount} token={buyToken}/>
+      </>
+};
+
 
 export interface GetBuyAmountData {
   sellToken: string;
