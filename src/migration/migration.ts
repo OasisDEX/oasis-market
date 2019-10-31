@@ -1,12 +1,12 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
-import { Ord } from 'ramda';
-import { combineLatest, from, Observable, of, Subject } from 'rxjs';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
 import { tradingPairs } from '../blockchain/config';
 import { getTxHash, TxState, TxStatus } from '../blockchain/transactions';
+import { TradeWithStatus } from '../exchange/myTrades/openTrades';
 import { Offer, Orderbook } from '../exchange/orderbook/orderbook';
 import { TradingPair } from '../exchange/tradingPair/tradingPair';
 import { zero } from '../utils/zero';
@@ -60,10 +60,12 @@ export enum ExchangeMigrationStatus {
 interface ExchangeMigrationReadyState {
   status: ExchangeMigrationStatus.ready;
   pending: ExchangeMigrationOperation[];
+  orders: TradeWithStatus[];
   start: VoidFunction;
 }
 
 interface ExchangeMigrationInProgressState {
+  orders: TradeWithStatus[];
   status: ExchangeMigrationStatus.inProgress;
   pending: ExchangeMigrationOperation[];
   current: ExchangeMigrationOperationInProgress;
@@ -83,34 +85,6 @@ export type ExchangeMigrationState =
   done: ExchangeMigrationOperationInProgress[];
 };
 
-function offerOf(account: string) {
-  return (o: Offer) => o.ownerId === account;
-}
-
-function openSAIOrders$(
-  initializedAccount$: Observable<string>,
-  loadOrderbook: (tp: TradingPair) => Observable<Orderbook>,
-) {
-  // TODO: iterate over all SAI markets!?
-  return combineLatest(
-    initializedAccount$,
-    ...tradingPairs
-      .filter(pair => pair.quote === 'SAI')
-      .map(pair => loadOrderbook(pair)),
-  ).pipe(
-    map(([account, ...rest]: [string, Orderbook]) => {
-      return rest
-        .map((orderbook) =>
-          orderbook.buy.filter(offerOf(account))
-            .concat(
-              orderbook.sell.filter(offerOf(account))))
-        .reduce(
-          (allOrders, fromGivenOrderbook) => [...allOrders, ...fromGivenOrderbook], []
-        );
-    })
-  );
-}
-
 function allowance$(allowances$: Observable<Allowances>, token: string) {
   return allowances$.pipe(
     map(allowances => allowances[token])
@@ -121,16 +95,18 @@ export function createExchangeMigration$(
   proxyAddress$: Observable<string>,
   calls$: Calls$,
   operations$: Observable<ExchangeMigrationOperation[]>,
+  orders$: Observable<TradeWithStatus[]>
 ): Observable<ExchangeMigrationState> {
   return combineLatest(
     calls$,
-    operations$
+    operations$,
+    orders$
   ).pipe(
     first(),
-    switchMap(([calls, operations]) => {
+    switchMap(([calls, operations, orders]) => {
       const state = new Subject<ExchangeMigrationState>();
-
       const initial: ExchangeMigrationState = {
+        orders,
         pending: operations,
         start: () => {
           inductor(
@@ -267,12 +243,9 @@ export function createExchangeMigrationOps$(
   proxyAddress$: Observable<string | undefined>,
 ): Observable<ExchangeMigrationOperation[]> {
 
-  const orders$ = openSAIOrders$(initializedAccount$, loadOrderbook);
   const saiAllowance$ = allowance$(allowances$, 'SAI');
-  // const daiAllowance$ = allowance$(allowances$, 'DAI');
 
   return combineLatest(
-    orders$,
     saiBalance$,
     saiAllowance$,
     // daiAllowance$,
@@ -280,28 +253,18 @@ export function createExchangeMigrationOps$(
   ).pipe(
     // @ts-ignore
     map(args => exchangeMigrationOps(...args)),
-    first()
   );
 }
 
 function exchangeMigrationOps(
-  orders: Offer[],
   saiBalance: BigNumber,
   saiAllowance: boolean,
-  // _daiAllowance: boolean,
   proxyAddress: string | undefined,
 ): ExchangeMigrationOperation[] {
 
   if (saiBalance.eq(zero)) {
     return [];
   }
-
-  const cancelOps: CancelOperation[] = orders.map(
-    offer => ({
-      offer,
-      kind: ExchangeMigrationTxKind.cancel
-    } as CancelOperation)
-  );
 
   const proxyOps: CreateProxyOperation[] = proxyAddress ? [] : [
     { kind: ExchangeMigrationTxKind.createProxy },
@@ -316,7 +279,6 @@ function exchangeMigrationOps(
   ] : [];
 
   return [
-    ...cancelOps,
     ...proxyOps,
     ...saiAllowanceOps,
     ...sai2DaiOps

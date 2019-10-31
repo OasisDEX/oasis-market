@@ -8,7 +8,7 @@ interface Params {
 }
 
 export interface Report {
-  txStatus: TxStatus;
+  txStatus: TxStatus | string;
   txHash: string;
   etherscanURI: string;
 }
@@ -61,7 +61,7 @@ export class ProgressReport extends React.Component<{ report: Report }> {
     return (
       <div className={styles.progressReport}>
         {
-          partial && partial({ txReport } as Params)
+          partial ? partial({ txReport } as Params) : txStatus
         }
       </div>
     );

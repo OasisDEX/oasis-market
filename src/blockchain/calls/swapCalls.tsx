@@ -35,7 +35,7 @@ export const swapSaiToDai: TransactionDef<SwapData> = {
   kind: TxMetaKind.swapDai,
   options: () => ({ gas: 5000000 }),
   description: ({ amount }) => <>
-    Swapping DAI <FormatAmount value={amount} token={'SAI'}/> for MCD DAI
+    Swapping SAI <FormatAmount value={amount} token={'SAI'}/> for DAI
   </>,
 };
 

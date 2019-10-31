@@ -40,16 +40,17 @@ import {
   onEveryBlock$, tokenPricesInUSD$
 } from './blockchain/network';
 import { user$ } from './blockchain/user';
-import { loadOrderbook$, Orderbook } from './exchange/orderbook/orderbook';
+import { loadOrderbook$, Offer, Orderbook } from './exchange/orderbook/orderbook';
 import {
   createTradingPair$,
   currentTradingPair$,
   loadablifyPlusTradingPair,
-  memoizeTradingPair,
+  memoizeTradingPair, TradingPair,
 } from './exchange/tradingPair/tradingPair';
 
 import * as mixpanel from 'mixpanel-browser';
 import { of } from 'rxjs/index';
+import { tradingPairs } from './blockchain/config';
 import { transactions$, TxState } from './blockchain/transactions';
 import {
   createAllTrades$,
@@ -256,7 +257,7 @@ export function setupAppContext() {
   const myTradesKind$ = createMyTradesKind$();
   const myOpenTrades$ = loadablifyPlusTradingPair(
     currentTradingPair$,
-    memoizeTradingPair(curry(createMyOpenTrades$)(loadOrderbook, account$, transactions$))
+    memoizeTradingPair(curry(createMyOpenTrades$)(currentOrderbook$, account$, transactions$))
   );
 
   const myClosedTrades$ = loadablifyPlusTradingPair(
@@ -340,6 +341,36 @@ export function setupAppContext() {
     export: () => createTaxExport$(context$, initializedAccount$)
   });
 
+  const aggregatedOpenOrders$ = createMyOpenTrades$(
+    combineLatest(...tradingPairs
+      .filter(pair => pair.quote === 'SAI')
+      .map(pair => loadOrderbook(pair))
+    )
+      .pipe(
+        first(),
+        map((orderbooks) => {
+          const aggregatedOrderbook = {
+            buy: [] as Offer[],
+            sell: [] as Offer[],
+            blockNumber: 0,
+          };
+
+          return orderbooks.reduce(
+            (aggregate, currentOrderbook) => {
+              aggregate.buy = [...aggregate.buy, ...currentOrderbook.buy];
+              aggregate.sell = [...aggregate.sell, ...currentOrderbook.sell];
+              // the blockNumber is the same for all of them
+              aggregate.blockNumber = currentOrderbook.blockNumber;
+              return aggregate;
+            },
+            aggregatedOrderbook
+          );
+        })),
+    account$,
+    transactions$,
+    {} as TradingPair
+  );
+
   const exchangeMigrationOps$ = createExchangeMigrationOps$(
     initializedAccount$,
     loadOrderbook,
@@ -360,7 +391,8 @@ export function setupAppContext() {
   const migration$ = createExchangeMigration$(
     proxyAddress$,
     calls$,
-    exchangeMigrationOps$
+    exchangeMigrationOps$,
+    aggregatedOpenOrders$
   );
 
   const MigrationTxRx =

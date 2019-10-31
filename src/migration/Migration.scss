@@ -23,45 +23,6 @@
   }
 }
 
-.process {
-  display: inline-flex;
-  flex-direction: column;
-  border: 1px solid $element-border;
-  border-radius: $border-radius;
-  width: 100%;
-  max-width: 388px;
-  height: 258px;
-  font-size: 15px;
-  line-height: 1.5rem;
-
-  padding: 2rem 1.5rem;
-
-  .title {
-    font-size: 15px;
-    margin: 0 0 20px;
-    font-weight: 600;
-  }
-
-  .description {
-    display: block;
-    font-weight: 500;
-    margin: 0 0 20px;
-  }
-
-  .data {
-    font-weight: 500;
-    color: $light-blue;
-    margin: 0 0 24px
-  }
-
-  .actionBtn {
-    height: 34px;
-    width: 100%;
-    max-width: 170px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-}
 
 .panelHeader {
   position: relative;
@@ -72,7 +33,12 @@
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  padding: 1.5rem;
+  padding: 1.5rem 0;
+
+  &.process {
+    justify-content: flex-start;
+    flex-direction: column;
+  }
 }
 
 .panelFooter {
@@ -81,7 +47,64 @@
   display: inline-flex;
 
   button {
-    height: 34px
+    height: 34px;
+    margin-right: 1.25rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.closeBtn {
+  right: 1rem;
+}
+
+.backBtn {
+  width: 100%;
+  max-width: 124px;
+}
+
+.migrateBtn {
+  width: 100%;
+  max-width: 186px;
+}
+
+.description {
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  padding: 0 1.5rem;
+}
+
+.ordersPlaceholder {
+  display: flex;
+  border-top: 1px solid $element-border;
+  border-bottom: 1px solid $element-border;
+  width: 100%;
+}
+
+.orders {
+  max-height: 400px;
+
+  th:first-child, td:first-child {
+    padding-left: 24px;
+  }
+}
+
+.txRow {
+  max-width: 720px;
+  width: 100%;
+  border: 1px solid $element-border;
+  border-radius: $border-radius;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+
+  @include media-breakpoint-down(sm) {
+    padding: .5rem .75rem;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
   }
 }
 

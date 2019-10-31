@@ -7,10 +7,12 @@ import { Error } from 'tslint/lib/error';
 import { TxMetaKind } from '../../blockchain/calls/txMeta';
 import {
   TxState,
-  TxStatus } from '../../blockchain/transactions';
+  TxStatus
+} from '../../blockchain/transactions';
 import { Offer, OfferType, Orderbook } from '../orderbook/orderbook';
 import { compareTrades, Trade, TradeRole } from '../trades';
 import { TradingPair } from '../tradingPair/tradingPair';
+import { Omit } from "../../utils/omit";
 
 export enum TradeStatus {
   beingCancelled = 'beingCancelled',
@@ -40,12 +42,12 @@ function txnEarlierThan(txn: TxState, blockNumber: number) {
 function isBeingCancelled(offer: Offer, transactions: TxState[]): boolean {
   return !!find(transactions, (t: TxState) =>
     t.meta.kind === TxMetaKind.cancel &&
-      t.meta.args.offerId.eq(offer.offerId) &&
-      txnInProgress(t)
+    t.meta.args.offerId.eq(offer.offerId) &&
+    txnInProgress(t)
   );
 }
 
-function txnToTrade(txn: TxState): TradeWithStatus  {
+function txnToTrade(txn: TxState): TradeWithStatus {
 
   if (txn.meta.kind !== TxMetaKind.offerMake) {
     throw new Error('Should not get here!');
@@ -95,14 +97,14 @@ function offerToTrade(tnxs: TxState[]): (offer: Offer) => TradeWithStatus {
 }
 
 export function createMyOpenTrades$(
-  loadOrderbookTP: (tp: TradingPair) => Observable<Orderbook>,
+  orderbook$: Observable<Omit<Orderbook, 'tradingPair'>>,
   account$: Observable<string | undefined>,
   transactions$: Observable<TxState[]>,
-  tradingPair: TradingPair,
+  // the usage with memoizeTradingPair just killed my enthusiasm to figure out how to remove it
+  _: TradingPair,
 ): Observable<TradeWithStatus[]> {
-  return combineLatest(loadOrderbookTP(tradingPair), account$, transactions$).pipe(
+  return combineLatest(orderbook$, account$, transactions$).pipe(
     map(([orderbook, account, txns]) => {
-
       const myOffer = (o: Offer) => o.ownerId === account;
 
       return txns

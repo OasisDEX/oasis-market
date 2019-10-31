@@ -1,0 +1,41 @@
+@import "../utils/Variables";
+
+.container {
+  display: inline-flex;
+  flex-direction: column;
+  border: 1px solid $element-border;
+  border-radius: $border-radius;
+  width: 100%;
+  max-width: 388px;
+  height: 258px;
+  font-size: 15px;
+  line-height: 1.5rem;
+  margin: 0 1.5rem;
+  padding: 2rem 1.5rem;
+}
+
+.title {
+  font-size: 15px;
+  margin: 0 0 20px;
+  font-weight: 600;
+}
+
+.description {
+  display: block;
+  font-weight: 500;
+  margin: 0 0 20px;
+}
+
+.data {
+  font-weight: 500;
+  color: $light-blue;
+  margin: 0 0 24px
+}
+
+.actionBtn {
+  height: 34px;
+  width: 100%;
+  max-width: 170px;
+  font-size: 14px;
+  font-weight: 600;
+}

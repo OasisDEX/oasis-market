@@ -19,29 +19,12 @@ import { MyTradesKind, MyTradesPropsLoadable } from './myTrades';
 import * as styles from './MyTradesView.scss';
 import { TradeWithStatus } from './openTrades';
 
-export class MyTrades extends React.Component<MyTradesPropsLoadable> {
+export class MyTradesTable extends React.Component<MyTradesPropsLoadable> {
   public render() {
-    const { value, kind, changeKind, tradingPair } = this.props;
+    const { kind, tradingPair } = this.props;
+
     return (
       <>
-        <PanelHeader bordered={value && value.status === 'error'}>
-          <span>My Orders</span>
-          <ButtonGroup style={{ marginLeft: 'auto' }}>
-            <Button
-              size="sm"
-              color={kind === MyTradesKind.open ? 'primary' : 'greyOutlined'}
-              className={styles.orderTypeBtn}
-              onClick={() => changeKind && changeKind(MyTradesKind.open)}
-            >Open</Button>
-            <Button
-              size="sm"
-              color={kind === MyTradesKind.closed ? 'primary' : 'greyOutlined'}
-              className={styles.orderTypeBtn}
-              onClick={() => changeKind && changeKind(MyTradesKind.closed)}
-            >Closed</Button>
-          </ButtonGroup>
-        </PanelHeader>
-
         <Table align="left"
                className={classnames(styles.myTradesTable, {
                  [styles.myOpenTradesTable]: kind === MyTradesKind.open,
@@ -162,5 +145,33 @@ export class MyTrades extends React.Component<MyTradesPropsLoadable> {
     return (): void => {
       etherscan(this.props.etherscan).transaction(trade.tx as string).open();
     };
+  }
+}
+
+export class MyTrades extends React.Component<MyTradesPropsLoadable> {
+  public render() {
+    const { value, kind, changeKind } = this.props;
+    return (
+      <>
+        <PanelHeader bordered={value && value.status === 'error'}>
+          <span>My Orders</span>
+          <ButtonGroup style={{ marginLeft: 'auto' }}>
+            <Button
+              size="sm"
+              color={kind === MyTradesKind.open ? 'primary' : 'greyOutlined'}
+              className={styles.orderTypeBtn}
+              onClick={() => changeKind && changeKind(MyTradesKind.open)}
+            >Open</Button>
+            <Button
+              size="sm"
+              color={kind === MyTradesKind.closed ? 'primary' : 'greyOutlined'}
+              className={styles.orderTypeBtn}
+              onClick={() => changeKind && changeKind(MyTradesKind.closed)}
+            >Closed</Button>
+          </ButtonGroup>
+        </PanelHeader>
+        <MyTradesTable {...this.props}/>
+      </>
+    );
   }
 }
