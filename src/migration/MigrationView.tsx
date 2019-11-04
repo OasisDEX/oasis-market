@@ -10,7 +10,11 @@ import { ModalOpenerProps, ModalProps } from '../utils/modal';
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '../utils/panel/Panel';
 import { TopRightCorner } from '../utils/panel/TopRightCorner';
 
-import { ExchangeMigrationState, ExchangeMigrationStatus, ExchangeMigrationTxKind } from './migration';
+import {
+  ExchangeMigrationState,
+  ExchangeMigrationStatus,
+  ExchangeMigrationTxKind
+} from './migration';
 
 import { BigNumber } from 'bignumber.js';
 import { tokens } from '../blockchain/config';
@@ -30,7 +34,9 @@ import { CallForAction } from './CallForAction';
 import * as styles from './Migration.scss';
 
 export type MigrationButtonProps = Loadable<ExchangeMigrationState> & {
-  migration$: Observable<ExchangeMigrationState>
+  label: string;
+  migration$: Observable<ExchangeMigrationState>;
+  className?: string;
 };
 
 // TODO: Probably extract all Tooltip Definitions in a separate file.
@@ -60,13 +66,13 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
           || (migrationState.orders && migrationState.orders.length)
             ? (
               <Button size="md"
-                      className={styles.redeemBtn}
+                      className={classnames(styles.redeemBtn, this.props.className)}
                       disabled={
                         migrationState.status !== ExchangeMigrationStatus.ready
                       }
                       onClick={() => this.setup()}
               >
-                Redeem Dai
+                {this.props.label}
               </Button>
             )
             : <></>;

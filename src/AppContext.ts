@@ -347,7 +347,6 @@ export function setupAppContext() {
       .map(pair => loadOrderbook(pair))
     )
       .pipe(
-        first(),
         map((orderbooks) => {
           const aggregatedOrderbook = {
             buy: [] as Offer[],
