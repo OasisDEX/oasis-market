@@ -25,6 +25,7 @@ import { WrapUnwrapFormKind, WrapUnwrapFormState } from '../wrapUnwrap/wrapUnwra
 import { WrapUnwrapFormView } from '../wrapUnwrap/WrapUnwrapFormView';
 import * as styles from './AssetOverviewView.scss';
 import { CombinedBalances } from './balances';
+import { theAppContext } from "../AppContext";
 
 export interface AssetsOverviewActionProps  {
   wrapUnwrapForm$: (formKind: WrapUnwrapFormKind) => Observable<WrapUnwrapFormState>;
@@ -163,47 +164,14 @@ export class AssetsOverviewViewInternal
               }
               {
                 combinedBalance.name === 'SAI' &&
-                <Button
-                  data-test-id="open-wrap-form"
-                  color="secondary"
-                  size="xs"
-                  className={styles.wrapUnwrapBtn}
-                  block={true}
-                  onClick={() => {
-                    mixpanel.track('btn-click', {
-                      id: 'wrap-eth',
-                      product: 'oasis-trade',
-                      page: 'Account',
-                      section: 'asset-overview'
-                    });
-                    this.wrapSai();
-                  }}
-                  disabled={this.props.etherBalance.eq(zero)}
-                >
-                  Convert to DAI
-                </Button>
-              }
-              {
-                combinedBalance.name === 'DAI' &&
-                <Button
-                  data-test-id="open-wrap-form"
-                  color="secondary"
-                  size="xs"
-                  className={styles.wrapUnwrapBtn}
-                  block={true}
-                  onClick={() => {
-                    mixpanel.track('btn-click', {
-                      id: 'wrap-eth',
-                      product: 'oasis-trade',
-                      page: 'Account',
-                      section: 'asset-overview'
-                    });
-                    this.unwrapSai();
-                  }}
-                  disabled={this.props.etherBalance.eq(zero)}
-                >
-                  Convert to SAI
-                </Button>
+                <theAppContext.Consumer>
+                  {({ MigrationTxRx }) =>
+                    // @ts-ignore
+                    <MigrationTxRx label="Redeem Dai"
+                                   className={styles.redeemBtn}
+                    />
+                  }
+                </theAppContext.Consumer>
               }
             </td>
             <td data-test-id={`${combinedBalance.name}-balance`}
