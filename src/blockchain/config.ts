@@ -47,6 +47,7 @@ export const tradingPairs: TradingPair[] = [
     { base: 'BAT', quote: 'DAI' },
     { base: 'DAI', quote: 'USDC' },
     { base: 'REP', quote: 'WETH' },
+    { base: 'ZRX', quote: 'WETH' },
     { base: 'BAT', quote: 'WETH' },
   ]
 ];
