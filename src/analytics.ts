@@ -18,9 +18,11 @@ const config = {
 }[env];
 
 export const mixpanelInit = () => {
-  config.mixpanel.config.debug && console.debug(
-    `[Mixpanel] Tracking initialized for ${env} env using ${config.mixpanel.token}`
-  );
+  if (config.mixpanel.config.debug) {
+    console.debug(
+      `[Mixpanel] Tracking initialized for ${env} env using ${config.mixpanel.token}`
+    );
+  }
   mixpanel.init(config.mixpanel.token, config.mixpanel.config);
   mixpanel.track('Pageview', { product: 'oasis-trade' });
 };
@@ -31,7 +33,7 @@ export const mixpanelIdentify = (id: string, props: any) => {
   console.debug(
     `[Mixpanel] Identifying as ${id} ${
       props && props.wallet ? `using wallet ${props.wallet}` : ''
-    }`
+      }`
   );
   mixpanel.identify(id);
   if (props) mixpanel.people.set(props);

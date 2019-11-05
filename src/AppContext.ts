@@ -9,7 +9,7 @@ import {
   flatMap,
   map, mergeMap,
   shareReplay, startWith,
-  switchMap, tap,
+  switchMap,
 } from 'rxjs/operators';
 import {
   AssetOverviewView,
@@ -108,8 +108,7 @@ import { createFormController$ as createInstantFormController$ } from './instant
 import { InstantViewPanel } from './instant/InstantViewPanel';
 import {
   createExchangeMigration$,
-  createExchangeMigrationOps$, ExchangeMigrationState,
-  ExchangeMigrationStatus
+  createExchangeMigrationOps$, ExchangeMigrationState
 } from './migration/migration';
 import { MigrationButton } from './migration/MigrationView';
 import { createTransactionNotifier$ } from './transactionNotifier/transactionNotifier';

@@ -147,7 +147,9 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
     const view = (() => {
       switch (this.state.view) {
         case MigrationViews.cancelOrders:
-          return this.cancelOrders(orders);
+          return !orders.length
+            ? this.initialView(orders.length, amount)
+            : this.cancelOrders(orders);
         case MigrationViews.migration:
           return this.migration(amount);
         default:
@@ -329,7 +331,9 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         }
 
         {
-          this.props.status === ExchangeMigrationStatus.done && this.setState({
+          this.props.status === ExchangeMigrationStatus.done
+          && amount.eq(new BigNumber(0))
+          && this.setState({
             view: MigrationViews.initial
           })
         }
