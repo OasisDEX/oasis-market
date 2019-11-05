@@ -9,7 +9,7 @@ import {
   flatMap,
   map, mergeMap,
   shareReplay, startWith,
-  switchMap,
+  switchMap, tap,
 } from 'rxjs/operators';
 import {
   AssetOverviewView,
@@ -51,6 +51,7 @@ import {
 import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
 import { of } from 'rxjs/index';
+import { TxMetaKind } from './blockchain/calls/txMeta';
 import { tradingPairs } from './blockchain/config';
 import { transactions$, TxState } from './blockchain/transactions';
 import {
@@ -370,7 +371,14 @@ export function setupAppContext() {
           );
         })),
     account$,
-    transactions$,
+    transactions$.pipe(
+      map((transactions: TxState[]) => {
+        return transactions && transactions.filter(tx => {
+          return tx.meta.args.sellToken === 'SAI'
+          && tx.meta.kind === TxMetaKind.cancel;
+        });
+      }),
+    ),
     {} as TradingPair
   );
 

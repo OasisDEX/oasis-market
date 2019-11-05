@@ -66,10 +66,6 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
     >
       {
         (migrationState: any) => {
-          if (migrationState.orders && migrationState.pending) {
-            console.log(migrationState.orders.length, migrationState.pending.length);
-          }
-
           return (migrationState.pending && migrationState.pending.length)
           || (migrationState.orders && migrationState.orders.length)
             ? (
