@@ -173,12 +173,12 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
 
     const method = kind === OfferType.sell ?
       buyToken === 'ETH' ?
-        context.instantProxyCreationAndExecute.contract.sellAllAmountBuyEth :
-        context.instantProxyCreationAndExecute.contract.sellAllAmount
+        context.directMigrationProxyActions.contract.sellAllAmountBuyEthAndMigrateSai :
+        context.directMigrationProxyActions.contract.sellAllAmountAndMigrateSai
       :
       buyToken === 'ETH' ?
-        context.instantProxyCreationAndExecute.contract.buyAllAmountBuyEth :
-        context.instantProxyCreationAndExecute.contract.buyAllAmount;
+        context.directMigrationProxyActions.contract.buyAllAmountBuyEthAndMigrateSai :
+        context.directMigrationProxyActions.contract.buyAllAmountAndMigrateSai;
 
     const params = kind === OfferType.sell ? [
       context.otc.address,
@@ -186,16 +186,18 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
       amountToWei(sellAmount, sellToken).toFixed(0),
       context.tokens[eth2weth(buyToken)].address,
       amountToWei(fixBuyAmount(buyAmount, slippageLimit), buyToken).toFixed(0),
+      context.migration
     ] : [
       context.otc.address,
       context.tokens[eth2weth(buyToken)].address,
       amountToWei(buyAmount, buyToken).toFixed(0),
       context.tokens[sellToken].address,
       amountToWei(fixSellAmount(sellAmount, slippageLimit), sellToken).toFixed(0),
+      context.migration
     ];
 
     return [
-      context.instantProxyCreationAndExecute.address,
+      context.directMigrationProxyActions.address,
       method.getData(...params)
     ];
   },
@@ -210,10 +212,10 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
   description: ({ kind, buyToken, buyAmount, sellToken, sellAmount }: InstantOrderData) =>
     kind === 'sell' ?
       <>
-        Create Sell Order <Money value={sellAmount} token={sellToken}/>
+        Migrate SAi and create Sell Order <Money value={sellAmount} token={sellToken}/>
       </> :
       <>
-        Create Buy Order <Money value={buyAmount} token={buyToken}/>
+        Migrate SAi and create Buy Order <Money value={buyAmount} token={buyToken}/>
       </>
 };
 
