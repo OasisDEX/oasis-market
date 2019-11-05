@@ -380,9 +380,7 @@ export function setupAppContext() {
     createProxyAllowances$(
       context$,
       initializedAccount$,
-      proxyAddress$.pipe(
-        filter(address => !!address),
-      ),
+      proxyAddress$,
       onEveryBlock$
     ).pipe(
       startWith({})
