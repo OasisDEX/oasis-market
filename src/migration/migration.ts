@@ -77,14 +77,24 @@ interface ExchangeMigrationInitializingState {
   status: ExchangeMigrationStatus.initializing;
 }
 
+interface ExchangeMigrationDoneState {
+  status: ExchangeMigrationStatus.done;
+  done: ExchangeMigrationOperationInProgress[];
+}
+
+interface ExchangeMigrationFiascoState {
+  status: ExchangeMigrationStatus.fiasco;
+  pending: ExchangeMigrationOperation[];
+  current: ExchangeMigrationOperationInProgress;
+  done: ExchangeMigrationOperationInProgress[];
+}
+
 export type ExchangeMigrationState =
   ExchangeMigrationInitializingState
   | ExchangeMigrationReadyState
   | ExchangeMigrationInProgressState
-  | {
-    status: ExchangeMigrationStatus.done | ExchangeMigrationStatus.fiasco;
-    done: ExchangeMigrationOperationInProgress[];
-  };
+  | ExchangeMigrationDoneState
+  | ExchangeMigrationFiascoState;
 
 function allowance$(allowances$: Observable<Allowances>, token: string) {
   return allowances$.pipe(
@@ -233,7 +243,9 @@ function next(
     }
 
     return of({
-      done: [...state.done, state.current],
+      pending: state.pending,
+      current: state.current,
+      done: state.done,
       status: ExchangeMigrationStatus.fiasco
     } as ExchangeMigrationState);
   }
