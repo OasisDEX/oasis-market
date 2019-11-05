@@ -1,15 +1,15 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
 import { BehaviorSubject, combineLatest, noop, Observable, of } from 'rxjs';
-import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
+import {filter, first, map, startWith, switchMap, tap} from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
 import { CancelData } from '../blockchain/calls/offerMake';
 import { getTxHash, TxState, TxStatus } from '../blockchain/transactions';
 import { TradeWithStatus } from '../exchange/myTrades/openTrades';
 import { Offer } from '../exchange/orderbook/orderbook';
+import { inductor } from '../utils/inductor';
 import { zero } from '../utils/zero';
-import { inductor } from './inductor';
 
 export enum ExchangeMigrationTxKind {
   cancel = 'cancel',
@@ -87,6 +87,7 @@ interface ExchangeMigrationFiascoState {
   pending: ExchangeMigrationOperation[];
   current: ExchangeMigrationOperationInProgress;
   done: ExchangeMigrationOperationInProgress[];
+  restart: VoidFunction;
 }
 
 export type ExchangeMigrationState =
@@ -130,8 +131,8 @@ export function createExchangeMigration$(
           start: () => {
             inductor(
               ready,
-              curry(next)(proxyAddress$, calls),
-            ).subscribe(state$);
+              curry(next)(proxyAddress$, calls, state$),
+            ).subscribe(s => state$.next(s));
           },
           status: ExchangeMigrationStatus.ready,
         } as ExchangeMigrationState;
@@ -209,8 +210,10 @@ function start(
 function next(
   proxyAddress$: Observable<string | undefined>,
   calls: Calls,
+  state$: BehaviorSubject<ExchangeMigrationState>,
   state: ExchangeMigrationState
 ): Observable<ExchangeMigrationState> | undefined {
+
   if (state.status === ExchangeMigrationStatus.ready) {
     if (state.pending.length === 0) {
       return of({
@@ -242,12 +245,28 @@ function next(
       } as ExchangeMigrationState);
     }
 
-    return of({
+    const fiasco = {
       pending: state.pending,
       current: state.current,
       done: state.done,
-      status: ExchangeMigrationStatus.fiasco
-    } as ExchangeMigrationState);
+      status: ExchangeMigrationStatus.fiasco,
+      restart: () => {
+        state$.next({ status: ExchangeMigrationStatus.initializing });
+        // const { txStatus, txHash, ...current } = state.current;
+        // inductor(
+        //   {
+        //     orders: state.orders,
+        //     pending: [current, ...state.pending],
+        //     cancelOffer: state.cancelOffer,
+        //     status: ExchangeMigrationStatus.ready,
+        //     start: () => { return; },
+        //   },
+        //   curry(next)(proxyAddress$, calls, state$),
+        // ).subscribe(s => state$.next(s));
+      }
+    } as ExchangeMigrationState;
+
+    return of(fiasco);
   }
 
   return undefined;

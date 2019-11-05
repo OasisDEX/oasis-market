@@ -200,7 +200,6 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
             <tbody>
             {
               orders.map((order: TradeWithStatus, index: number) => {
-                console.log(order.status);
                 return (
                   <RowClickable
                     data-test-id="my-trades"
@@ -281,35 +280,29 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
           }
         </div>
 
-        {/* MIGRATION STATUS IS READY*/}
         {
-          this.props.status === ExchangeMigrationStatus.ready
-          && this.props.pending
-          && this.props.pending.map((operation, index) => {
-            return this.txRow(operation, index);
-          })
-        }
-
-        {/* MIGRATION STATUS IS IN PROGRESS*/}
-        {
-          this.props.status === ExchangeMigrationStatus.inProgress
-          && this.props.done
+          (this.props.status === ExchangeMigrationStatus.inProgress ||
+          this.props.status === ExchangeMigrationStatus.fiasco)
           && this.props.done.map((operation) => {
             return this.txRow(operation);
           })
         }
+
         {
-          this.props.status === ExchangeMigrationStatus.inProgress
-          && this.props.current
+          (this.props.status === ExchangeMigrationStatus.inProgress ||
+          this.props.status === ExchangeMigrationStatus.fiasco)
           && this.txRow(this.props.current)
         }
+
         {
-          this.props.status === ExchangeMigrationStatus.inProgress
-          && this.props.pending
+          (this.props.status === ExchangeMigrationStatus.ready ||
+          this.props.status === ExchangeMigrationStatus.inProgress ||
+          this.props.status === ExchangeMigrationStatus.fiasco)
           && this.props.pending.map((operation) => {
             return this.txRow(operation);
           })
         }
+
         {
           this.props.status === ExchangeMigrationStatus.done && this.setState({
             view: MigrationViews.initial
@@ -327,17 +320,27 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         >
           Back
         </Button>
-        <Button size="sm"
+
+        { this.props.status === ExchangeMigrationStatus.ready && <Button size="sm"
                 color="primary"
                 className={styles.migrateBtn}
-                disabled={this.props.status === ExchangeMigrationStatus.inProgress}
                 onClick={() =>
-                  this.props.status === ExchangeMigrationStatus.ready
-                  && this.props.start()
+                  this.props.status === ExchangeMigrationStatus.ready && this.props.start()
                 }
         >
           Migrate
-        </Button>
+        </Button>}
+
+        { this.props.status === ExchangeMigrationStatus.fiasco && <Button size="sm"
+           color="primary"
+           className={styles.migrateBtn}
+           onClick={() =>
+             this.props.status === ExchangeMigrationStatus.fiasco && this.props.restart()
+           }
+        >
+         Restart
+        </Button>}
+
       </PanelFooter>
     </Panel>;
   }
