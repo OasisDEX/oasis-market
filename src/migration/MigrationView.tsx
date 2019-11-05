@@ -13,7 +13,8 @@ import { TopRightCorner } from '../utils/panel/TopRightCorner';
 import {
   ExchangeMigrationState,
   ExchangeMigrationStatus,
-  ExchangeMigrationTxKind
+  ExchangeMigrationTxKind,
+  SAI2DAIOperation
 } from './migration';
 
 import { BigNumber } from 'bignumber.js';
@@ -65,14 +66,15 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
     >
       {
         (migrationState: any) => {
+          if (migrationState.orders && migrationState.pending) {
+            console.log(migrationState.orders.length, migrationState.pending.length);
+          }
+
           return (migrationState.pending && migrationState.pending.length)
           || (migrationState.orders && migrationState.orders.length)
             ? (
               <Button size="md"
                       className={classnames(styles.redeemBtn, this.props.className)}
-                      disabled={
-                        migrationState.status !== ExchangeMigrationStatus.ready
-                      }
                       onClick={() => this.setup()}
               >
                 {this.props.label}
@@ -109,17 +111,34 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
   }
 
   public render() {
-    const orders: TradeWithStatus[] = (this.props.status === ExchangeMigrationStatus.ready
-      || this.props.status === ExchangeMigrationStatus.inProgress)
+    const orders: TradeWithStatus[] = (
+      this.props.status === ExchangeMigrationStatus.ready
+      || this.props.status === ExchangeMigrationStatus.inProgress
+      || this.props.status === ExchangeMigrationStatus.fiasco
+      || this.props.status === ExchangeMigrationStatus.done
+    )
       ? this.props.orders
       : [];
 
     let amount: BigNumber = new BigNumber(0);
 
-    if (this.props.status === ExchangeMigrationStatus.ready
-      || this.props.status === ExchangeMigrationStatus.inProgress) {
+    if (
+      this.props.status === ExchangeMigrationStatus.ready) {
       const pendingMigration = this.props.pending
-        .find((op) => op.kind === ExchangeMigrationTxKind.sai2dai) as { amount: BigNumber };
+        .find((op) => op && op.kind === ExchangeMigrationTxKind.sai2dai) as SAI2DAIOperation;
+
+      if (pendingMigration) {
+        amount = new BigNumber(pendingMigration.amount.toFormat(tokens.SAI.digits));
+      }
+    }
+
+    if (this.props.status === ExchangeMigrationStatus.inProgress
+      || this.props.status === ExchangeMigrationStatus.fiasco
+    ) {
+      const pendingMigration = this.props.pending
+        .concat(this.props.current)
+        .concat(this.props.done)
+        .find((op) => op && op.kind === ExchangeMigrationTxKind.sai2dai) as SAI2DAIOperation;
       if (pendingMigration) {
         amount = new BigNumber(pendingMigration.amount.toFormat(tokens.SAI.digits));
       }
@@ -265,7 +284,13 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
       <PanelHeader bordered={true} className={styles.panelHeader}>
         Multi Collateral Dai Redeemer
         <TopRightCorner className={styles.closeBtn}>
-          <CloseButton theme="danger" onClick={this.props.close}/>
+          <CloseButton theme="danger" onClick={() => {
+            this.props.close();
+            if (this.props.status === ExchangeMigrationStatus.fiasco
+              || this.props.status === ExchangeMigrationStatus.done) {
+              this.props.restart();
+            }
+          }}/>
         </TopRightCorner>
       </PanelHeader>
       <PanelBody paddingVertical={true}
@@ -282,7 +307,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
 
         {
           (this.props.status === ExchangeMigrationStatus.inProgress ||
-          this.props.status === ExchangeMigrationStatus.fiasco)
+            this.props.status === ExchangeMigrationStatus.fiasco)
           && this.props.done.map((operation) => {
             return this.txRow(operation);
           })
@@ -290,14 +315,14 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
 
         {
           (this.props.status === ExchangeMigrationStatus.inProgress ||
-          this.props.status === ExchangeMigrationStatus.fiasco)
+            this.props.status === ExchangeMigrationStatus.fiasco)
           && this.txRow(this.props.current)
         }
 
         {
           (this.props.status === ExchangeMigrationStatus.ready ||
-          this.props.status === ExchangeMigrationStatus.inProgress ||
-          this.props.status === ExchangeMigrationStatus.fiasco)
+            this.props.status === ExchangeMigrationStatus.inProgress ||
+            this.props.status === ExchangeMigrationStatus.fiasco)
           && this.props.pending.map((operation) => {
             return this.txRow(operation);
           })
@@ -321,25 +346,29 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
           Back
         </Button>
 
-        { this.props.status === ExchangeMigrationStatus.ready && <Button size="sm"
-                color="primary"
-                className={styles.migrateBtn}
-                onClick={() =>
-                  this.props.status === ExchangeMigrationStatus.ready && this.props.start()
-                }
-        >
-          Migrate
-        </Button>}
+        {this.props.status === ExchangeMigrationStatus.ready && (
+          <Button size="sm"
+                  color="primary"
+                  className={styles.migrateBtn}
+                  onClick={() =>
+                    this.props.status === ExchangeMigrationStatus.ready && this.props.start()
+                  }
+          >
+            Migrate
+          </Button>
+        )
+        }
 
-        { this.props.status === ExchangeMigrationStatus.fiasco && <Button size="sm"
-           color="primary"
-           className={styles.migrateBtn}
-           onClick={() =>
-             this.props.status === ExchangeMigrationStatus.fiasco && this.props.restart()
-           }
-        >
-         Restart
-        </Button>}
+        {this.props.status === ExchangeMigrationStatus.fiasco && (
+          <Button size="sm"
+                  color="primary"
+                  className={styles.migrateBtn}
+                  onClick={() =>
+                    this.props.status === ExchangeMigrationStatus.fiasco && this.props.restart()
+                  }
+          >
+            Restart
+          </Button>)}
 
       </PanelFooter>
     </Panel>;

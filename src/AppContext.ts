@@ -406,22 +406,6 @@ export function setupAppContext() {
       { migration$ }
     );
 
-  (window as any).exchangeMigration = () => {
-    migration$
-      .pipe(
-        tap(s => {
-          if (s.status === ExchangeMigrationStatus.ready) {
-            s.start();
-          }
-        })
-      )
-      .subscribe({
-        next: v => console.log('Migration state:', v),
-        error: err => console.log('Migration error:', err),
-        complete: () => console.log('Migration complete!')
-      });
-  };
-
   return {
     AllTradesTxRx,
     AssetOverviewViewRxTx,

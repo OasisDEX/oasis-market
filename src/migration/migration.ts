@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
 import { BehaviorSubject, combineLatest, noop, Observable, of } from 'rxjs';
-import {filter, first, map, startWith, switchMap, tap} from 'rxjs/operators';
+import { filter, first, map, switchMap } from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
 import { CancelData } from '../blockchain/calls/offerMake';
@@ -32,7 +32,7 @@ interface Allowance4ProxyOperation {
   token: string;
 }
 
-interface SAI2DAIOperation {
+export interface SAI2DAIOperation {
   kind: ExchangeMigrationTxKind.sai2dai;
   amount: BigNumber;
 }
@@ -78,11 +78,14 @@ interface ExchangeMigrationInitializingState {
 }
 
 interface ExchangeMigrationDoneState {
+  orders: TradeWithStatus[];
   status: ExchangeMigrationStatus.done;
   done: ExchangeMigrationOperationInProgress[];
+  restart: VoidFunction;
 }
 
 interface ExchangeMigrationFiascoState {
+  orders: TradeWithStatus[];
   status: ExchangeMigrationStatus.fiasco;
   pending: ExchangeMigrationOperation[];
   current: ExchangeMigrationOperationInProgress;
@@ -122,6 +125,9 @@ export function createExchangeMigration$(
     state$
   ).pipe(
     map(([calls, operations, orders, state]) => {
+      if (state.status === ExchangeMigrationStatus.done) {
+        state$.next({ status: ExchangeMigrationStatus.initializing });
+      }
       if (state.status === ExchangeMigrationStatus.initializing) {
         const ready = {
           orders,
@@ -140,7 +146,6 @@ export function createExchangeMigration$(
       }
       return state;
     }),
-    startWith()
   );
 }
 
@@ -217,12 +222,21 @@ function next(
   if (state.status === ExchangeMigrationStatus.ready) {
     if (state.pending.length === 0) {
       return of({
+        ...state,
         done: [],
-        status: ExchangeMigrationStatus.done
+        status: ExchangeMigrationStatus.done,
+        restart: () => {
+          state$.next({ status: ExchangeMigrationStatus.initializing });
+        }
       } as ExchangeMigrationState);
     }
     const [current, ...pending] = state.pending;
-    return start(proxyAddress$, calls, current, pending, []);
+    return start(proxyAddress$, calls, current, pending, []).pipe(
+      map((newState) => ({
+        ...state,
+        ...newState
+      } as ExchangeMigrationState))
+    );
   }
 
   if (state.status === ExchangeMigrationStatus.inProgress) {
@@ -232,7 +246,12 @@ function next(
     ) {
       const [current, ...pending] = state.pending;
       const done = [...state.done, state.current];
-      return start(proxyAddress$, calls, current, pending, done);
+      return start(proxyAddress$, calls, current, pending, done).pipe(
+        map((newState) => ({
+          ...state,
+          ...newState
+        } as ExchangeMigrationState))
+      );
     }
 
     if (
@@ -240,29 +259,23 @@ function next(
       state.pending.length === 0
     ) {
       return of({
+        ...state,
         done: [...state.done, state.current],
-        status: ExchangeMigrationStatus.done
+        status: ExchangeMigrationStatus.done,
+        restart: () => {
+          state$.next({ status: ExchangeMigrationStatus.initializing });
+        }
       } as ExchangeMigrationState);
     }
 
     const fiasco = {
-      pending: state.pending,
-      current: state.current,
+      ...state,
+      pending: [...state.pending, state.current],
+      current: {} as ExchangeMigrationOperationInProgress,
       done: state.done,
       status: ExchangeMigrationStatus.fiasco,
       restart: () => {
         state$.next({ status: ExchangeMigrationStatus.initializing });
-        // const { txStatus, txHash, ...current } = state.current;
-        // inductor(
-        //   {
-        //     orders: state.orders,
-        //     pending: [current, ...state.pending],
-        //     cancelOffer: state.cancelOffer,
-        //     status: ExchangeMigrationStatus.ready,
-        //     start: () => { return; },
-        //   },
-        //   curry(next)(proxyAddress$, calls, state$),
-        // ).subscribe(s => state$.next(s));
       }
     } as ExchangeMigrationState;
 
