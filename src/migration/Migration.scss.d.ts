@@ -43,6 +43,8 @@ export const walletConnection: string;
 export const modal: string;
 export const modalChild: string;
 export const modalOverlay: string;
+export const loadingIndicator: string;
+export const orderCancellationIndicator: string;
 export const redeemBtn: string;
 export const panelHeader: string;
 export const panelBody: string;

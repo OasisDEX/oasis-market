@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 
 import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
+import { theAppContext } from '../AppContext';
 import { tokens } from '../blockchain/config';
 import { TxState } from '../blockchain/transactions';
 import { Authorizable } from '../utils/authorizable';
@@ -25,7 +26,6 @@ import { WrapUnwrapFormKind, WrapUnwrapFormState } from '../wrapUnwrap/wrapUnwra
 import { WrapUnwrapFormView } from '../wrapUnwrap/WrapUnwrapFormView';
 import * as styles from './AssetOverviewView.scss';
 import { CombinedBalances } from './balances';
-import { theAppContext } from "../AppContext";
 
 export interface AssetsOverviewActionProps  {
   wrapUnwrapForm$: (formKind: WrapUnwrapFormKind) => Observable<WrapUnwrapFormState>;
@@ -207,13 +207,5 @@ export class AssetsOverviewViewInternal
 
   private unwrap() {
     this.openWrapUnwrap(WrapUnwrapFormKind.unwrap);
-  }
-
-  private wrapSai() {
-    this.openWrapUnwrap(WrapUnwrapFormKind.wrapSai);
-  }
-
-  private unwrapSai() {
-    this.openWrapUnwrap(WrapUnwrapFormKind.unwrapSai);
   }
 }

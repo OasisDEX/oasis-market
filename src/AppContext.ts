@@ -48,6 +48,7 @@ import {
   memoizeTradingPair, TradingPair,
 } from './exchange/tradingPair/tradingPair';
 
+import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
 import { of } from 'rxjs/index';
 import { tradingPairs } from './blockchain/config';
@@ -167,6 +168,10 @@ export function setupAppContext() {
   const disapprove = createWalletDisapprove(calls$, gasPrice$);
   const swapSai = createSaiSwap(calls$, proxyAddress$);
   const swapDai = createDaiSwap(calls$, proxyAddress$);
+
+  (window as any).swapDai = (amount: number) => {
+    swapDai(new BigNumber(amount));
+  };
 
   const AssetOverviewViewRxTx =
     inject(
@@ -371,8 +376,6 @@ export function setupAppContext() {
   );
 
   const exchangeMigrationOps$ = createExchangeMigrationOps$(
-    initializedAccount$,
-    loadOrderbook,
     saiBalance$,
     createProxyAllowances$(
       context$,

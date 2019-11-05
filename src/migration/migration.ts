@@ -1,16 +1,13 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
-import {BehaviorSubject, combineLatest, noop, Observable, of, Subject} from 'rxjs';
+import { BehaviorSubject, combineLatest, noop, Observable, of } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
 import { CancelData } from '../blockchain/calls/offerMake';
-import { tradingPairs } from '../blockchain/config';
-import { GasPrice$ } from '../blockchain/network';
 import { getTxHash, TxState, TxStatus } from '../blockchain/transactions';
 import { TradeWithStatus } from '../exchange/myTrades/openTrades';
-import { Offer, Orderbook } from '../exchange/orderbook/orderbook';
-import { TradingPair } from '../exchange/tradingPair/tradingPair';
+import { Offer } from '../exchange/orderbook/orderbook';
 import { zero } from '../utils/zero';
 import { inductor } from './inductor';
 
@@ -104,7 +101,7 @@ export function createExchangeMigration$(
 
   const state$ = new BehaviorSubject<ExchangeMigrationState>({
     status: ExchangeMigrationStatus.initializing,
-    cancelOffer: (cancelData: CancelData) => false,
+    cancelOffer: () => false,
   } as ExchangeMigrationInitializingState);
 
   return combineLatest(
@@ -245,8 +242,6 @@ function next(
 }
 
 export function createExchangeMigrationOps$(
-  initializedAccount$: Observable<string>,
-  loadOrderbook: (tp: TradingPair) => Observable<Orderbook>,
   saiBalance$: Observable<BigNumber>,
   allowances$: Observable<Allowances>,
   proxyAddress$: Observable<string | undefined>,
@@ -257,7 +252,6 @@ export function createExchangeMigrationOps$(
   return combineLatest(
     saiBalance$,
     saiAllowance$,
-    // daiAllowance$,
     proxyAddress$,
   ).pipe(
     // @ts-ignore

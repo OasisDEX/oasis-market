@@ -6,13 +6,14 @@ export interface CallForActionProps {
   title: string;
   description: string;
   data: any;
-  btnLabel: string;
+  btnLabel: string | React.ReactChild;
   btnAction: () => void;
+  btnDisabled?: boolean;
 }
 
 export class CallForAction extends React.Component<CallForActionProps> {
   public render() {
-    const { title, description, data, btnLabel, btnAction } = this.props;
+    const { title, description, data, btnLabel, btnDisabled, btnAction } = this.props;
     return (
       <div className={styles.container}>
         <h6 className={styles.title}>{title}</h6>
@@ -23,6 +24,7 @@ export class CallForAction extends React.Component<CallForActionProps> {
         <Button size="sm"
                 color="primary"
                 className={styles.actionBtn}
+                disabled={btnDisabled}
                 onClick={btnAction}
         >
           {btnLabel}
