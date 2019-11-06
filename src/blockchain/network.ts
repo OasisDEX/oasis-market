@@ -25,7 +25,6 @@ import * as dsValue from './abi/ds-value.abi.json';
 import { NetworkConfig, networks } from './config';
 import { amountFromWei } from './utils';
 import { web3 } from './web3';
-import {one} from "../utils/zero";
 
 export const maxGasPerBlock = 8e6;
 export const every3Seconds$ = interval(3000).pipe(startWith(0));
