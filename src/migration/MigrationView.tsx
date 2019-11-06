@@ -304,6 +304,12 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         </div>
 
         {
+          this.props.status === ExchangeMigrationStatus.ready
+          && this.props.pending.map((operation, index) => {
+            return this.txRow(operation, index);
+          })
+        }
+        {
           (this.props.status === ExchangeMigrationStatus.inProgress ||
             this.props.status === ExchangeMigrationStatus.fiasco)
           && this.props.done.map((operation) => {
@@ -318,8 +324,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         }
 
         {
-          (this.props.status === ExchangeMigrationStatus.ready ||
-            this.props.status === ExchangeMigrationStatus.inProgress ||
+          (this.props.status === ExchangeMigrationStatus.inProgress ||
             this.props.status === ExchangeMigrationStatus.fiasco)
           && this.props.pending.map((operation) => {
             return this.txRow(operation);
