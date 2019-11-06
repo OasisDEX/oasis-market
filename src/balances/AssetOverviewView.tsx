@@ -4,8 +4,8 @@ import { Observable } from 'rxjs/internal/Observable';
 
 import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
-import reactResponsive from 'react-responsive';
-import { distinctUntilChanged, filter, first, switchMap, tap } from 'rxjs/operators';
+import { default as MediaQuery } from 'react-responsive';
+import {  filter, first, tap } from 'rxjs/operators';
 import { theAppContext } from '../AppContext';
 import { tokens } from '../blockchain/config';
 import { TxState } from '../blockchain/transactions';
@@ -29,7 +29,6 @@ import { WrapUnwrapFormKind, WrapUnwrapFormState } from '../wrapUnwrap/wrapUnwra
 import { WrapUnwrapFormView } from '../wrapUnwrap/WrapUnwrapFormView';
 import * as styles from './AssetOverviewView.scss';
 import { CombinedBalances } from './balances';
-import MediaQuery from "react-responsive";
 
 export interface AssetsOverviewActionProps  {
   wrapUnwrapForm$: (formKind: WrapUnwrapFormKind) => Observable<WrapUnwrapFormState>;
