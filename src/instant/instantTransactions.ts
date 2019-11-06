@@ -79,25 +79,15 @@ function doTradePayWithERC20(
   initialProgress: Progress
 ): Observable<Progress> {
 
-  const gasCall = state.sellToken === 'SAI' ?
+  const gasCall = sai2dai(state.sellToken) !== state.sellToken ?
     calls.migrateTradePayWithERC20EstimateGas :
     calls.tradePayWithERC20EstimateGas;
-
-  // const call = state.sellToken === 'SAI' ?
-  //   calls.migrateTradePayWithERC20 :
-  //   calls.tradePayWithERC20;
-
-  // const trade$ = call({
-  //   ...state,
-  //   proxyAddress,
-  //   gasPrice: state.gasPrice,
-  //   sellToken: state.sellToken === 'SAI' ? sai2dai(state.sellToken) : state.sellToken,
-  // } as InstantOrderData);
 
   const trade$ = gasCall({
     ...state,
     proxyAddress,
-    sellToken: state.sellToken === 'SAI' ? sai2dai(state.sellToken) : state.sellToken,
+    sellToken: sai2dai(state.sellToken) !== state.sellToken ?
+      sai2dai(state.sellToken) : state.sellToken,
   } as InstantOrderData).pipe(
     switchMap(gasEstimation => {
       const call = state.sellToken === 'SAI' ?

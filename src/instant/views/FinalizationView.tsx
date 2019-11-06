@@ -16,7 +16,7 @@ import * as styles from '../Instant.scss';
 import {
   InstantFormChangeKind,
   InstantFormState,
-  ProgressKind,
+  ProgressKind, sai2dai,
   ViewKind
 } from '../instantForm';
 import { InstantFormWrapper } from '../InstantFormWrapper';
@@ -112,6 +112,22 @@ export class FinalizationView extends React.Component<InstantFormState> {
                            />}
                          status={<ProgressReport report={this._tradeProgress()}/>}/>
           }
+          {sai2dai(sellToken) !== sellToken &&
+          <TxStatusRow icon={tokens[sellToken].iconColor}
+            label={
+              <TradeData
+                data-test-id="pay-token"
+                theme="reversed"
+                label="Redeem"
+                value={
+                  <Money formatter={formatAmountInstant} value={sellAmount}
+                         token={sellToken}/>
+                }
+              />}
+            status={progress.kind !== ProgressKind.noProxyPayWithETH &&
+            <ProgressReport report={this._tradeProgress()}/>}
+          />}
+
           <TxStatusRow icon={tokens[sellToken].iconColor}
                        label={
                          <TradeData
@@ -124,6 +140,7 @@ export class FinalizationView extends React.Component<InstantFormState> {
                            }
                          />}
                        status={progress.kind !== ProgressKind.noProxyPayWithETH &&
+                       sai2dai(sellToken) === sellToken &&
                        <ProgressReport report={this._tradeProgress()}/>}/>
           <TxStatusRow icon={tokens[buyToken].iconColor}
                        label={
