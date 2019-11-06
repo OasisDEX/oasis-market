@@ -167,7 +167,7 @@ export class AssetsOverviewViewInternal
                 <theAppContext.Consumer>
                   {({ MigrationTxRx }) =>
                     // @ts-ignore
-                    <MigrationTxRx label="Redeem Dai"
+                    <MigrationTxRx label="Upgrade Sai"
                                    className={styles.redeemBtn}
                     />
                   }

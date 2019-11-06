@@ -9,7 +9,7 @@ import {
   flatMap,
   map, mergeMap,
   shareReplay, startWith,
-  switchMap, tap,
+  switchMap,
 } from 'rxjs/operators';
 import {
   AssetOverviewView,
