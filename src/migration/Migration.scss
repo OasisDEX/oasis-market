@@ -31,7 +31,7 @@
     border-color-hover: $bright-orange
   ));
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down($header-media-breakpoint) {
     height: 32px;
     margin-right: .5rem;
     font-size: 13px;
@@ -40,6 +40,10 @@
 
 .panelHeader {
   position: relative;
+
+  @include media-breakpoint-down(400px) {
+    padding: 1rem;
+  }
 }
 
 .panelBody {
@@ -51,6 +55,16 @@
 
   &.process {
     justify-content: flex-start;
+    flex-direction: column;
+  }
+
+  @include media-breakpoint-down(600px) {
+    padding: 1.3rem;
+    flex-direction: column;
+  }
+
+  @include media-breakpoint-down(400px) {
+    padding: 1rem;
     flex-direction: column;
   }
 }
@@ -126,6 +140,14 @@
   width: 100%;
   max-width: 848px;
   height: 452px;
+
+  @include media-breakpoint-down(600px) {
+    height: 548px;
+  }
+
+  @include media-breakpoint-down(400px) {
+    height: 624px;
+  }
 }
 
 .modalButtonsPlaceholder {

@@ -168,8 +168,8 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
     return (
       <Panel footerBordered={true} className={styles.modalChild}>
         <PanelHeader bordered={true} className={styles.panelHeader}>
-          Oasis Multi Collateral Dai Migration
-          <TopRightCorner>
+          Multi-Collateral Dai Upgrade
+          <TopRightCorner className={styles.closeBtn}>
             <CloseButton theme="danger" onClick={this.props.close}/>
           </TopRightCorner>
         </PanelHeader>
@@ -185,7 +185,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
     return <Panel className={styles.modalChild}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
         Cancel Pending Orders
-        <TopRightCorner>
+        <TopRightCorner className={styles.closeBtn}>
           <CloseButton theme="danger" onClick={this.props.close}/>
         </TopRightCorner>
       </PanelHeader>
@@ -197,7 +197,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         <div className={styles.description}>
           {
             // tslint:disable-next-line:max-line-length
-            `Cancel your ${orders.length} Resting Orders before redeeming your Multi Collateral Dai (DAI)`
+            `Cancel your ${orders.length} Open Orders before upgrading your Single-Collateral Sai`
           }
         </div>
         <div className={styles.ordersPlaceholder}>
@@ -280,7 +280,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
   private migration = (amount: BigNumber) => {
     return <Panel className={styles.modalChild}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
-        Multi Collateral Dai Redeemer
+        Multi Collateral Dai Upgrade
         <TopRightCorner className={styles.closeBtn}>
           <CloseButton theme="danger" onClick={() => {
             this.props.close();
@@ -299,7 +299,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         <div className={styles.description}>
           {
             // tslint:disable-next-line:max-line-length
-            `Redeem ${amount.valueOf()} DAI (Multi Collateral Dai) for ${amount.valueOf()} SAI (Single Collateral Dai)`
+            `Upgrade ${amount.valueOf()} SAI (Single-Collateral Dai) to ${amount.valueOf()} DAI (Multi-Collateral Dai)`
           }
         </div>
 
@@ -375,12 +375,12 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
   }
 
   private callToCancelOrders = (ordersCount: number) => (
-    <CallForAction title="Cancel Resting Orders"
+    <CallForAction title="Cancel Open Orders"
                    description={
-                     `Cancel all your Resting Orders before
-                              redeeming your Multi Collateral Dai (DAI)`
+                     `Cancel all your Open Orders before
+                              upgrading your Single-Collateral Sai to Dai`
                    }
-                   data={`${ordersCount} Available Orders`}
+                   data={`${ordersCount} Open Orders`}
                    btnLabel={
                      ordersCount
                        ? 'Cancel Orders'
@@ -392,15 +392,15 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
   )
 
   private callToRedeemDai = (amountToRedeem: BigNumber) => (
-    <CallForAction title="Multi Collateral Dai Redeemer"
+    <CallForAction title="Upgrade your Single-Collateral Sai"
                    description={
-                     `Redeem your Single Collateral Dai (SAI) for
-                              Multi Collateral Dai (DAI)`
+                     `Upgrade your Single-Collateral Sai to
+                              Multi-Collateral Dai`
                    }
-                   data={`${amountToRedeem.valueOf()} DAI to redeem`}
+                   data={`${amountToRedeem.valueOf()} SAI to upgrade`}
                    btnLabel={
                      amountToRedeem.gt(new BigNumber(0))
-                       ? 'Redeem Dai'
+                       ? 'Upgrade Dai'
                        : <SvgImage image={tickSvg}/>
                    }
                    btnDisabled={amountToRedeem.lte(new BigNumber(0))}
@@ -455,9 +455,9 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
             <TxStatusRow icon={tokens.SAI.iconColor}
                          label={
                            <TradeData
-                             data-test-id="redeem"
+                             data-test-id="upgrade"
                              theme="reversed"
-                             label="Redeem"
+                             label="Upgrade"
                              value={`${operation.amount.toFormat(tokens.SAI.digits)} SAI`}
                            />}
                          status={<ProgressReport report={status}/>}
