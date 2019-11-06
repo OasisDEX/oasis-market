@@ -15,7 +15,8 @@ export enum ExchangeMigrationTxKind {
   cancel = 'cancel',
   createProxy = 'createProxy',
   allowance4Proxy = 'allowance4Proxy',
-  sai2dai = 'sai2dai'
+  sai2dai = 'sai2dai',
+  dai2sai = 'dai2sai'
 }
 
 interface CancelOperation {
@@ -37,10 +38,16 @@ export interface SAI2DAIOperation {
   amount: BigNumber;
 }
 
+export interface DAI2SAIOperation {
+  kind: ExchangeMigrationTxKind.dai2sai;
+  amount: BigNumber;
+}
+
 type ExchangeMigrationOperation =
   CancelOperation |
   CreateProxyOperation |
   SAI2DAIOperation |
+  DAI2SAIOperation |
   Allowance4ProxyOperation;
 
 type ExchangeMigrationOperationInProgress = ({
@@ -169,10 +176,18 @@ function startTransaction(
         first(),
         filter(proxyAddress => !!proxyAddress),
         switchMap(proxyAddress => {
-          // if (!proxyAddress) {
-          //   return throwError('No proxy');
-          // }
           return calls.swapSaiToDai({
+            proxyAddress: proxyAddress!,
+            amount: o.amount
+          });
+        })
+      );
+    case ExchangeMigrationTxKind.dai2sai:
+      return proxyAddress$.pipe(
+        first(),
+        filter(proxyAddress => !!proxyAddress),
+        switchMap(proxyAddress => {
+          return calls.swapDaiToSai({
             proxyAddress: proxyAddress!,
             amount: o.amount
           });
@@ -183,9 +198,6 @@ function startTransaction(
         first(),
         filter(proxyAddress => !!proxyAddress),
         switchMap(proxyAddress => {
-          // if (!proxyAddress) {
-          //   return throwError('No proxy');
-          // }
           return calls.approveProxy({
             proxyAddress: proxyAddress!,
             token: o.token
@@ -285,7 +297,7 @@ function next(
   return undefined;
 }
 
-export function createExchangeMigrationOps$(
+export function createSAI2DAIOps$(
   saiBalance$: Observable<BigNumber>,
   allowances$: Observable<Allowances>,
   proxyAddress$: Observable<string | undefined>,
@@ -298,36 +310,69 @@ export function createExchangeMigrationOps$(
     saiAllowance$,
     proxyAddress$,
   ).pipe(
-    // @ts-ignore
-    map(args => exchangeMigrationOps(...args)),
+    map(([saiBalance, saiAllowance, proxyAddress]) => {
+
+      if (saiBalance.eq(zero)) {
+        return [];
+      }
+
+      const proxyOps: CreateProxyOperation[] = proxyAddress ? [] : [
+        { kind: ExchangeMigrationTxKind.createProxy },
+      ];
+
+      const saiAllowanceOps: Allowance4ProxyOperation[] = saiAllowance ? [] : [
+        { kind: ExchangeMigrationTxKind.allowance4Proxy, token: 'SAI' }
+      ];
+
+      const sai2DaiOps: SAI2DAIOperation[] = saiBalance.gt(zero) ? [
+        { kind: ExchangeMigrationTxKind.sai2dai, amount: saiBalance }
+      ] : [];
+
+      return [
+        ...proxyOps,
+        ...saiAllowanceOps,
+        ...sai2DaiOps
+      ];
+    }),
   );
 }
 
-function exchangeMigrationOps(
-  saiBalance: BigNumber,
-  saiAllowance: boolean,
-  proxyAddress: string | undefined,
-): ExchangeMigrationOperation[] {
+export function createDAI2SAIOps$(
+  daiBalance$: Observable<BigNumber>,
+  allowances$: Observable<Allowances>,
+  proxyAddress$: Observable<string | undefined>,
+): Observable<ExchangeMigrationOperation[]> {
 
-  if (saiBalance.eq(zero)) {
-    return [];
-  }
+  const daiAllowance$ = allowance$(allowances$, 'DAI');
 
-  const proxyOps: CreateProxyOperation[] = proxyAddress ? [] : [
-    { kind: ExchangeMigrationTxKind.createProxy },
-  ];
+  return combineLatest(
+    daiBalance$,
+    daiAllowance$,
+    proxyAddress$,
+  ).pipe(
+    map(([daiBalance, daiAllowance, proxyAddress]) => {
 
-  const saiAllowanceOps: Allowance4ProxyOperation[] = saiAllowance ? [] : [
-    { kind: ExchangeMigrationTxKind.allowance4Proxy, token: 'SAI' }
-  ];
+      if (daiBalance.eq(zero)) {
+        return [];
+      }
 
-  const sai2DaiOps: SAI2DAIOperation[] = saiBalance.gt(zero) ? [
-    { kind: ExchangeMigrationTxKind.sai2dai, amount: saiBalance }
-  ] : [];
+      const proxyOps: CreateProxyOperation[] = proxyAddress ? [] : [
+        { kind: ExchangeMigrationTxKind.createProxy },
+      ];
 
-  return [
-    ...proxyOps,
-    ...saiAllowanceOps,
-    ...sai2DaiOps
-  ];
+      const daiAllowanceOps: Allowance4ProxyOperation[] = daiAllowance ? [] : [
+        { kind: ExchangeMigrationTxKind.allowance4Proxy, token: 'DAI' }
+      ];
+
+      const dai2DaiOps: DAI2SAIOperation[] = daiBalance.gt(zero) ? [
+        { kind: ExchangeMigrationTxKind.dai2sai, amount: daiBalance }
+      ] : [];
+
+      return [
+        ...proxyOps,
+        ...daiAllowanceOps,
+        ...dai2DaiOps
+      ];
+    }),
+  );
 }

@@ -26,6 +26,8 @@ import { WrapUnwrapFormKind, WrapUnwrapFormState } from '../wrapUnwrap/wrapUnwra
 import { WrapUnwrapFormView } from '../wrapUnwrap/WrapUnwrapFormView';
 import * as styles from './AssetOverviewView.scss';
 import { CombinedBalances } from './balances';
+import {distinctUntilChanged, filter, first, switchMap, tap} from "rxjs/operators";
+import {ExchangeMigrationStatus} from "../migration/migration";
 
 export interface AssetsOverviewActionProps  {
   wrapUnwrapForm$: (formKind: WrapUnwrapFormKind) => Observable<WrapUnwrapFormState>;
@@ -167,9 +169,32 @@ export class AssetsOverviewViewInternal
                 <theAppContext.Consumer>
                   {({ MigrationTxRx }) =>
                     // @ts-ignore
-                    <MigrationTxRx label="Redeem Dai"
+                    <MigrationTxRx label="Redeem DAI"
                                    className={styles.redeemBtn}
                     />
+                  }
+                </theAppContext.Consumer>
+              }
+              {
+                combinedBalance.name === 'DAI' &&
+                <theAppContext.Consumer>
+                  {({ dai2SAIMigration$ }) =>
+                    <Button
+                      color="secondary"
+                      size="xs"
+                      className={styles.wrapUnwrapBtn}
+                      block={true}
+                      onClick={() => {
+                        dai2SAIMigration$.pipe(
+                          filter(s => s.status === ExchangeMigrationStatus.ready),
+                          first(),
+                          tap(s => s.status === ExchangeMigrationStatus.ready && s.start()),
+                        ).subscribe(console.log);
+                      }}
+                      disabled={combinedBalance.balance.eq(zero)}
+                    >
+                      Redeem SAI
+                    </Button>
                   }
                 </theAppContext.Consumer>
               }

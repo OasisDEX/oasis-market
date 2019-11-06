@@ -108,8 +108,9 @@ import { Network } from './header/Network';
 import { createFormController$ as createInstantFormController$ } from './instant/instantForm';
 import { InstantViewPanel } from './instant/InstantViewPanel';
 import {
+  createDAI2SAIOps$,
   createExchangeMigration$,
-  createExchangeMigrationOps$, ExchangeMigrationState
+  createSAI2DAIOps$, ExchangeMigrationState
 } from './migration/migration';
 import { MigrationButton } from './migration/MigrationView';
 import { createTransactionNotifier$ } from './transactionNotifier/transactionNotifier';
@@ -382,7 +383,7 @@ export function setupAppContext() {
     {} as TradingPair
   );
 
-  const exchangeMigrationOps$ = createExchangeMigrationOps$(
+  const sai2DAIOps$ = createSAI2DAIOps$(
     saiBalance$,
     createProxyAllowances$(
       context$,
@@ -395,10 +396,30 @@ export function setupAppContext() {
     proxyAddress$,
   );
 
-  const migration$ = createExchangeMigration$(
+  const dai2SAIOps$ = createDAI2SAIOps$(
+    daiBalance$,
+    createProxyAllowances$(
+      context$,
+      initializedAccount$,
+      proxyAddress$,
+      onEveryBlock$
+    ).pipe(
+      startWith({})
+    ),
+    proxyAddress$,
+  );
+
+  const sai2DAIMigration$ = createExchangeMigration$(
     proxyAddress$,
     calls$,
-    exchangeMigrationOps$,
+    sai2DAIOps$,
+    aggregatedOpenOrders$
+  );
+
+  const dai2SAIMigration$ = createExchangeMigration$(
+    proxyAddress$,
+    calls$,
+    dai2SAIOps$,
     aggregatedOpenOrders$
   );
 
@@ -407,10 +428,10 @@ export function setupAppContext() {
       withModal(
         connect<Loadable<ExchangeMigrationState>, any>(
           MigrationButton,
-          loadablifyLight<ExchangeMigrationState>(migration$)
+          loadablifyLight<ExchangeMigrationState>(sai2DAIMigration$)
         )
       ),
-      { migration$ }
+      { migration$: sai2DAIMigration$ }
     );
 
   return {
@@ -427,6 +448,7 @@ export function setupAppContext() {
     TheFooterTxRx,
     TaxExporterTxRx,
     MigrationTxRx,
+    dai2SAIMigration$
   };
 }
 
