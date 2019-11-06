@@ -103,8 +103,10 @@ export const Money = (props: FormatAmountProps) => {
 
 export const FormatQuoteToken = (props: { token: string }) => {
   const colors: { [key: string]: string } = {
+    SAI: 'darkgrey',
     DAI: '#FFAC13',
     WETH: '#B15DFF',
+    USDC: 'green',
   };
   return <span style={{ color: colors[props.token] }}>{props.token}</span>;
 };
