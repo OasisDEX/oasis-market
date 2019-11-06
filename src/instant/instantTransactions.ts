@@ -79,28 +79,37 @@ function doTradePayWithERC20(
   initialProgress: Progress
 ): Observable<Progress> {
 
-  const trade$ = calls.tradePayWithERC20EstimateGas({
+  const gasCall = state.sellToken === 'SAI' ?
+    calls.migrateTradePayWithERC20EstimateGas :
+    calls.tradePayWithERC20EstimateGas;
+
+  // const call = state.sellToken === 'SAI' ?
+  //   calls.migrateTradePayWithERC20 :
+  //   calls.tradePayWithERC20;
+
+  // const trade$ = call({
+  //   ...state,
+  //   proxyAddress,
+  //   gasPrice: state.gasPrice,
+  //   sellToken: state.sellToken === 'SAI' ? sai2dai(state.sellToken) : state.sellToken,
+  // } as InstantOrderData);
+
+  const trade$ = gasCall({
     ...state,
     proxyAddress,
+    sellToken: state.sellToken === 'SAI' ? sai2dai(state.sellToken) : state.sellToken,
   } as InstantOrderData).pipe(
     switchMap(gasEstimation => {
+      const call = state.sellToken === 'SAI' ?
+        calls.migrateTradePayWithERC20 :
+        calls.tradePayWithERC20;
 
-      if (state.sellToken === 'SAI') {
-        throw new Error('Not implemented !');
-        return calls.tradePayWithERC20({
-          ...state,
-          proxyAddress,
-          gasEstimation,
-          sellToken: sai2dai(state.sellToken),
-          gasPrice: state.gasPrice,
-        } as InstantOrderData);
-      }
-
-      return calls.tradePayWithERC20({
+      return call({
         ...state,
         proxyAddress,
         gasEstimation,
         gasPrice: state.gasPrice,
+        sellToken: state.sellToken === 'SAI' ? sai2dai(state.sellToken) : state.sellToken,
       } as InstantOrderData);
     })
   );
@@ -242,12 +251,17 @@ export function tradePayWithERC20(
   state: InstantFormState
 ): Observable<ProgressChange> {
 
+  console.log('VVVVVVVVVVVVVVVVVVVV');
+
   const sellAllowance$ = proxyAddress ?
     allowance$(state.sellToken, proxyAddress).pipe(first()) :
     of(false);
 
   return sellAllowance$.pipe(
     flatMap(sellAllowance => {
+
+      console.log('AAAAAAAAAAAAAA!!!!!', proxyAddress, sellAllowance);
+
       if (!proxyAddress) {
         return doSetupProxy(calls, state);
       }
@@ -283,7 +297,15 @@ export function estimateTradePayWithERC20(
   proxyAddress: string | undefined,
   state: InstantFormState,
 ): Observable<number> {
-  return calls.tradePayWithERC20EstimateGas({ ...state, proxyAddress } as InstantOrderData);
+  const gasCall = state.sellToken === 'SAI' ?
+    calls.migrateTradePayWithERC20EstimateGas :
+    calls.tradePayWithERC20EstimateGas;
+
+  return gasCall({
+    ...state,
+    proxyAddress,
+    sellToken: state.sellToken === 'SAI' ? sai2dai(state.sellToken) : state.sellToken,
+  } as InstantOrderData);
 }
 
 function extractTradeSummary(

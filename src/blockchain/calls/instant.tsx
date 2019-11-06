@@ -173,12 +173,12 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
 
     const method = kind === OfferType.sell ?
       buyToken === 'ETH' ?
-        context.directMigrationProxyActions.contract.sellAllAmountBuyEthAndMigrateSai :
-        context.directMigrationProxyActions.contract.sellAllAmountAndMigrateSai
+        context.instantProxyCreationAndExecute.contract.sellAllAmountBuyEth :
+        context.instantProxyCreationAndExecute.contract.sellAllAmount
       :
       buyToken === 'ETH' ?
-        context.directMigrationProxyActions.contract.buyAllAmountBuyEthAndMigrateSai :
-        context.directMigrationProxyActions.contract.buyAllAmountAndMigrateSai;
+        context.instantProxyCreationAndExecute.contract.buyAllAmountBuyEth :
+        context.instantProxyCreationAndExecute.contract.buyAllAmount;
 
     const params = kind === OfferType.sell ? [
       context.otc.address,
@@ -186,18 +186,16 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
       amountToWei(sellAmount, sellToken).toFixed(0),
       context.tokens[eth2weth(buyToken)].address,
       amountToWei(fixBuyAmount(buyAmount, slippageLimit), buyToken).toFixed(0),
-      context.migration
     ] : [
       context.otc.address,
       context.tokens[eth2weth(buyToken)].address,
       amountToWei(buyAmount, buyToken).toFixed(0),
       context.tokens[sellToken].address,
       amountToWei(fixSellAmount(sellAmount, slippageLimit), sellToken).toFixed(0),
-      context.migration
     ];
 
     return [
-      context.directMigrationProxyActions.address,
+      context.instantMigrationProxyActions.address,
       method.getData(...params)
     ];
   },
@@ -238,12 +236,12 @@ export const migrateTradePayWithERC20: TransactionDef<InstantOrderData> = {
 
     const method = kind === OfferType.sell ?
       buyToken === 'ETH' ?
-        context.instantProxyCreationAndExecute.contract.sellAllAmountBuyEth :
-        context.instantProxyCreationAndExecute.contract.sellAllAmount
+        context.instantMigrationProxyActions.contract.sellAllAmountBuyEthAndMigrateSai :
+        context.instantMigrationProxyActions.contract.sellAllAmountAndMigrateSai
       :
       buyToken === 'ETH' ?
-        context.instantProxyCreationAndExecute.contract.buyAllAmountBuyEth :
-        context.instantProxyCreationAndExecute.contract.buyAllAmount;
+        context.instantMigrationProxyActions.contract.buyAllAmountBuyEthAndMigrateSai :
+        context.instantMigrationProxyActions.contract.buyAllAmountAndMigrateSai;
 
     const params = kind === OfferType.sell ? [
       context.otc.address,
@@ -251,23 +249,27 @@ export const migrateTradePayWithERC20: TransactionDef<InstantOrderData> = {
       amountToWei(sellAmount, sellToken).toFixed(0),
       context.tokens[eth2weth(buyToken)].address,
       amountToWei(fixBuyAmount(buyAmount, slippageLimit), buyToken).toFixed(0),
+      context.migration
     ] : [
       context.otc.address,
       context.tokens[eth2weth(buyToken)].address,
       amountToWei(buyAmount, buyToken).toFixed(0),
       context.tokens[sellToken].address,
       amountToWei(fixSellAmount(sellAmount, slippageLimit), sellToken).toFixed(0),
+      context.migration
     ];
 
+    console.log('params', kind, params, method.getData(...params));
+
     return [
-      context.instantProxyCreationAndExecute.address,
+      context.instantMigrationProxyActions.address,
       method.getData(...params)
     ];
   },
   options: ({
-              gasPrice,
-              gasEstimation
-            }: InstantOrderData) => ({
+    gasPrice,
+    gasEstimation
+  }: InstantOrderData) => ({
     gasPrice,
     gas: gasEstimation,
   }),
@@ -281,7 +283,6 @@ export const migrateTradePayWithERC20: TransactionDef<InstantOrderData> = {
         Create Buy Order <Money value={buyAmount} token={buyToken}/>
       </>
 };
-
 
 export interface GetBuyAmountData {
   sellToken: string;

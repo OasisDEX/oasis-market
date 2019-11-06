@@ -30,6 +30,7 @@ import { SvgImageSimple } from '../utils/icons/utils';
 import * as eth from './abi/ds-eth-token.abi.json';
 import * as dsProxyFactory from './abi/ds-proxy-factory.abi.json';
 import * as erc20 from './abi/erc20.abi.json';
+import * as instantMigrationProxyActions from './abi/instant-migration-proxy-actions.abi.json';
 import * as otc from './abi/matching-market.abi.json';
 import * as otcSupport from './abi/otc-support-methods.abi.json';
 import * as proxyCreationAndExecute from './abi/proxy-creation-and-execute.abi.json';
@@ -232,10 +233,10 @@ const protoMain = {
     return '';
   },
   get migrationProxyActions() {
-    return load(proxyCreationAndExecute, '');
+    return '';
   },
-  get directMigrationProxyActions() {
-    return load(proxyCreationAndExecute, '0x211d3beb0b077a1679e6bd83ecab48dd187ec99d');
+  get instantMigrationProxyActions() {
+    return load(instantMigrationProxyActions, '0x211d3beb0b077a1679e6bd83ecab48dd187ec99d');
   },
   oasisDataService: {
     url: 'https://cache.eth2dai.com/api/v1'
@@ -295,10 +296,10 @@ const kovan: NetworkConfig = {
     return '0xd18abc7ab304952ec23dd7495fb3e7d0ee571c2d';
   },
   get migrationProxyActions() {
-    return load(proxyCreationAndExecute, '0x211d3beb0b077a1679e6bd83ecab48dd187ec99d');
+    return '0x211d3beb0b077a1679e6bd83ecab48dd187ec99d';
   },
-  get directMigrationProxyActions() {
-    return load(proxyCreationAndExecute, '0x211d3beb0b077a1679e6bd83ecab48dd187ec99d');
+  get instantMigrationProxyActions() {
+    return load(instantMigrationProxyActions, '0x7CfdaAa9ADAa9Ae404e525513A154E0435e33280');
   },
   oasisDataService: {
     url: 'https://kovan-cache.eth2dai.com/api/v1'
@@ -356,10 +357,10 @@ const localnet: NetworkConfig =   {
     return '';
   },
   get migrationProxyActions() {
-    return load(proxyCreationAndExecute, '');
+    return '';
   },
-  get directMigrationProxyActions() {
-    return load(proxyCreationAndExecute, '');
+  get instantMigrationProxyActions() {
+    return load(instantMigrationProxyActions, '');
   },
   oasisDataService: {
     url: 'http://localhost:3001/v1'
