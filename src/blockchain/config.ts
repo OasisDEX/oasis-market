@@ -43,7 +43,10 @@ export const tradingPairs: TradingPair[] = [
     { base: 'REP', quote: 'DAI' },
     { base: 'ZRX', quote: 'DAI' },
     { base: 'BAT', quote: 'DAI' },
-    { base: 'DAI', quote: 'USDC' }
+    { base: 'DAI', quote: 'USDC' },
+    { base: 'REP', quote: 'WETH' },
+    { base: 'ZRX', quote: 'WETH' },
+    { base: 'BAT', quote: 'WETH' },
   ]
 ];
 
@@ -131,7 +134,7 @@ export const tokens = asMap('symbol', [
     {
       symbol: 'USDC',
       precision: 6,
-      digits: 5,
+      digits: 6,
       digitsInstant: 2,
       safeCollRatio: 1.5,
       maxSell: '1000000000000000',
