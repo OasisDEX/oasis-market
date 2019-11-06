@@ -1,16 +1,15 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
-import { Ord } from 'ramda';
-import { combineLatest, from, Observable, of, Subject } from 'rxjs';
-import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, noop, Observable, of } from 'rxjs';
+import { filter, first, map, switchMap } from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
-import { tradingPairs } from '../blockchain/config';
+import { CancelData } from '../blockchain/calls/offerMake';
 import { getTxHash, TxState, TxStatus } from '../blockchain/transactions';
-import { Offer, Orderbook } from '../exchange/orderbook/orderbook';
-import { TradingPair } from '../exchange/tradingPair/tradingPair';
+import { TradeWithStatus } from '../exchange/myTrades/openTrades';
+import { Offer } from '../exchange/orderbook/orderbook';
+import { inductor } from '../utils/inductor';
 import { zero } from '../utils/zero';
-import { inductor } from './inductor';
 
 export enum ExchangeMigrationTxKind {
   cancel = 'cancel',
@@ -33,7 +32,7 @@ interface Allowance4ProxyOperation {
   token: string;
 }
 
-interface SAI2DAIOperation {
+export interface SAI2DAIOperation {
   kind: ExchangeMigrationTxKind.sai2dai;
   amount: BigNumber;
 }
@@ -58,12 +57,16 @@ export enum ExchangeMigrationStatus {
 }
 
 interface ExchangeMigrationReadyState {
+  cancelOffer: (cancelData: CancelData) => any;
   status: ExchangeMigrationStatus.ready;
   pending: ExchangeMigrationOperation[];
+  orders: TradeWithStatus[];
   start: VoidFunction;
 }
 
 interface ExchangeMigrationInProgressState {
+  cancelOffer: (cancelData: CancelData) => any;
+  orders: TradeWithStatus[];
   status: ExchangeMigrationStatus.inProgress;
   pending: ExchangeMigrationOperation[];
   current: ExchangeMigrationOperationInProgress;
@@ -74,42 +77,28 @@ interface ExchangeMigrationInitializingState {
   status: ExchangeMigrationStatus.initializing;
 }
 
+interface ExchangeMigrationDoneState {
+  orders: TradeWithStatus[];
+  status: ExchangeMigrationStatus.done;
+  done: ExchangeMigrationOperationInProgress[];
+  restart: VoidFunction;
+}
+
+interface ExchangeMigrationFiascoState {
+  orders: TradeWithStatus[];
+  status: ExchangeMigrationStatus.fiasco;
+  pending: ExchangeMigrationOperation[];
+  current: ExchangeMigrationOperationInProgress;
+  done: ExchangeMigrationOperationInProgress[];
+  restart: VoidFunction;
+}
+
 export type ExchangeMigrationState =
   ExchangeMigrationInitializingState
-| ExchangeMigrationReadyState
-| ExchangeMigrationInProgressState
-| {
-  status: ExchangeMigrationStatus.done | ExchangeMigrationStatus.fiasco;
-  done: ExchangeMigrationOperationInProgress[];
-};
-
-function offerOf(account: string) {
-  return (o: Offer) => o.ownerId === account;
-}
-
-function openSAIOrders$(
-  initializedAccount$: Observable<string>,
-  loadOrderbook: (tp: TradingPair) => Observable<Orderbook>,
-) {
-  // TODO: iterate over all SAI markets!?
-  return combineLatest(
-    initializedAccount$,
-    ...tradingPairs
-      .filter(pair => pair.quote === 'SAI')
-      .map(pair => loadOrderbook(pair)),
-  ).pipe(
-    map(([account, ...rest]: [string, Orderbook]) => {
-      return rest
-        .map((orderbook) =>
-          orderbook.buy.filter(offerOf(account))
-            .concat(
-              orderbook.sell.filter(offerOf(account))))
-        .reduce(
-          (allOrders, fromGivenOrderbook) => [...allOrders, ...fromGivenOrderbook], []
-        );
-    })
-  );
-}
+  | ExchangeMigrationReadyState
+  | ExchangeMigrationInProgressState
+  | ExchangeMigrationDoneState
+  | ExchangeMigrationFiascoState;
 
 function allowance$(allowances$: Observable<Allowances>, token: string) {
   return allowances$.pipe(
@@ -121,33 +110,42 @@ export function createExchangeMigration$(
   proxyAddress$: Observable<string>,
   calls$: Calls$,
   operations$: Observable<ExchangeMigrationOperation[]>,
+  orders$: Observable<TradeWithStatus[]>
 ): Observable<ExchangeMigrationState> {
+
+  const state$ = new BehaviorSubject<ExchangeMigrationState>({
+    status: ExchangeMigrationStatus.initializing,
+    cancelOffer: () => false,
+  } as ExchangeMigrationInitializingState);
+
   return combineLatest(
     calls$,
-    operations$
+    operations$,
+    orders$,
+    state$
   ).pipe(
-    first(),
-    switchMap(([calls, operations]) => {
-      const state = new Subject<ExchangeMigrationState>();
-
-      const initial: ExchangeMigrationState = {
-        pending: operations,
-        start: () => {
-          inductor(
-            initial,
-            curry(next)(proxyAddress$, calls),
-          ).subscribe(state);
-        },
-        status: ExchangeMigrationStatus.ready,
-      };
-
-      return state.pipe(
-        startWith(initial)
-      );
+    map(([calls, operations, orders, state]) => {
+      if (state.status === ExchangeMigrationStatus.done) {
+        state$.next({ status: ExchangeMigrationStatus.initializing });
+      }
+      if (state.status === ExchangeMigrationStatus.initializing) {
+        const ready = {
+          orders,
+          pending: operations,
+          cancelOffer: (cancelData: CancelData) =>
+            calls.cancelOffer2(cancelData).subscribe(noop),
+          start: () => {
+            inductor(
+              ready,
+              curry(next)(proxyAddress$, calls, state$),
+            ).subscribe(s => state$.next(s));
+          },
+          status: ExchangeMigrationStatus.ready,
+        } as ExchangeMigrationState;
+        return ready;
+      }
+      return state;
     }),
-    startWith({
-      status: ExchangeMigrationStatus.initializing
-    } as ExchangeMigrationInitializingState)
   );
 }
 
@@ -217,17 +215,28 @@ function start(
 function next(
   proxyAddress$: Observable<string | undefined>,
   calls: Calls,
+  state$: BehaviorSubject<ExchangeMigrationState>,
   state: ExchangeMigrationState
 ): Observable<ExchangeMigrationState> | undefined {
+
   if (state.status === ExchangeMigrationStatus.ready) {
     if (state.pending.length === 0) {
       return of({
+        ...state,
         done: [],
-        status: ExchangeMigrationStatus.done
+        status: ExchangeMigrationStatus.done,
+        restart: () => {
+          state$.next({ status: ExchangeMigrationStatus.initializing });
+        }
       } as ExchangeMigrationState);
     }
     const [current, ...pending] = state.pending;
-    return start(proxyAddress$, calls, current, pending, []);
+    return start(proxyAddress$, calls, current, pending, []).pipe(
+      map((newState) => ({
+        ...state,
+        ...newState
+      } as ExchangeMigrationState))
+    );
   }
 
   if (state.status === ExchangeMigrationStatus.inProgress) {
@@ -237,7 +246,12 @@ function next(
     ) {
       const [current, ...pending] = state.pending;
       const done = [...state.done, state.current];
-      return start(proxyAddress$, calls, current, pending, done);
+      return start(proxyAddress$, calls, current, pending, done).pipe(
+        map((newState) => ({
+          ...state,
+          ...newState
+        } as ExchangeMigrationState))
+      );
     }
 
     if (
@@ -245,63 +259,59 @@ function next(
       state.pending.length === 0
     ) {
       return of({
+        ...state,
         done: [...state.done, state.current],
-        status: ExchangeMigrationStatus.done
+        status: ExchangeMigrationStatus.done,
+        restart: () => {
+          state$.next({ status: ExchangeMigrationStatus.initializing });
+        }
       } as ExchangeMigrationState);
     }
 
-    return of({
-      done: [...state.done, state.current],
-      status: ExchangeMigrationStatus.fiasco
-    } as ExchangeMigrationState);
+    const fiasco = {
+      ...state,
+      pending: [...state.pending, state.current],
+      current: {} as ExchangeMigrationOperationInProgress,
+      done: state.done,
+      status: ExchangeMigrationStatus.fiasco,
+      restart: () => {
+        state$.next({ status: ExchangeMigrationStatus.initializing });
+      }
+    } as ExchangeMigrationState;
+
+    return of(fiasco);
   }
 
   return undefined;
 }
 
 export function createExchangeMigrationOps$(
-  initializedAccount$: Observable<string>,
-  loadOrderbook: (tp: TradingPair) => Observable<Orderbook>,
   saiBalance$: Observable<BigNumber>,
   allowances$: Observable<Allowances>,
   proxyAddress$: Observable<string | undefined>,
 ): Observable<ExchangeMigrationOperation[]> {
 
-  const orders$ = openSAIOrders$(initializedAccount$, loadOrderbook);
   const saiAllowance$ = allowance$(allowances$, 'SAI');
-  // const daiAllowance$ = allowance$(allowances$, 'DAI');
 
   return combineLatest(
-    orders$,
     saiBalance$,
     saiAllowance$,
-    // daiAllowance$,
     proxyAddress$,
   ).pipe(
     // @ts-ignore
     map(args => exchangeMigrationOps(...args)),
-    first()
   );
 }
 
 function exchangeMigrationOps(
-  orders: Offer[],
   saiBalance: BigNumber,
   saiAllowance: boolean,
-  // _daiAllowance: boolean,
   proxyAddress: string | undefined,
 ): ExchangeMigrationOperation[] {
 
   if (saiBalance.eq(zero)) {
     return [];
   }
-
-  const cancelOps: CancelOperation[] = orders.map(
-    offer => ({
-      offer,
-      kind: ExchangeMigrationTxKind.cancel
-    } as CancelOperation)
-  );
 
   const proxyOps: CreateProxyOperation[] = proxyAddress ? [] : [
     { kind: ExchangeMigrationTxKind.createProxy },
@@ -316,7 +326,6 @@ function exchangeMigrationOps(
   ] : [];
 
   return [
-    ...cancelOps,
     ...proxyOps,
     ...saiAllowanceOps,
     ...sai2DaiOps

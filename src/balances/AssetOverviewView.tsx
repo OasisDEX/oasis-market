@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 
 import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
+import { theAppContext } from '../AppContext';
 import { tokens } from '../blockchain/config';
 import { TxState } from '../blockchain/transactions';
 import { Authorizable } from '../utils/authorizable';
@@ -163,47 +164,14 @@ export class AssetsOverviewViewInternal
               }
               {
                 combinedBalance.name === 'SAI' &&
-                <Button
-                  data-test-id="open-wrap-form"
-                  color="secondary"
-                  size="xs"
-                  className={styles.wrapUnwrapBtn}
-                  block={true}
-                  onClick={() => {
-                    mixpanel.track('btn-click', {
-                      id: 'wrap-eth',
-                      product: 'oasis-trade',
-                      page: 'Account',
-                      section: 'asset-overview'
-                    });
-                    this.wrapSai();
-                  }}
-                  disabled={this.props.etherBalance.eq(zero)}
-                >
-                  Convert to DAI
-                </Button>
-              }
-              {
-                combinedBalance.name === 'DAI' &&
-                <Button
-                  data-test-id="open-wrap-form"
-                  color="secondary"
-                  size="xs"
-                  className={styles.wrapUnwrapBtn}
-                  block={true}
-                  onClick={() => {
-                    mixpanel.track('btn-click', {
-                      id: 'wrap-eth',
-                      product: 'oasis-trade',
-                      page: 'Account',
-                      section: 'asset-overview'
-                    });
-                    this.unwrapSai();
-                  }}
-                  disabled={this.props.etherBalance.eq(zero)}
-                >
-                  Convert to SAI
-                </Button>
+                <theAppContext.Consumer>
+                  {({ MigrationTxRx }) =>
+                    // @ts-ignore
+                    <MigrationTxRx label="Redeem Dai"
+                                   className={styles.redeemBtn}
+                    />
+                  }
+                </theAppContext.Consumer>
               }
             </td>
             <td data-test-id={`${combinedBalance.name}-balance`}
@@ -239,13 +207,5 @@ export class AssetsOverviewViewInternal
 
   private unwrap() {
     this.openWrapUnwrap(WrapUnwrapFormKind.unwrap);
-  }
-
-  private wrapSai() {
-    this.openWrapUnwrap(WrapUnwrapFormKind.wrapSai);
-  }
-
-  private unwrapSai() {
-    this.openWrapUnwrap(WrapUnwrapFormKind.unwrapSai);
   }
 }

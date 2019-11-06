@@ -40,16 +40,19 @@ import {
   onEveryBlock$, tokenPricesInUSD$
 } from './blockchain/network';
 import { user$ } from './blockchain/user';
-import { loadOrderbook$, Orderbook } from './exchange/orderbook/orderbook';
+import { loadOrderbook$, Offer, Orderbook } from './exchange/orderbook/orderbook';
 import {
   createTradingPair$,
   currentTradingPair$,
   loadablifyPlusTradingPair,
-  memoizeTradingPair,
+  memoizeTradingPair, TradingPair,
 } from './exchange/tradingPair/tradingPair';
 
+import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
 import { of } from 'rxjs/index';
+import { TxMetaKind } from './blockchain/calls/txMeta';
+import { tradingPairs } from './blockchain/config';
 import { transactions$, TxState } from './blockchain/transactions';
 import {
   createAllTrades$,
@@ -106,8 +109,7 @@ import { createFormController$ as createInstantFormController$ } from './instant
 import { InstantViewPanel } from './instant/InstantViewPanel';
 import {
   createExchangeMigration$,
-  createExchangeMigrationOps$, ExchangeMigrationState,
-  ExchangeMigrationStatus
+  createExchangeMigrationOps$, ExchangeMigrationState
 } from './migration/migration';
 import { MigrationButton } from './migration/MigrationView';
 import { createTransactionNotifier$ } from './transactionNotifier/transactionNotifier';
@@ -166,6 +168,10 @@ export function setupAppContext() {
   const disapprove = createWalletDisapprove(calls$, gasPrice$);
   const swapSai = createSaiSwap(calls$, proxyAddress$);
   const swapDai = createDaiSwap(calls$, proxyAddress$);
+
+  (window as any).swapDai = (amount: number) => {
+    swapDai(new BigNumber(amount));
+  };
 
   const AssetOverviewViewRxTx =
     inject(
@@ -256,7 +262,7 @@ export function setupAppContext() {
   const myTradesKind$ = createMyTradesKind$();
   const myOpenTrades$ = loadablifyPlusTradingPair(
     currentTradingPair$,
-    memoizeTradingPair(curry(createMyOpenTrades$)(loadOrderbook, account$, transactions$))
+    memoizeTradingPair(curry(createMyOpenTrades$)(currentOrderbook$, account$, transactions$))
   );
 
   const myClosedTrades$ = loadablifyPlusTradingPair(
@@ -340,16 +346,48 @@ export function setupAppContext() {
     export: () => createTaxExport$(context$, initializedAccount$)
   });
 
+  const aggregatedOpenOrders$ = createMyOpenTrades$(
+    combineLatest(...tradingPairs
+      .filter(pair => pair.quote === 'SAI')
+      .map(pair => loadOrderbook(pair))
+    )
+      .pipe(
+        map((orderbooks) => {
+          const aggregatedOrderbook = {
+            buy: [] as Offer[],
+            sell: [] as Offer[],
+            blockNumber: 0,
+          };
+
+          return orderbooks.reduce(
+            (aggregate, currentOrderbook) => {
+              aggregate.buy = [...aggregate.buy, ...currentOrderbook.buy];
+              aggregate.sell = [...aggregate.sell, ...currentOrderbook.sell];
+              // the blockNumber is the same for all of them
+              aggregate.blockNumber = currentOrderbook.blockNumber;
+              return aggregate;
+            },
+            aggregatedOrderbook
+          );
+        })),
+    account$,
+    transactions$.pipe(
+      map((transactions: TxState[]) => {
+        return transactions && transactions.filter(tx => {
+          return tx.meta.args.sellToken === 'SAI'
+          && tx.meta.kind === TxMetaKind.cancel;
+        });
+      }),
+    ),
+    {} as TradingPair
+  );
+
   const exchangeMigrationOps$ = createExchangeMigrationOps$(
-    initializedAccount$,
-    loadOrderbook,
     saiBalance$,
     createProxyAllowances$(
       context$,
       initializedAccount$,
-      proxyAddress$.pipe(
-        filter(address => !!address),
-      ),
+      proxyAddress$,
       onEveryBlock$
     ).pipe(
       startWith({})
@@ -360,7 +398,8 @@ export function setupAppContext() {
   const migration$ = createExchangeMigration$(
     proxyAddress$,
     calls$,
-    exchangeMigrationOps$
+    exchangeMigrationOps$,
+    aggregatedOpenOrders$
   );
 
   const MigrationTxRx =
@@ -373,22 +412,6 @@ export function setupAppContext() {
       ),
       { migration$ }
     );
-
-  (window as any).exchangeMigration = () => {
-    migration$
-      .pipe(
-        tap(s => {
-          if (s.status === ExchangeMigrationStatus.ready) {
-            s.start();
-          }
-        })
-      )
-      .subscribe({
-        next: v => console.log('Migration state:', v),
-        error: err => console.log('Migration error:', err),
-        complete: () => console.log('Migration complete!')
-      });
-  };
 
   return {
     AllTradesTxRx,

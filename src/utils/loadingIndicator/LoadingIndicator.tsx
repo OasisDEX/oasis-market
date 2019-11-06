@@ -20,7 +20,7 @@ export function WithLoadingIndicator<T>(props: LoadingIndicatorProps<T>) {
     case undefined:
     case 'loading':
       return (
-        <LoadingIndicator inline={inline} size={size}/>
+        <LoadingIndicator className={className} inline={inline} size={size}/>
       );
     case 'error':
       if (error) {

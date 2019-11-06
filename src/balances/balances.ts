@@ -147,7 +147,7 @@ export function createAllowances$(
 export function createProxyAllowances$(
   context$: Observable<NetworkConfig>,
   initializedAccount$: Observable<string>,
-  proxyAccount$: Observable<string>,
+  proxyAccount$: Observable<string | undefined>,
   onEveryBlock$: Observable<number>,
 ): Observable<Allowances> {
   return combineLatest(context$, initializedAccount$, proxyAccount$, onEveryBlock$).pipe(
@@ -156,11 +156,14 @@ export function createProxyAllowances$(
         Object.keys(context.tokens)
           .filter(token => token !== 'ETH')
           .map((token: string) =>
-            bindNodeCallback(context.tokens[token].contract.allowance as Allowance)(
-              account, proxy
-            ).pipe(
-              map((x: BigNumber) => ({ [token]: x.gte(MIN_ALLOWANCE) }))
-            )
+            proxy ?
+              bindNodeCallback(context.tokens[token].contract.allowance as Allowance)(
+                account, proxy
+              ).pipe(
+                map((x: BigNumber) => ({ [token]: x.gte(MIN_ALLOWANCE) }))
+              )
+            :
+              of({ [token]: false })
           )
       ).pipe(concatAll(), scan((a, e) => ({ ...a, ...e }), {}), last())
     ),
