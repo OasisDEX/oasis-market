@@ -4,9 +4,11 @@ import { Observable } from 'rxjs/internal/Observable';
 
 import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
+import { filter, first, tap } from 'rxjs/operators';
 import { theAppContext } from '../AppContext';
 import { tokens } from '../blockchain/config';
 import { TxState } from '../blockchain/transactions';
+import { ExchangeMigrationStatus } from '../migration/migration';
 import { Authorizable } from '../utils/authorizable';
 import '../utils/Common.scss';
 import { connect } from '../utils/connect';
@@ -26,8 +28,6 @@ import { WrapUnwrapFormKind, WrapUnwrapFormState } from '../wrapUnwrap/wrapUnwra
 import { WrapUnwrapFormView } from '../wrapUnwrap/WrapUnwrapFormView';
 import * as styles from './AssetOverviewView.scss';
 import { CombinedBalances } from './balances';
-import {distinctUntilChanged, filter, first, switchMap, tap} from "rxjs/operators";
-import {ExchangeMigrationStatus} from "../migration/migration";
 
 export interface AssetsOverviewActionProps  {
   wrapUnwrapForm$: (formKind: WrapUnwrapFormKind) => Observable<WrapUnwrapFormState>;
