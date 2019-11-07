@@ -298,6 +298,6 @@ export function createExchangeMigration$(
         curry(next)(proxyAddress$, calls),
       );
     }),
-    startWith({ kind: ExchangeMigrationStatus.initializing })
+    startWith({ status: ExchangeMigrationStatus.initializing } as ExchangeMigrationState)
   );
 }

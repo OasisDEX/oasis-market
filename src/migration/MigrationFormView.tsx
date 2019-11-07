@@ -1,7 +1,7 @@
 import * as classnames from 'classnames';
 import * as React from 'react';
 import * as ReactModal from 'react-modal';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Button, CloseButton } from '../utils/forms/Buttons';
 import { Loadable } from '../utils/loadable';
 import { LoadingIndicator, WithLoadingIndicator } from '../utils/loadingIndicator/LoadingIndicator';
@@ -123,38 +123,6 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
   }
 
   public render() {
-    // const orders: TradeWithStatus[] = (
-    //   this.props.status === ExchangeMigrationStatus.ready
-    //   || this.props.status === ExchangeMigrationStatus.inProgress
-    //   || this.props.status === ExchangeMigrationStatus.fiasco
-    //   || this.props.status === ExchangeMigrationStatus.done
-    // )
-    //   ? this.props.orders
-    //   : [];
-    //
-    // let amount: BigNumber = new BigNumber(0);
-    //
-    // if (
-    //   this.props.status === ExchangeMigrationStatus.ready) {
-    //   const pendingMigration = this.props.pending
-    //     .find((op) => op && op.kind === ExchangeMigrationTxKind.sai2dai) as SAI2DAIOperation;
-    //
-    //   if (pendingMigration) {
-    //     amount = new BigNumber(pendingMigration.amount.toFormat(tokens.SAI.digits));
-    //   }
-    // }
-    //
-    // if (this.props.status === ExchangeMigrationStatus.inProgress
-    //   || this.props.status === ExchangeMigrationStatus.fiasco
-    // ) {
-    //   const pendingMigration = this.props.pending
-    //     .concat(this.props.current)
-    //     .concat(this.props.done)
-    //     .find((op) => op && op.kind === ExchangeMigrationTxKind.sai2dai) as SAI2DAIOperation;
-    //   if (pendingMigration) {
-    //     amount = new BigNumber(pendingMigration.amount.toFormat(tokens.SAI.digits));
-    //   }
-    // }
 
     const view = (() => {
       switch (this.state.view) {
@@ -326,6 +294,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       throw new Error('Should not get here!');
     }
 
+    console.log(progress.status);
     return <Panel className={styles.modalChild}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
         {
@@ -353,6 +322,10 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
           }
         </div>
 
+        {
+          progress.status === ExchangeMigrationStatus.initializing
+          && <LoadingIndicator className={styles.processLoadingIndicator} inline={true}/>
+        }
         {
           progress.status === ExchangeMigrationStatus.ready
           && progress.pending.map((operation, index) => {
