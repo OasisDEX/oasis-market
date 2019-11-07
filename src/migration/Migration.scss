@@ -114,9 +114,56 @@
 .orders {
   max-height: 400px;
 
-  th:first-child, td:first-child {
+  @include media-breakpoint-down(lg) {
+    th, td {
+      padding-right: 0 !important;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    td {
+      font-size: 11px !important;
+    }
+  }
+
+  .market {
     padding-left: 24px;
   }
+
+  .type {
+    text-align: center;
+    padding-right: 0;
+
+    @include media-breakpoint-down(md){
+      text-align: left;
+      width: 35px;
+    }
+  }
+
+  .price {
+    @include media-breakpoint-down(sm){
+      width: 40px;
+    }
+  }
+
+  .amount {
+    @include media-breakpoint-down(md){
+      text-align: right;
+    }
+  }
+
+  .total {
+    @include media-breakpoint-down(md){
+      text-align: right;
+    }
+  }
+
+  .action {
+    @include media-breakpoint-down(md){
+      text-align: center;
+    }
+  }
+
 }
 
 .txRow {
