@@ -6,7 +6,6 @@ import batColorSvg from '../icons/coins/bat-color.svg';
 import batSvg from '../icons/coins/bat.svg';
 import daiCircleSvg from '../icons/coins/dai-circle.svg';
 import daiColorSvg from '../icons/coins/dai-color.svg';
-// import daiInverseSvg from '../icons/coins/dai-inverse.svg';
 import daiSvg from '../icons/coins/dai.svg';
 import ethCircleSvg from '../icons/coins/eth-circle.svg';
 // import ethColorInverseSvg from '../icons/coins/eth-color-inverse.svg';
@@ -16,6 +15,9 @@ import ethSvg from '../icons/coins/eth.svg';
 import repCircleSvg from '../icons/coins/rep-circle.svg';
 import repColorSvg from '../icons/coins/rep-color.svg';
 import repSvg from '../icons/coins/rep.svg';
+import saiCircleSvg from '../icons/coins/sai-circle.svg';
+import saiColorSvg from '../icons/coins/sai-color.svg';
+import saiSvg from '../icons/coins/sai.svg';
 import usdcCircleSvg from '../icons/coins/usdc-circle.svg';
 import usdcColorSvg from '../icons/coins/usdc-color.svg';
 import usdcSvg from '../icons/coins/usdc.svg';
@@ -93,10 +95,10 @@ export const tokens = asMap('symbol', [
     digitsInstant: 2 ,
     maxSell: '10000000',
     name: 'Sai',
-    icon: SvgImageSimple(daiSvg),
+    icon: SvgImageSimple(saiSvg),
     // iconInverse: SvgImageSimple(daiInverseSvg),
-    iconCircle: SvgImageSimple(daiCircleSvg),
-    iconColor: SvgImageSimple(daiColorSvg),
+    iconCircle: SvgImageSimple(saiCircleSvg),
+    iconColor: SvgImageSimple(saiColorSvg),
   },
   {
     symbol: 'DAI',
