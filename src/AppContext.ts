@@ -398,8 +398,6 @@ export function setupAppContext() {
       initializedAccount$,
       proxyAddress$,
       onEveryBlock$
-    ).pipe(
-      startWith({})
     ),
     proxyAddress$,
   );
@@ -411,8 +409,6 @@ export function setupAppContext() {
       initializedAccount$,
       proxyAddress$,
       onEveryBlock$
-    ).pipe(
-      startWith({})
     ),
     proxyAddress$,
   );
