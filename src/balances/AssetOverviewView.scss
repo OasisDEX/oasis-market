@@ -106,7 +106,7 @@
   }
 
   @include media-breakpoint-down(md){
-    width: 64px;
+    width: 72px;
     height: 20px;
     font-size: 9px;
   }
@@ -123,7 +123,7 @@
   }
 
   @include media-breakpoint-down(md){
-    width: 64px;
+    width: 72px;
     height: 20px !important;
     font-size: 9px !important;
   }

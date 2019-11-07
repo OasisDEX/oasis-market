@@ -167,45 +167,25 @@ export class AssetsOverviewViewInternal
               }
               {
                 combinedBalance.name === 'SAI' &&
-                <MediaQuery maxWidth={620}>
-                  {
-                    (matches) => {
-                      // TODO: create a var for label
-                      const label = matches ? 'Upgrade' : 'Upgrade SAI';
-                      return (
-                        <theAppContext.Consumer>
-                          {({ SAI2DAIMigrationTxRx }) =>
-                            // @ts-ignore
-                            <SAI2DAIMigrationTxRx label={ label }
-                                           className={styles.redeemBtn}
-                            />
-                          }
-                        </theAppContext.Consumer>
-                      );
-                    }
+                <theAppContext.Consumer>
+                  {({ SAI2DAIMigrationTxRx }) =>
+                    // @ts-ignore
+                    <SAI2DAIMigrationTxRx label={ 'Upgrade Sai' }
+                                          className={styles.redeemBtn}
+                    />
                   }
-                </MediaQuery>
+                </theAppContext.Consumer>
               }
               {
                 combinedBalance.name === 'DAI' &&
-                <MediaQuery maxWidth={620}>
-                  {
-                    (matches) => {
-                      // TODO: create a var for label
-                      const label = matches ? 'Upgrade' : 'Swap to SAI';
-                      return (
-                        <theAppContext.Consumer>
-                          {({ DAI2SAIMigrationTxRx }) =>
-                            // @ts-ignore
-                            <DAI2SAIMigrationTxRx label={ label }
-                                                  className={styles.redeemBtn}
-                            />
-                          }
-                        </theAppContext.Consumer>
-                      );
-                    }
+                <theAppContext.Consumer>
+                  {({ DAI2SAIMigrationTxRx }) =>
+                    // @ts-ignore
+                    <DAI2SAIMigrationTxRx label={ 'Swap for Sai' }
+                                          className={styles.redeemBtn}
+                    />
                   }
-                </MediaQuery>
+                </theAppContext.Consumer>
               }
             </td>
             <td data-test-id={`${combinedBalance.name}-balance`}

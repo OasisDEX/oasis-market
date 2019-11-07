@@ -1,7 +1,7 @@
 import * as classnames from 'classnames';
 import * as React from 'react';
 import * as ReactModal from 'react-modal';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { Button, CloseButton } from '../utils/forms/Buttons';
 import { Loadable } from '../utils/loadable';
 import { LoadingIndicator, WithLoadingIndicator } from '../utils/loadingIndicator/LoadingIndicator';
@@ -12,7 +12,6 @@ import { TopRightCorner } from '../utils/panel/TopRightCorner';
 import { ExchangeMigrationStatus, ExchangeMigrationTxKind } from './migration';
 
 import { BigNumber } from 'bignumber.js';
-import * as ReactDOM from 'react-dom';
 import { default as MediaQuery } from 'react-responsive';
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 import { tokens } from '../blockchain/config';
@@ -27,6 +26,7 @@ import { BigNumberInput } from '../utils/bigNumberInput/BigNumberInput';
 import { connect } from '../utils/connect';
 import { AmountFieldChange, FormChangeKind } from '../utils/form';
 import { formatAmount } from '../utils/formatters/format';
+import { ErrorMessage } from '../utils/forms/ErrorMessage';
 import { InputGroup, InputGroupAddon } from '../utils/forms/InputGroup';
 import { SvgImage } from '../utils/icons/utils';
 import { Scrollbar } from '../utils/Scrollbar/Scrollbar';
@@ -34,10 +34,9 @@ import { RowClickable, Table } from '../utils/table/Table';
 import { SellBuySpan } from '../utils/text/Text';
 import { WarningTooltipType } from '../utils/tooltip/Tooltip';
 import { zero } from '../utils/zero';
-import { WrapUnwrapFormKind } from '../wrapUnwrap/wrapUnwrapForm';
 import { CallForAction } from './CallForAction';
 import * as styles from './Migration.scss';
-import { MigrationFormKind, MigrationFormState } from './migrationForm';
+import { Message, MessageKind, MigrationFormKind, MigrationFormState } from './migrationForm';
 
 export type MigrationButtonProps = Loadable<MigrationFormState> & {
   label: string;
@@ -60,6 +59,15 @@ const allowanceTooltip = {
   text: 'Enabling token trading allows your Proxy to take tokens from you and trade them on the exchange.',
   iconColor: 'grey'
 } as WarningTooltipType;
+
+const messageContent = (msg: Message) => {
+  switch (msg.kind) {
+    case MessageKind.amount2Big:
+      return <span> You don't have enough funds</span>;
+    default:
+      return <></>;
+  }
+};
 
 // tslint:enable
 
@@ -174,16 +182,20 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
   }
 
   private initialView = () => {
+    const { fromToken, close } = this.props;
     return (
       <Panel footerBordered={true} className={styles.modalChild}>
         <PanelHeader bordered={true} className={styles.panelHeader}>
-          Multi-Collateral Dai Upgrade
+          {fromToken === 'SAI'
+            ? 'Multi-Collateral Dai Upgrade'
+            : 'Single-Collateral Sai Swap'
+          }
           <TopRightCorner className={styles.closeBtn}>
-            <CloseButton theme="danger" onClick={this.props.close}/>
+            <CloseButton theme="danger" onClick={close}/>
           </TopRightCorner>
         </PanelHeader>
         <PanelBody paddingVertical={true} className={styles.panelBody}>
-          {this.callToCancelOrders()}
+          {fromToken === 'SAI' && this.callToCancelOrders()}
           {this.callToRedeem()}
         </PanelBody>
       </Panel>
@@ -307,23 +319,22 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
 
   private migration = () => {
 
-    if (!this.props.progress) {
+    const { fromToken, amount, progress, close, change } = this.props;
+    const formattedAmount = formatAmount(amount || new BigNumber(0), fromToken);
+
+    if (!progress) {
       throw new Error('Should not get here!');
     }
 
-    const progress = this.props.progress;
-
     return <Panel className={styles.modalChild}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
-        Multi Collateral Dai Upgrade
+        {
+          fromToken === 'SAI'
+            ? 'Multi-Collateral Dai Upgrade'
+            : 'Single-Collateral Sai Swap'
+        }
         <TopRightCorner className={styles.closeBtn}>
-          <CloseButton theme="danger" onClick={() => {
-            this.props.close();
-            // if (progress.status === ExchangeMigrationStatus.fiasco
-            //   || progress.status === ExchangeMigrationStatus.done) {
-            //   progress.restart();
-            // }
-          }}/>
+          <CloseButton theme="danger" onClick={close}/>
         </TopRightCorner>
       </PanelHeader>
       <PanelBody paddingVertical={true}
@@ -333,11 +344,12 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       >
         <div className={styles.description}>
           {
-            // tslint:disable-next-line:max-line-length
-            `Upgrade ${this.props.amount && this.props.amount.valueOf()}
-            SAI (Single-Collateral Dai) to
-            ${this.props.amount && this.props.amount.valueOf()}
-            DAI (Multi-Collateral Dai)`
+            fromToken === 'SAI'
+              // tslint:disable-next-line:max-line-length
+              ? `Upgrade ${formattedAmount} SAI (Single-Collateral Dai) to ${formattedAmount} DAI (Multi-Collateral Dai)`
+
+              // tslint:disable-next-line:max-line-length
+              : `Swap ${formattedAmount} DAI (Multi-Collateral Dai) for ${formattedAmount} SAI (Single-Collateral Dai)`
           }
         </div>
 
@@ -406,6 +418,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                        `Cancel all your Open Orders before
                               upgrading your Single-Collateral Sai to Dai`
                      }
+                     data={`${ordersCount} Open ${ordersCount === 1 ? 'Order' : 'Orders'}`}
                      btnLabel={
                        ordersCount
                          ? 'Cancel Orders'
@@ -413,67 +426,73 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                      }
                      btnDisabled={!ordersCount}
                      btnAction={() => this.setState({ view: MigrationViews.cancelOrders })}
-      >
-        {`${ordersCount} Open ${ordersCount === 1 ? 'Order' : 'Orders'}`}
-      </CallForAction>
+      />
     );
   }
 
-  private callToRedeem = () => (
-    <CallForAction title="Upgrade your Single-Collateral Sai"
-                   description={
-                     `Upgrade your Single-Collateral Sai to
-                              Multi-Collateral Dai`
-                   }
-                   btnLabel={
-                     this.props.balance.eq(zero) &&
-                     <SvgImage image={tickSvg}/> ||
-                     `Upgrade ${this.props.fromToken}`
-                   }
-                   btnDisabled={!this.props.readyToProceed}
-                   btnAction={() => this.props.proceed(this.props)}
-    >
-      {
-        this.props.amount && `${formatAmount(this.props.amount, this.props.fromToken)}
-                     ${this.props.fromToken} to upgrade`
+  private callToRedeem = () => {
+    const { fromToken, amount, balance, readyToProceed, proceed, messages } = this.props;
+    return (
+      <CallForAction title={
+        fromToken === 'SAI'
+          ? 'Upgrade your Single-Collateral Sai'
+          : 'Swap your Multi-Collateral Dai'
       }
-      <InputGroup hasError={ (this.props.messages || []).length > 0}>
-        <InputGroupAddon>
-          Amount
-        </InputGroupAddon>
-        <div>
-          <BigNumberInput
-            data-test-id="type-amount"
-            // ref={(el: any) =>
-            //   this.amountInput = (el && ReactDOM.findDOMNode(el) as HTMLElement) || undefined
-            // }
-            type="text"
-            mask={createNumberMask({
-              allowDecimal: true,
-              decimalLimit: 5,
-              prefix: ''
-            })}
-            onChange={this.handleAmountChange}
-            value={
-              (this.props.amount || null) &&
-              formatAmount(this.props.amount as BigNumber, this.props.fromToken)
-            }
-            guide={true}
-            placeholder={'0'}
-            // disabled={state.progress !== undefined}
-          />
-          <InputGroupAddon
-            // onClick={this.handleAmountFocus}
-          >
-            {this.props.fromToken}
-          </InputGroupAddon>
-          <pre>
-            {JSON.stringify(this.props.messages)}
-          </pre>
+                     description={
+                       fromToken === 'SAI'
+                         ? `Upgrade your Single-Collateral Sai to Multi-Collateral Dai`
+                         : `Swap your Multi-Collateral Dai for Single-Collateral Sai`
+                     }
+                     data={
+                       `${formatAmount(balance, fromToken)}
+                     ${fromToken} to ${fromToken === 'SAI' ? 'upgrade' : 'swap'}`
+                     }
+                     btnLabel={
+                       balance.eq(zero) &&
+                       <SvgImage image={tickSvg}/> ||
+                       `${fromToken === 'SAI' ? 'Upgrade' : 'Swap'} ${fromToken}`
+                     }
+                     btnDisabled={!readyToProceed}
+                     btnAction={() => proceed(this.props)}
+      >
+        <div className={styles.amountInputGroup}>
+          <InputGroup hasError={(messages || []).length > 0}>
+            <InputGroupAddon>
+              Amount
+            </InputGroupAddon>
+            <div className={styles.amountInputTail}>
+              <BigNumberInput
+                data-test-id="type-amount"
+                // ref={(el: any) =>
+                //   this.amountInput = (el && ReactDOM.findDOMNode(el) as HTMLElement) || undefined
+                // }
+                type="text"
+                className={styles.amountInput}
+                mask={createNumberMask({
+                  allowDecimal: true,
+                  decimalLimit: 5,
+                  prefix: ''
+                })}
+                onChange={this.handleAmountChange}
+                value={
+                  (amount || null) &&
+                  formatAmount(amount as BigNumber, fromToken)
+                }
+                guide={true}
+                placeholder={'0'}
+              />
+              <InputGroupAddon
+                // onClick={this.handleAmountFocus}
+              >
+                {fromToken}
+              </InputGroupAddon>
+            </div>
+          </InputGroup>
+          <ErrorMessage messages={messages.map(messageContent)}/>
         </div>
-      </InputGroup>
-    </CallForAction>
-  )
+      </CallForAction>
+    );
+  }
 
   private handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/,/g, '');

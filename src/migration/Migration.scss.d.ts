@@ -62,5 +62,8 @@ export const price: string;
 export const amount: string;
 export const total: string;
 export const action: string;
+export const amountInput: string;
+export const amountInputTail: string;
+export const amountInputGroup: string;
 export const txRow: string;
 export const modalButtonsPlaceholder: string;

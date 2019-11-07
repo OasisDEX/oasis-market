@@ -49,7 +49,7 @@
 .panelBody {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   height: 100%;
   padding: 1.5rem;
 
@@ -61,11 +61,11 @@
   @include media-breakpoint-down(600px) {
     padding: 1.3rem;
     flex-direction: column;
+    justify-content: space-around;
   }
 
   @include media-breakpoint-down(400px) {
     padding: 1rem;
-    flex-direction: column;
   }
 }
 
@@ -166,6 +166,19 @@
 
 }
 
+.amountInput {
+  &Tail {
+    display: inline-flex;
+  }
+
+  &Group {
+    margin-bottom: .5rem;
+  }
+
+  border-right: 1px solid $element-border;
+  border-left: 1px solid $element-border;
+}
+
 .txRow {
   position: relative;
   max-width: 720px;
@@ -195,11 +208,11 @@
   height: 28.25rem;
 
   @include media-breakpoint-down(600px) {
-    height: 34.25rem;
+    height: 42.25rem;
   }
 
   @include media-breakpoint-down(400px) {
-    height: 624px;
+    height: 46rem;
   }
 }
 

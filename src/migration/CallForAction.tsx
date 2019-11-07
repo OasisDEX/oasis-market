@@ -5,6 +5,7 @@ import * as styles from './CallForAction.scss';
 export interface CallForActionProps {
   title: string;
   description: string;
+  data: string | React.ReactChild;
   btnLabel: string | React.ReactChild;
   btnAction: () => void;
   btnDisabled?: boolean;
@@ -12,14 +13,15 @@ export interface CallForActionProps {
 
 export class CallForAction extends React.Component<CallForActionProps> {
   public render() {
-    const { title, description, children, btnLabel, btnDisabled, btnAction } = this.props;
+    const { title, description, data, children, btnLabel, btnDisabled, btnAction } = this.props;
     return (
       <div className={styles.container}>
         <h6 className={styles.title}>{title}</h6>
         <p className={styles.description}>
           {description}
         </p>
-        <span className={styles.data}>{children}</span>
+        <span className={styles.data}>{data}</span>
+        {children}
         <Button size="sm"
                 color="primary"
                 className={styles.actionBtn}
