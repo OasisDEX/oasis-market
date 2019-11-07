@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
 import { combineLatest, noop, Observable, of } from 'rxjs';
-import { filter, first, map, switchMap } from 'rxjs/operators';
+import {filter, first, map, startWith, switchMap} from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
 // import { CancelData } from '../blockchain/calls/offerMake';
@@ -56,11 +56,15 @@ type ExchangeMigrationOperationInProgress = ({
 }) & ExchangeMigrationOperation;
 
 export enum ExchangeMigrationStatus {
-  // initializing = 'initializing',
+  initializing = 'initializing',
   ready = 'ready',
   inProgress = 'inProgress',
   fiasco = 'fiasco',
   done = 'done'
+}
+
+interface ExchangeMigrationInitialState {
+  status: ExchangeMigrationStatus.initializing;
 }
 
 interface ExchangeMigrationReadyState {
@@ -88,6 +92,7 @@ interface ExchangeMigrationFiascoState {
 }
 
 export type ExchangeMigrationState =
+  | ExchangeMigrationInitialState
   | ExchangeMigrationReadyState
   | ExchangeMigrationInProgressState
   | ExchangeMigrationDoneState
@@ -96,28 +101,6 @@ export type ExchangeMigrationState =
 function allowance$(allowances$: Observable<Allowances>, token: string) {
   return allowances$.pipe(
     map(allowances => allowances[token])
-  );
-}
-
-export function createExchangeMigration$(
-  proxyAddress$: Observable<string>,
-  calls$: Calls$,
-  operations$: Observable<ExchangeMigrationOperation[]>,
-): Observable<ExchangeMigrationState> {
-  return combineLatest(
-    calls$,
-    operations$,
-  ).pipe(
-    first(),
-    switchMap(([calls, operations]) => {
-      return inductor(
-        {
-          status: ExchangeMigrationStatus.ready,
-          pending: operations
-        },
-        curry(next)(proxyAddress$, calls),
-      );
-    }),
   );
 }
 
@@ -279,8 +262,6 @@ export function createMigrationOps$(
         { token, kind: ExchangeMigrationTxKind.allowance4Proxy, }
       ];
 
-      console.log('amount', amount.toString());
-
       const ops: ExchangeMigrationOperation[] = amount.gt(zero) ? [
         { amount,
           kind: token === 'SAI' ?
@@ -295,5 +276,28 @@ export function createMigrationOps$(
         ...ops
       ];
     }),
+  );
+}
+
+export function createExchangeMigration$(
+  proxyAddress$: Observable<string>,
+  calls$: Calls$,
+  operations$: Observable<ExchangeMigrationOperation[]>,
+): Observable<ExchangeMigrationState> {
+  return combineLatest(
+    calls$,
+    operations$,
+  ).pipe(
+    first(),
+    switchMap(([calls, operations]) => {
+      return inductor(
+        {
+          status: ExchangeMigrationStatus.ready,
+          pending: operations
+        },
+        curry(next)(proxyAddress$, calls),
+      );
+    }),
+    startWith({ kind: ExchangeMigrationStatus.initializing })
   );
 }

@@ -384,6 +384,12 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
         <Button size="sm"
                 color="secondaryOutlined"
                 className={styles.backBtn}
+                disabled={
+                  this.props.progress && (
+                    this.props.progress.status !== ExchangeMigrationStatus.done &&
+                    this.props.progress.status !== ExchangeMigrationStatus.fiasco
+                  )
+                }
                 onClick={() => this.props.change({ kind: FormChangeKind.progress })}
         >
           Back
