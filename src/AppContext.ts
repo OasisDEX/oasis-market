@@ -7,9 +7,11 @@ import {
   filter,
   first,
   flatMap,
-  map, mergeMap,
-  shareReplay, startWith,
-  switchMap,
+  map,
+  mergeMap,
+  shareReplay,
+  startWith,
+  switchMap, tap,
 } from 'rxjs/operators';
 import {
   AssetOverviewView,
@@ -20,8 +22,11 @@ import {
   Balances,
   CombinedBalances,
   createBalances$,
-  createCombinedBalances$, createDaiSwap,
-  createDustLimits$, createProxyAllowances$, createSaiSwap,
+  createCombinedBalances$,
+  createDaiSwap,
+  createDustLimits$,
+  createProxyAllowances$,
+  createSaiSwap,
   createTokenBalances$,
   createWalletApprove,
   createWalletDisapprove,
@@ -37,7 +42,8 @@ import {
   etherPriceUsd$,
   gasPrice$,
   initializedAccount$,
-  onEveryBlock$, tokenPricesInUSD$
+  onEveryBlock$,
+  tokenPricesInUSD$
 } from './blockchain/network';
 import { user$ } from './blockchain/user';
 import { loadOrderbook$, Offer, Orderbook } from './exchange/orderbook/orderbook';
@@ -45,7 +51,8 @@ import {
   createTradingPair$,
   currentTradingPair$,
   loadablifyPlusTradingPair,
-  memoizeTradingPair, TradingPair,
+  memoizeTradingPair,
+  TradingPair,
 } from './exchange/tradingPair/tradingPair';
 
 import { BigNumber } from 'bignumber.js';
@@ -108,11 +115,16 @@ import { Network } from './header/Network';
 import { createFormController$ as createInstantFormController$ } from './instant/instantForm';
 import { InstantViewPanel } from './instant/InstantViewPanel';
 import {
-  createDAI2SAIOps$,
   createExchangeMigration$,
-  createSAI2DAIOps$, ExchangeMigrationState
+  createMigrationOps$,
+  ExchangeMigrationState, ExchangeMigrationStatus
 } from './migration/migration';
-import { MigrationButton } from './migration/MigrationView';
+import {
+  createMigrationForm$,
+  MigrationFormKind,
+  MigrationFormState
+} from './migration/migrationForm';
+import { MigrationButton } from './migration/MigrationFormView';
 import { createTransactionNotifier$ } from './transactionNotifier/transactionNotifier';
 import { TransactionNotifierView } from './transactionNotifier/TransactionNotifierView';
 import { Authorizable, authorizablify } from './utils/authorizable';
@@ -347,9 +359,9 @@ export function setupAppContext() {
     export: () => createTaxExport$(context$, initializedAccount$)
   });
 
-  const aggregatedOpenOrders$ = createMyOpenTrades$(
+  const aggregatedOpenOrders$ = (token: 'SAI' | 'DAI') => createMyOpenTrades$(
     combineLatest(...tradingPairs
-      .filter(pair => pair.quote === 'SAI')
+      .filter(pair => pair.quote === token)
       .map(pair => loadOrderbook(pair))
     )
       .pipe(
@@ -379,55 +391,80 @@ export function setupAppContext() {
     {} as TradingPair
   );
 
-  const sai2DAIOps$ = createSAI2DAIOps$(
+  const sai2DAIOps$ = curry(createMigrationOps$)(
+    'SAI',
+    createProxyAllowances$(
+      context$,
+      initializedAccount$,
+      proxyAddress$,
+      onEveryBlock$
+    ).pipe(
+      startWith({})
+    ),
+    proxyAddress$,
+  );
+
+  const dai2SAIOps$ = curry(createMigrationOps$)(
+    'DAI',
+    createProxyAllowances$(
+      context$,
+      initializedAccount$,
+      proxyAddress$,
+      onEveryBlock$
+    ).pipe(
+      startWith({})
+    ),
+    proxyAddress$,
+  );
+
+  const sai2DAIMigration$ = (amount: BigNumber) => createExchangeMigration$(
+    proxyAddress$,
+    calls$,
+    sai2DAIOps$(amount),
+  );
+
+  const dai2SAIMigration$ = (amount: BigNumber) => createExchangeMigration$(
+    proxyAddress$,
+    calls$,
+    dai2SAIOps$(amount),
+  );
+
+  const sai2DAIMigrationForm$ = createMigrationForm$(
     saiBalance$,
-    createProxyAllowances$(
-      context$,
-      initializedAccount$,
-      proxyAddress$,
-      onEveryBlock$
-    ).pipe(
-      startWith({})
-    ),
-    proxyAddress$,
+    MigrationFormKind.sai2dai,
+    sai2DAIMigration$,
+    calls$,
+    aggregatedOpenOrders$('SAI')
   );
 
-  const dai2SAIOps$ = createDAI2SAIOps$(
+  const dai2SAIMigrationForm$ = createMigrationForm$(
     daiBalance$,
-    createProxyAllowances$(
-      context$,
-      initializedAccount$,
-      proxyAddress$,
-      onEveryBlock$
-    ).pipe(
-      startWith({})
-    ),
-    proxyAddress$,
-  );
-
-  const sai2DAIMigration$ = createExchangeMigration$(
-    proxyAddress$,
+    MigrationFormKind.dai2sai,
+    dai2SAIMigration$,
     calls$,
-    sai2DAIOps$,
-    aggregatedOpenOrders$
+    aggregatedOpenOrders$('DAI')
   );
 
-  const dai2SAIMigration$ = createExchangeMigration$(
-    proxyAddress$,
-    calls$,
-    dai2SAIOps$,
-    aggregatedOpenOrders$
-  );
-
-  const MigrationTxRx =
+  const SAI2DAIMigrationTxRx =
     inject<{ migration$: Observable<ExchangeMigrationState> }, any>(
       withModal(
-        connect<Loadable<ExchangeMigrationState>, any>(
+        connect<Loadable<MigrationFormState>, any>(
           MigrationButton,
-          loadablifyLight<ExchangeMigrationState>(sai2DAIMigration$)
+          loadablifyLight<MigrationFormState>(sai2DAIMigrationForm$)
         )
       ),
-      { migration$: sai2DAIMigration$ }
+      { migration$: sai2DAIMigrationForm$ }
+    );
+
+  const DAI2SAIMigrationTxRx =
+    inject<{ migration$: Observable<ExchangeMigrationState> }, any>(
+      withModal(
+        connect<Loadable<MigrationFormState>, any>(
+          MigrationButton,
+          loadablifyLight<MigrationFormState>(dai2SAIMigrationForm$)
+        )
+      ),
+      { migration$: dai2SAIMigrationForm$ }
     );
 
   return {
@@ -443,8 +480,8 @@ export function setupAppContext() {
     NetworkTxRx,
     TheFooterTxRx,
     TaxExporterTxRx,
-    MigrationTxRx,
-    dai2SAIMigration$
+    SAI2DAIMigrationTxRx,
+    DAI2SAIMigrationTxRx,
   };
 }
 

@@ -170,24 +170,13 @@ export class AssetsOverviewViewInternal
                 <MediaQuery maxWidth={620}>
                   {
                     (matches) => {
-                      if (matches) {
-                        return (
-                          <theAppContext.Consumer>
-                            {({ MigrationTxRx }) =>
-                              // @ts-ignore
-                              <MigrationTxRx label="Upgrade"
-                                             className={styles.redeemBtn}
-                              />
-                            }
-                          </theAppContext.Consumer>
-                        );
-                      }
-
+                      // TODO: create a var for label
+                      const label = matches ? 'Upgrade' : 'Upgrade SAI';
                       return (
                         <theAppContext.Consumer>
-                          {({ MigrationTxRx }) =>
+                          {({ SAI2DAIMigrationTxRx }) =>
                             // @ts-ignore
-                            <MigrationTxRx label="Upgrade DAI"
+                            <SAI2DAIMigrationTxRx label={ label }
                                            className={styles.redeemBtn}
                             />
                           }
@@ -196,30 +185,27 @@ export class AssetsOverviewViewInternal
                     }
                   }
                 </MediaQuery>
-
               }
               {
                 combinedBalance.name === 'DAI' &&
-                <theAppContext.Consumer>
-                  {({ dai2SAIMigration$ }) =>
-                    <Button
-                      color="secondary"
-                      size="xs"
-                      className={styles.wrapUnwrapBtn}
-                      block={true}
-                      onClick={() => {
-                        dai2SAIMigration$.pipe(
-                          filter(s => s.status === ExchangeMigrationStatus.ready),
-                          first(),
-                          tap(s => s.status === ExchangeMigrationStatus.ready && s.start()),
-                        ).subscribe(console.log);
-                      }}
-                      disabled={combinedBalance.balance.eq(zero)}
-                    >
-                      Redeem SAI
-                    </Button>
+                <MediaQuery maxWidth={620}>
+                  {
+                    (matches) => {
+                      // TODO: create a var for label
+                      const label = matches ? 'Upgrade' : 'Swap to SAI';
+                      return (
+                        <theAppContext.Consumer>
+                          {({ DAI2SAIMigrationTxRx }) =>
+                            // @ts-ignore
+                            <DAI2SAIMigrationTxRx label={ label }
+                                                  className={styles.redeemBtn}
+                            />
+                          }
+                        </theAppContext.Consumer>
+                      );
+                    }
                   }
-                </theAppContext.Consumer>
+                </MediaQuery>
               }
             </td>
             <td data-test-id={`${combinedBalance.name}-balance`}

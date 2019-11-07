@@ -7,11 +7,11 @@
 
 .loadingIndicator {
   min-height: unset;
-  height: 38px;
+  height: 2.375rem;
   margin-right: 1rem;
 
   @include media-breakpoint-down(sm) {
-    height: 32px;
+    height: 2rem;
   }
 }
 
@@ -32,7 +32,7 @@
   ));
 
   @include media-breakpoint-down($header-media-breakpoint) {
-    height: 32px;
+    height: 2rem;
     margin-right: .5rem;
     font-size: 13px;
   }
@@ -91,12 +91,12 @@
 
 .backBtn {
   width: 100%;
-  max-width: 124px;
+  max-width: 7.75rem;
 }
 
 .migrateBtn {
   width: 100%;
-  max-width: 186px;
+  max-width: 11.625rem;
 }
 
 .description {
@@ -191,11 +191,11 @@
 
 .modalChild {
   width: 100%;
-  max-width: 848px;
-  height: 452px;
+  max-width: 53rem;
+  height: 28.25rem;
 
   @include media-breakpoint-down(600px) {
-    height: 548px;
+    height: 34.25rem;
   }
 
   @include media-breakpoint-down(400px) {

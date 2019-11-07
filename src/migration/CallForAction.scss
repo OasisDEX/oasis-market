@@ -8,8 +8,8 @@
   border: 1px solid $element-border;
   border-radius: $border-radius;
   width: 100%;
-  max-width: 388px;
-  height: 258px;
+  max-width: 24.25rem;
+  height: 16.125rem;
   font-size: 15px;
   line-height: 1.5rem;
   margin: 0 1.5rem;
@@ -24,7 +24,7 @@
   }
 
   @include media-breakpoint-down($header-media-breakpoint) {
-    height: 312px;
+    height: 19.5rem;
   }
 
   @include media-breakpoint-down(600px) {
@@ -73,7 +73,7 @@
 }
 
 .actionBtn {
-  height: 34px;
+  height: 2.125rem;
   width: 100%;
   max-width: 170px;
   font-size: 14px;

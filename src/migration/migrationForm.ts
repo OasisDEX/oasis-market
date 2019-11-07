@@ -1,21 +1,21 @@
 import { BigNumber } from 'bignumber.js';
-import { merge, Observable, Subject } from 'rxjs';
-import { map, scan } from 'rxjs/operators';
+import { combineLatest, merge, Observable, Subject } from 'rxjs';
+import { first, map, scan, switchMap } from 'rxjs/operators';
+import { Calls$ } from '../blockchain/calls/calls';
+import { CancelData } from '../blockchain/calls/offerMake';
 import { TradeWithStatus } from '../exchange/myTrades/openTrades';
 import { combineAndMerge } from '../utils/combineAndMerge';
-import {
-  AmountFieldChange,  FormChangeKind,
-} from '../utils/form';
+import { AmountFieldChange, FormChangeKind, OrdersChange, toOrdersChange, } from '../utils/form';
 import { zero } from '../utils/zero';
 import { ExchangeMigrationState } from './migration';
 
 export enum MessageKind {
   amount2Big = 'amount2Big',
-  // TODO: too small, dust
+  amount2Small = 'amount2Small',
 }
 
 export interface Message {
-  kind: MessageKind.amount2Big;
+  kind: MessageKind.amount2Big | MessageKind.amount2Small;
 }
 
 export enum MigrationFormKind {
@@ -24,16 +24,17 @@ export enum MigrationFormKind {
 }
 
 enum BalanceChangeKind {
-  saiBalanceChange = 'saiBalanceChange',
-  daiBalanceChange = 'daiBalanceChange',
+  balanceChange = 'balanceChange',
 }
 
 export type ManualChange = AmountFieldChange;
 
-interface EnvironmentChange {
+interface BalanceChange {
   kind: BalanceChangeKind;
   balance: BigNumber;
 }
+
+type EnvironmentChange = BalanceChange | OrdersChange;
 
 export interface ProgressChange {
   kind: FormChangeKind.progress;
@@ -44,15 +45,16 @@ type MigrationFormChange = ManualChange | EnvironmentChange | ProgressChange;
 
 export interface MigrationFormState {
   kind: MigrationFormKind;
-  saiBalance: BigNumber;
-  daiBalance: BigNumber;
+  fromToken: string;
+  balance: BigNumber;
   orders: TradeWithStatus[];
   amount?: BigNumber;
   messages: Message[];
   readyToProceed?: boolean;
   progress?: ExchangeMigrationState;
-  change: (change: ManualChange) => void;
+  change: (change: ManualChange | ProgressChange) => void;
   proceed: (state: MigrationFormState) => void;
+  cancelOffer: (cancelData: CancelData) => void;
 }
 
 function applyChange(
@@ -60,15 +62,14 @@ function applyChange(
   change: MigrationFormChange
 ): MigrationFormState {
   switch (change.kind) {
-    case BalanceChangeKind.daiBalanceChange:
-      return { ...state, daiBalance: change.balance };
-    case BalanceChangeKind.saiBalanceChange:
-      return { ...state, saiBalance: change.balance };
+    case BalanceChangeKind.balanceChange:
+      return { ...state, balance: change.balance };
     case FormChangeKind.amountFieldChange:
       return { ...state, amount: change.value  };
     case FormChangeKind.progress:
       return { ...state, progress: change.progress };
-    // TODO: orders
+    case FormChangeKind.ordersChange:
+      return { ...state, orders: change.orders };
   }
   return state;
 }
@@ -76,7 +77,13 @@ function applyChange(
 function validate(state: MigrationFormState) {
   const messages: Message[] = [];
 
-  // TODO it should be neither to small nor to big
+  if (state.amount && state.amount.gt(state.balance)) {
+    messages.push({ kind: MessageKind.amount2Big });
+  }
+
+  if (state.amount && state.amount.lte(zero)) {
+    messages.push({ kind: MessageKind.amount2Small });
+  }
 
   return {
     ...state,
@@ -96,8 +103,7 @@ function checkIfIsReadyToProceed(state: MigrationFormState) {
 }
 
 function prepareProceed(
-  migrateSAI2DAI$: (amount: BigNumber) => Observable<ExchangeMigrationState>,
-  migrateDAI2SAI$: (amount: BigNumber) => Observable<ExchangeMigrationState>,
+  migrate$: (amount: BigNumber) => Observable<ExchangeMigrationState>,
 ): [
   (state: MigrationFormState) => void, Observable<ProgressChange>
 ] {
@@ -112,10 +118,7 @@ function prepareProceed(
       return;
     }
 
-    const call$ = state.kind === MigrationFormKind.sai2dai ?
-      migrateSAI2DAI$ : migrateDAI2SAI$;
-
-    const changes$ = call$(amount).pipe(
+    const changes$ = migrate$(amount).pipe(
       map(progress => (
         { progress, kind: FormChangeKind.progress } as ProgressChange
       ))
@@ -143,58 +146,62 @@ function freezeIfInProgress(
 }
 
 function toBalanceChange(
-  balance$: Observable<BigNumber>,
-  kind: BalanceChangeKind.saiBalanceChange | BalanceChangeKind.daiBalanceChange
+  balance$: Observable<BigNumber>
 ) {
   return balance$.pipe(
-    map(balance => ({ kind, balance }))
+    map(balance => ({ balance, kind: BalanceChangeKind.balanceChange }))
   );
 }
 
 export function createMigrationForm$(
-  saiBalance$: Observable<BigNumber>,
-  daiBalance$: Observable<BigNumber>,
+  balance$: Observable<BigNumber>,
   kind: MigrationFormKind,
-  migrateSAI2DAI$: (amount: BigNumber) => Observable<ExchangeMigrationState>,
-  migrateDAI2SAI$: (amount: BigNumber) => Observable<ExchangeMigrationState>,
+  migrate$: (amount: BigNumber) => Observable<ExchangeMigrationState>,
+  calls$: Calls$,
+  orders$: Observable<TradeWithStatus[]>
 ): Observable<MigrationFormState> {
 
   const manualChange$ = new Subject<ManualChange>();
 
-  const saiBalanceChange$ =
-    toBalanceChange(saiBalance$, BalanceChangeKind.saiBalanceChange);
-
-  const daiBalanceChange$ =
-    toBalanceChange(daiBalance$, BalanceChangeKind.daiBalanceChange);
-
   const environmentChange$ = combineAndMerge(
-    saiBalanceChange$,
-    daiBalanceChange$,
+    toBalanceChange(balance$),
+    toOrdersChange(orders$)
   );
 
   const [proceed, proceedProgressChange$] =
-    prepareProceed(migrateSAI2DAI$, migrateDAI2SAI$);
+    prepareProceed(migrate$);
 
   const change = manualChange$.next.bind(manualChange$);
 
-  const initialState = {
-    kind,
-    change,
-    proceed,
-    saiBalance: zero,
-    daiBalance: zero,
-    messages: [],
-    orders: [],
-  };
+  return balance$.pipe(
+    first(),
+    switchMap((balance) => {
+      const initialState = {
+        kind,
+        change,
+        proceed,
+        balance,
+        amount: balance,
+        messages: [],
+        orders: [],
+        fromToken: kind === MigrationFormKind.sai2dai ? 'SAI' : 'DAI',
+        cancelOffer: (cancelData: CancelData) =>
+          calls$.pipe(
+            first(),
+            switchMap(calls => calls.cancelOffer2(cancelData))
+          ).subscribe()
+      };
 
-  return merge(
-    manualChange$,
-    environmentChange$,
-    proceedProgressChange$
-  ).pipe(
-    scan(applyChange, initialState),
-    map(validate),
-    map(checkIfIsReadyToProceed),
-    scan(freezeIfInProgress),
+      return merge(
+        manualChange$,
+        environmentChange$,
+        proceedProgressChange$
+      ).pipe(
+        scan(applyChange, initialState),
+        map(validate),
+        map(checkIfIsReadyToProceed),
+        scan(freezeIfInProgress),
+      );
+    })
   );
 }

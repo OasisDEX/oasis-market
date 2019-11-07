@@ -229,9 +229,12 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
           </p>
         </div>
         <theAppContext.Consumer>
-          {({ MigrationTxRx }) =>
+          {({ SAI2DAIMigrationTxRx }) =>
             // @ts-ignore
-            <MigrationTxRx label={'Start Dai Migration'} className={styles.migrateButton}/>
+            <SAI2DAIMigrationTxRx
+              label={'Start Dai Migration'}
+              className={styles.migrateButton}
+            />
           }
         </theAppContext.Consumer>
       </PanelBody>

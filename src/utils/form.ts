@@ -8,6 +8,7 @@ import { TxState, TxStatus } from '../blockchain/transactions';
 import { User } from '../blockchain/user';
 import { amountFromWei } from '../blockchain/utils';
 import { Offer, OfferType, Orderbook } from '../exchange/orderbook/orderbook';
+import {TradeWithStatus} from "../exchange/myTrades/openTrades";
 
 export enum FormStage {
   idle = 'idle',
@@ -41,6 +42,7 @@ export enum FormChangeKind {
   pickOfferChange = 'pickOffer',
   progress = 'progress',
   etherBalanceChange = 'etherBalanceChange',
+  ordersChange = 'ordersChange'
 }
 
 export enum OfferMatchType {
@@ -136,6 +138,11 @@ export interface EtherBalanceChange {
   etherBalance: BigNumber;
 }
 
+export interface OrdersChange {
+  kind: FormChangeKind.ordersChange;
+  orders: TradeWithStatus[];
+}
+
 export function progressChange(progress?: ProgressStage): ProgressChange {
   return { progress, kind: FormChangeKind.progress };
 }
@@ -216,6 +223,14 @@ export function toUserChange(user$: Observable<User>) {
       user,
       kind: FormChangeKind.userChange
     } as UserChange))
+  );
+}
+
+export function toOrdersChange(
+  orders$: Observable<TradeWithStatus[]>
+) {
+  return orders$.pipe(
+    map(orders => ({ orders, kind: FormChangeKind.ordersChange }))
   );
 }
 
