@@ -4,7 +4,8 @@ import { Observable } from 'rxjs/internal/Observable';
 
 import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
-import { filter, first, tap } from 'rxjs/operators';
+import { default as MediaQuery } from 'react-responsive';
+import {  filter, first, tap } from 'rxjs/operators';
 import { theAppContext } from '../AppContext';
 import { tokens } from '../blockchain/config';
 import { TxState } from '../blockchain/transactions';
@@ -166,14 +167,36 @@ export class AssetsOverviewViewInternal
               }
               {
                 combinedBalance.name === 'SAI' &&
-                <theAppContext.Consumer>
-                  {({ MigrationTxRx }) =>
-                    // @ts-ignore
-                    <MigrationTxRx label="Redeem DAI"
-                                   className={styles.redeemBtn}
-                    />
+                <MediaQuery maxWidth={620}>
+                  {
+                    (matches) => {
+                      if (matches) {
+                        return (
+                          <theAppContext.Consumer>
+                            {({ MigrationTxRx }) =>
+                              // @ts-ignore
+                              <MigrationTxRx label="Upgrade"
+                                             className={styles.redeemBtn}
+                              />
+                            }
+                          </theAppContext.Consumer>
+                        );
+                      }
+
+                      return (
+                        <theAppContext.Consumer>
+                          {({ MigrationTxRx }) =>
+                            // @ts-ignore
+                            <MigrationTxRx label="Upgrade DAI"
+                                           className={styles.redeemBtn}
+                            />
+                          }
+                        </theAppContext.Consumer>
+                      );
+                    }
                   }
-                </theAppContext.Consumer>
+                </MediaQuery>
+
               }
               {
                 combinedBalance.name === 'DAI' &&

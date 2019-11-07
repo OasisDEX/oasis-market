@@ -282,7 +282,7 @@ function next(
 
     const fiasco = {
       ...state,
-      pending: [...state.pending, state.current],
+      pending: [state.current, ...state.pending],
       current: {} as ExchangeMigrationOperationInProgress,
       done: state.done,
       status: ExchangeMigrationStatus.fiasco,

@@ -373,12 +373,8 @@ export function setupAppContext() {
         })),
     account$,
     transactions$.pipe(
-      map((transactions: TxState[]) => {
-        return transactions && transactions.filter(tx => {
-          return tx.meta.args.sellToken === 'SAI'
-          && tx.meta.kind === TxMetaKind.cancel;
-        });
-      }),
+      map((transactions: TxState[]) => transactions
+        .filter(tx => tx.meta.kind === TxMetaKind.cancel)),
     ),
     {} as TradingPair
   );

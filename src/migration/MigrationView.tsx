@@ -18,6 +18,7 @@ import {
 } from './migration';
 
 import { BigNumber } from 'bignumber.js';
+import { default as MediaQuery } from 'react-responsive';
 import { tokens } from '../blockchain/config';
 import { TradeStatus, TradeWithStatus } from '../exchange/myTrades/openTrades';
 import accountSvg from '../icons/account.svg';
@@ -168,8 +169,8 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
     return (
       <Panel footerBordered={true} className={styles.modalChild}>
         <PanelHeader bordered={true} className={styles.panelHeader}>
-          Oasis Multi Collateral Dai Migration
-          <TopRightCorner>
+          Multi-Collateral Dai Upgrade
+          <TopRightCorner className={styles.closeBtn}>
             <CloseButton theme="danger" onClick={this.props.close}/>
           </TopRightCorner>
         </PanelHeader>
@@ -185,7 +186,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
     return <Panel className={styles.modalChild}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
         Cancel Pending Orders
-        <TopRightCorner>
+        <TopRightCorner className={styles.closeBtn}>
           <CloseButton theme="danger" onClick={this.props.close}/>
         </TopRightCorner>
       </PanelHeader>
@@ -197,18 +198,18 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         <div className={styles.description}>
           {
             // tslint:disable-next-line:max-line-length
-            `Cancel your ${orders.length} Resting Orders before redeeming your Multi Collateral Dai (DAI)`
+            `Cancel your ${orders.length} Open ${orders.length === 1 ? 'Order' : 'Orders'} before upgrading your Single-Collateral Sai`
           }
         </div>
         <div className={styles.ordersPlaceholder}>
           <Table align="left" className={styles.orders}>
             <thead>
-            <th>Market</th>
-            <th>Type</th>
-            <th>Price</th>
-            <th>Amount</th>
-            <th>Total</th>
-            <th>Action</th>
+            <th className={classnames('hide-md', styles.market)}>Market</th>
+            <th className={styles.type}>Type</th>
+            <th className={styles.price}>Price</th>
+            <th className={styles.amount}>Amount</th>
+            <th className={styles.total}>Total</th>
+            <th className={styles.action}>Action</th>
             </thead>
           </Table>
         </div>
@@ -223,36 +224,54 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
                     key={index}
                     clickable={false}
                   >
-                    <td>{order.baseToken}/{order.quoteToken}</td>
-                    <td><SellBuySpan type={order.act}>{order.act}</SellBuySpan></td>
-                    <td>{formatAmount(order.price, order.quoteToken)} SAI</td>
-                    <td>{formatAmount(order.baseAmount, order.baseToken)} {order.baseToken}</td>
-                    <td>{formatAmount(order.quoteAmount, order.quoteToken)} SAI</td>
-                    <td>
+                    <td className={classnames('hide-md', styles.market)}>
+                      {order.baseToken}/{order.quoteToken}
+                    </td>
+                    <td className={styles.type}>
+                      <SellBuySpan type={order.act}>{order.act}</SellBuySpan>
+                    </td>
+                    <td className={styles.price}>
+                      {formatAmount(order.price, order.quoteToken)} SAI
+                    </td>
+                    <td className={styles.amount}>
+                      {formatAmount(order.baseAmount, order.baseToken)} {order.baseToken}
+                    </td>
+                    <td className={styles.total}>
+                      {formatAmount(order.quoteAmount, order.quoteToken)} SAI
+                    </td>
+                    <td className={styles.action}>
                       {
                         order.status === TradeStatus.beingCancelled
                           ? <LoadingIndicator className={styles.orderCancellationIndicator}
                                               inline={true}
                           />
-                          : (
-                            <Button size="sm"
-                                    color="secondaryOutlined"
-                                    onClick={() => {
-                                      if (this.props.status === ExchangeMigrationStatus.ready
-                                        || this.props.status === ExchangeMigrationStatus.inProgress
-                                      ) {
-                                        this.props.cancelOffer({
-                                          offerId: order.offerId,
-                                          type: order.act,
-                                          amount: order.baseAmount,
-                                          token: order.baseToken
-                                        });
-                                      }
-                                    }}
-                            >
-                              Cancel
-                            </Button>
-                          )
+                          : <MediaQuery maxWidth={480}>
+                            {
+                              (matches) => {
+                                if (matches) {
+                                  return (
+                                    <CloseButton theme="danger"
+                                                 onClick={
+                                                   () => this.cancel(order)
+                                                 }
+                                    />
+                                  );
+                                }
+
+                                return (
+                                  <Button size="sm"
+                                          color="secondaryOutlined"
+                                          onClick={
+                                            () => this.cancel(order)
+                                          }
+                                  >
+                                    Cancel
+                                  </Button>
+                                );
+                              }
+                            }
+                          </MediaQuery>
+
                       }
                     </td>
                   </RowClickable>
@@ -280,7 +299,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
   private migration = (amount: BigNumber) => {
     return <Panel className={styles.modalChild}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
-        Multi Collateral Dai Redeemer
+        Multi Collateral Dai Upgrade
         <TopRightCorner className={styles.closeBtn}>
           <CloseButton theme="danger" onClick={() => {
             this.props.close();
@@ -299,10 +318,16 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         <div className={styles.description}>
           {
             // tslint:disable-next-line:max-line-length
-            `Redeem ${amount.valueOf()} DAI (Multi Collateral Dai) for ${amount.valueOf()} SAI (Single Collateral Dai)`
+            `Upgrade ${amount.valueOf()} SAI (Single-Collateral Dai) to ${amount.valueOf()} DAI (Multi-Collateral Dai)`
           }
         </div>
 
+        {
+          this.props.status === ExchangeMigrationStatus.ready
+          && this.props.pending.map((operation, index) => {
+            return this.txRow(operation, index);
+          })
+        }
         {
           (this.props.status === ExchangeMigrationStatus.inProgress ||
             this.props.status === ExchangeMigrationStatus.fiasco)
@@ -318,8 +343,7 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         }
 
         {
-          (this.props.status === ExchangeMigrationStatus.ready ||
-            this.props.status === ExchangeMigrationStatus.inProgress ||
+          (this.props.status === ExchangeMigrationStatus.inProgress ||
             this.props.status === ExchangeMigrationStatus.fiasco)
           && this.props.pending.map((operation) => {
             return this.txRow(operation);
@@ -375,12 +399,12 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
   }
 
   private callToCancelOrders = (ordersCount: number) => (
-    <CallForAction title="Cancel Resting Orders"
+    <CallForAction title="Cancel Open Orders"
                    description={
-                     `Cancel all your Resting Orders before
-                              redeeming your Multi Collateral Dai (DAI)`
+                     `Cancel all your Open Orders before
+                              upgrading your Single-Collateral Sai to Dai`
                    }
-                   data={`${ordersCount} Available Orders`}
+                   data={`${ordersCount} Open ${ordersCount === 1 ? 'Order' : 'Orders'}`}
                    btnLabel={
                      ordersCount
                        ? 'Cancel Orders'
@@ -392,15 +416,15 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
   )
 
   private callToRedeemDai = (amountToRedeem: BigNumber) => (
-    <CallForAction title="Multi Collateral Dai Redeemer"
+    <CallForAction title="Upgrade your Single-Collateral Sai"
                    description={
-                     `Redeem your Single Collateral Dai (SAI) for
-                              Multi Collateral Dai (DAI)`
+                     `Upgrade your Single-Collateral Sai to
+                              Multi-Collateral Dai`
                    }
-                   data={`${amountToRedeem.valueOf()} DAI to redeem`}
+                   data={`${amountToRedeem.valueOf()} SAI to upgrade`}
                    btnLabel={
                      amountToRedeem.gt(new BigNumber(0))
-                       ? 'Redeem Dai'
+                       ? 'Upgrade Dai'
                        : <SvgImage image={tickSvg}/>
                    }
                    btnDisabled={amountToRedeem.lte(new BigNumber(0))}
@@ -455,9 +479,9 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
             <TxStatusRow icon={tokens.SAI.iconColor}
                          label={
                            <TradeData
-                             data-test-id="redeem"
+                             data-test-id="upgrade"
                              theme="reversed"
-                             label="Redeem"
+                             label="Upgrade"
                              value={`${operation.amount.toFormat(tokens.SAI.digits)} SAI`}
                            />}
                          status={<ProgressReport report={status}/>}
@@ -466,6 +490,19 @@ export class MigrationModal extends React.Component<ExchangeMigrationState & Mod
         );
       default:
         return <></>;
+    }
+  }
+
+  private cancel = (order: TradeWithStatus) => {
+    if (this.props.status === ExchangeMigrationStatus.ready
+      || this.props.status === ExchangeMigrationStatus.inProgress
+    ) {
+      this.props.cancelOffer({
+        offerId: order.offerId,
+        type: order.act,
+        amount: order.baseAmount,
+        token: order.baseToken
+      });
     }
   }
 }
