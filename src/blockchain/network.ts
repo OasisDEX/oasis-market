@@ -148,6 +148,9 @@ const tokens = [
   },
   {
     symbol: 'REP', ticker: 'rep-augur'
+  },
+  {
+    symbol: 'USDC', ticker: 'usdc-usd-coin'
   }
 ];
 
@@ -163,7 +166,8 @@ export const tokenPricesInUSD$: Observable<Ticker> = onEveryBlock$.pipe(
     () =>
       forkJoin(
         tokens.map(
-          (token) => ajax({
+          (token) =>
+          ajax({
             url: `https://api.coinpaprika.com/v1/tickers/${token.ticker}/`,
             method: 'GET',
             headers: {

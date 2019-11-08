@@ -16,9 +16,9 @@ import ethSvg from '../icons/coins/eth.svg';
 import repCircleSvg from '../icons/coins/rep-circle.svg';
 import repColorSvg from '../icons/coins/rep-color.svg';
 import repSvg from '../icons/coins/rep.svg';
-// import usdcCircleSvg from '../icons/coins/usdc-circle.svg';
-// import usdcColorSvg from '../icons/coins/usdc-color.svg';
-// import usdcSvg from '../icons/coins/usdc.svg';
+import usdcCircleSvg from '../icons/coins/usdc-circle.svg';
+import usdcColorSvg from '../icons/coins/usdc-color.svg';
+import usdcSvg from '../icons/coins/usdc.svg';
 // import wbtcCircleSvg from '../icons/coins/wbtc-circle.svg';
 // import wbtcColorSvg from '../icons/coins/wbtc-color.svg';
 // import wbtcSvg from '../icons/coins/wbtc.svg';
@@ -40,11 +40,13 @@ import { web3 } from './web3';
 export const tradingPairs: TradingPair[] = [
   { base: 'WETH', quote: 'DAI' },
   ...process.env.REACT_APP_OASIS_DEX_ENABLED !== '1' ? [] : [
-    // { base: 'MKR', quote: 'DAI' },
-    // { base: 'MKR', quote: 'WETH' },
     { base: 'REP', quote: 'DAI' },
     { base: 'ZRX', quote: 'DAI' },
-    { base: 'BAT', quote: 'DAI' }
+    { base: 'BAT', quote: 'DAI' },
+    { base: 'DAI', quote: 'USDC' },
+    { base: 'REP', quote: 'WETH' },
+    { base: 'ZRX', quote: 'WETH' },
+    { base: 'BAT', quote: 'WETH' },
   ]
 ];
 
@@ -129,20 +131,20 @@ export const tokens = asMap('symbol', [
       iconCircle: SvgImageSimple(batCircleSvg),
       iconColor: SvgImageSimple(batColorSvg),
     },
-  // {
-  //   symbol: 'USDC',
-  //   precision: 6,
-  //   digits: 5,
-  //   digitsInstant: 2,
-  //   safeCollRatio: 1.5,
-  //   maxSell: '1000000000000000',
-  //   name: 'USD Coin',
-  //   icon: SvgImageSimple(usdcSvg),
-  //   // iconInverse: SvgImageSimple(usdcInverseSvg),
-  //   iconCircle: SvgImageSimple(usdcCircleSvg),
-  //   iconColor: SvgImageSimple(usdcColorSvg),
-  //   // address: 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
-  // },
+    {
+      symbol: 'USDC',
+      precision: 6,
+      digits: 6,
+      digitsInstant: 2,
+      safeCollRatio: 1.5,
+      maxSell: '1000000000000000',
+      name: 'USD Coin',
+      icon: SvgImageSimple(usdcSvg),
+      // iconInverse: SvgImageSimple(usdcInverseSvg),
+      iconCircle: SvgImageSimple(usdcCircleSvg),
+      iconColor: SvgImageSimple(usdcColorSvg),
+      // address: 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+    },
   // {
   //   symbol: 'WBTC',
   //   precision: 8,
@@ -184,6 +186,7 @@ const protoMain = {
     repdai: 0.02,
     zrxdai: 0.02,
     batdai: 0.02,
+    daiusdc: 0.05,
   },
   safeConfirmations: 0,
   avgBlocksPerDay: 5760 * 1.05,
@@ -197,6 +200,7 @@ const protoMain = {
       loadToken('REP', erc20, '0x1985365e9f78359a9B6AD760e32412f4a445E862'),
       loadToken('ZRX', erc20, '0xe41d2489571d322189246dafa5ebde1f4699f498'),
       loadToken('BAT', erc20, '0x0d8775f648430679a709e98d2b0cb6250d2887ef'),
+      loadToken('USDC', erc20, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
     ]);
   },
   get otcSupportMethods() {
@@ -237,6 +241,7 @@ const kovan: NetworkConfig = {
     repdai: 0.025,
     zrxdai: 0.025,
     batdai: 0.025,
+    daiusdc: 0.05,
   },
   safeConfirmations: 0,
   avgBlocksPerDay: 21600 * 0.55,
@@ -250,6 +255,7 @@ const kovan: NetworkConfig = {
       loadToken('REP', erc20, '0xc7aa227823789e363f29679f23f7e8f6d9904a9b'),
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
+      loadToken('USDC', erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
     ]);
   },
   get otcSupportMethods() {
@@ -286,6 +292,7 @@ const localnet: NetworkConfig =   {
     repdai: 0.05,
     zrxdai: 0.05,
     batdai: 0.05,
+    daiusdc: 0.05,
   },
   safeConfirmations: 0,
   avgBlocksPerDay: 1000,
@@ -301,6 +308,7 @@ const localnet: NetworkConfig =   {
       loadToken('ZRX', erc20, '0xE2ecCEEc6dEB8c7AFF9787E46FEA7078b89ab159'),
       loadToken('BAT', erc20, '0x2f8e256F2f9301d1992CDCCD85A513954C9dDB71'),
       loadToken('REP', erc20, '0x30ed29c4C4bA30ECCcDd0c0D153E454BFCb0A4Dd'),
+      loadToken('USDC', erc20, ''),
     ]);
   },
   get otcSupportMethods() {

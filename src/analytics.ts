@@ -6,7 +6,7 @@ const config = {
   test: {
     mixpanel: {
       token: '4ff3f85397ffc3c6b6f0d4120a4ea40a',
-      config: { debug: true, ip: false, api_host: 'https://api.mixpanel.com' }
+      config: { debug: false, ip: false, api_host: 'https://api.mixpanel.com' }
     }
   },
   prod: {
