@@ -10,8 +10,7 @@ import {
   map,
   mergeMap,
   shareReplay,
-  startWith,
-  switchMap, tap,
+  switchMap,
 } from 'rxjs/operators';
 import {
   AssetOverviewView,
@@ -23,10 +22,8 @@ import {
   CombinedBalances,
   createBalances$,
   createCombinedBalances$,
-  createDaiSwap,
   createDustLimits$,
   createProxyAllowances$,
-  createSaiSwap,
   createTokenBalances$,
   createWalletApprove,
   createWalletDisapprove,
@@ -117,7 +114,7 @@ import { InstantViewPanel } from './instant/InstantViewPanel';
 import {
   createExchangeMigration$,
   createMigrationOps$,
-  ExchangeMigrationState, ExchangeMigrationStatus
+  ExchangeMigrationState
 } from './migration/migration';
 import {
   createMigrationForm$,
@@ -171,20 +168,11 @@ export function setupAppContext() {
       etherPriceUsd$,
       etherBalance$,
       wethBalance$,
-      saiBalance$,
-      daiBalance$,
-      proxyAddress$,
       calls$
     );
 
   const approve = createWalletApprove(calls$, gasPrice$);
   const disapprove = createWalletDisapprove(calls$, gasPrice$);
-  const swapSai = createSaiSwap(calls$, proxyAddress$);
-  const swapDai = createDaiSwap(calls$, proxyAddress$);
-
-  (window as any).swapDai = (amount: number) => {
-    swapDai(new BigNumber(amount));
-  };
 
   const AssetOverviewViewRxTx =
     inject(
@@ -194,7 +182,7 @@ export function setupAppContext() {
           authorizablify(() => loadablifyLight(combinedBalances$))
         )
       ),
-      { approve, disapprove, wrapUnwrapForm$, swapSai, swapDai }
+      { approve, disapprove, wrapUnwrapForm$ }
     );
 
   const loadOrderbook = memoizeTradingPair(curry(loadOrderbook$)(context$, onEveryBlock$));

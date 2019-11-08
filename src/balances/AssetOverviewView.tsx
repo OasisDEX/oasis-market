@@ -2,14 +2,10 @@ import classnames from 'classnames';
 import * as React from 'react';
 import { Observable } from 'rxjs/internal/Observable';
 
-import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
-import { default as MediaQuery } from 'react-responsive';
-import {  filter, first, tap } from 'rxjs/operators';
 import { theAppContext } from '../AppContext';
 import { tokens } from '../blockchain/config';
 import { TxState } from '../blockchain/transactions';
-import { ExchangeMigrationStatus } from '../migration/migration';
 import { Authorizable } from '../utils/authorizable';
 import '../utils/Common.scss';
 import { connect } from '../utils/connect';
@@ -34,8 +30,6 @@ export interface AssetsOverviewActionProps  {
   wrapUnwrapForm$: (formKind: WrapUnwrapFormKind) => Observable<WrapUnwrapFormState>;
   approve: (token: string) => Observable<TxState>;
   disapprove: (token: string) => Observable<TxState>;
-  swapSai: (amount: BigNumber) => any;
-  swapDai: (amount: BigNumber) => any;
 }
 
 export type AssetsOverviewExtraProps =

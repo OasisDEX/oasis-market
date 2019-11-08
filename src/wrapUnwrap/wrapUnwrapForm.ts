@@ -4,7 +4,6 @@ import { merge, Observable, of, Subject } from 'rxjs';
 import { first, map, scan, switchMap, takeUntil } from 'rxjs/operators';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
 import {
-  InstantFormChangeKind,
   ProxyChange
 } from '../instant/instantForm';
 import { combineAndMerge } from '../utils/combineAndMerge';
@@ -33,15 +32,11 @@ export type Message = {
 export enum WrapUnwrapFormKind {
   wrap = 'wrap',
   unwrap = 'unwrap',
-  wrapSai = 'wrapSai',
-  unwrapSai = 'unwrapSai'
 }
 
 enum BalanceChangeKind {
   ethBalanceChange = 'ethBalanceChange',
   wethBalanceChange = 'wethBalanceChange',
-  saiBalanceChange = 'saiBalanceChange',
-  daiBalanceChange = 'daiBalanceChange'
 }
 
 export type ManualChange = AmountFieldChange;
@@ -57,11 +52,8 @@ type WrapUnwrapFormChange = ManualChange | EnvironmentChange | ProgressChange;
 export interface WrapUnwrapFormState extends HasGasEstimation {
   readyToProceed?: boolean;
   kind: WrapUnwrapFormKind;
-  proxyAddress: string;
   ethBalance: BigNumber;
   wethBalance: BigNumber;
-  saiBalance: BigNumber;
-  daiBalance: BigNumber;
   messages: Message[];
   amount?: BigNumber;
   progress?: ProgressStage;
@@ -91,24 +83,12 @@ function applyChange(
       return { ...state,
         wethBalance: change.balance,
         gasEstimationStatus: GasEstimationStatus.unset };
-    case BalanceChangeKind.saiBalanceChange:
-      return { ...state,
-        saiBalance: change.balance,
-        gasEstimationStatus: GasEstimationStatus.unset };
-    case BalanceChangeKind.daiBalanceChange:
-      return { ...state,
-        daiBalance: change.balance,
-        gasEstimationStatus: GasEstimationStatus.unset };
     case FormChangeKind.amountFieldChange:
       return { ...state,
         amount: change.value,
         gasEstimationStatus: GasEstimationStatus.unset };
     case FormChangeKind.progress:
       return { ...state, progress: change.progress };
-    case InstantFormChangeKind.proxyChange:
-      console.log(change.value);
-
-      return { ...state, proxyAddress: change.value ? change.value : '' };
     //   const _exhaustiveCheck: never = change; // tslint:disable-line
   }
   return state;
@@ -123,10 +103,6 @@ function validate(state: WrapUnwrapFormState) {
         return state.ethBalance;
       case WrapUnwrapFormKind.unwrap:
         return state.wethBalance;
-      case WrapUnwrapFormKind.wrapSai:
-        return state.saiBalance;
-      case WrapUnwrapFormKind.unwrapSai:
-        return state.daiBalance;
     }
   })(state.kind);
 
@@ -151,8 +127,6 @@ function validate(state: WrapUnwrapFormState) {
         switch (kind) {
           case WrapUnwrapFormKind.wrap: return 'ETH';
           case WrapUnwrapFormKind.unwrap: return 'WETH';
-          case WrapUnwrapFormKind.wrapSai: return 'SAI';
-          case WrapUnwrapFormKind.unwrapSai: return 'DAI';
         }
       })(state.kind)
     });
@@ -168,8 +142,7 @@ function estimateGasPrice(
 ): Observable<WrapUnwrapFormState> {
   return doGasEstimation(calls$, undefined, state, (calls: Calls) => {
 
-    if (!state.amount || !state.gasPrice || !state.proxyAddress) {
-      console.log(state.proxyAddress);
+    if (!state.amount || !state.gasPrice) {
 
       return undefined;
     }
@@ -178,25 +151,17 @@ function estimateGasPrice(
       switch (kind){
         case WrapUnwrapFormKind.wrap: return calls.wrapEstimateGas;
         case WrapUnwrapFormKind.unwrap: return calls.unwrapEstimateGas;
-        case WrapUnwrapFormKind.wrapSai: return calls.swapSaiToDaiEstimateGas;
-        case WrapUnwrapFormKind.unwrapSai: return  calls.swapDaiToSaiEstimateGas;
       }
     })(state.kind);
 
-    const args: any = (
-      state.kind === WrapUnwrapFormKind.wrapSai
-      || state.kind === WrapUnwrapFormKind.unwrapSai
-    )
-      ? { proxyAddress: state.proxyAddress, amount: state.amount, gasPrice: state.gasPrice }
-      : { amount: state.amount, gasPrice: state.gasPrice };
+    const args: any = { amount: state.amount, gasPrice: state.gasPrice };
     return call(args);
   });
 }
 
 function checkIfIsReadyToProceed(state: WrapUnwrapFormState) {
   const readyToProceed = state.amount &&
-    state.messages.length === 0;
-    // && state.gasEstimationStatus === GasEstimationStatus.calculated;
+    state.messages.length === 0 && state.gasEstimationStatus === GasEstimationStatus.calculated;
   return {
     ...state,
     readyToProceed,
@@ -217,7 +182,6 @@ function prepareProceed(calls$: Calls$): [
     const amount = state.amount;
     const gasPrice = state.gasPrice;
     const gas = state.gasEstimation;
-    const proxyAddress = state.proxyAddress;
 
     if (!amount || !gasPrice || !gas) {
       return;
@@ -234,11 +198,9 @@ function prepareProceed(calls$: Calls$): [
             switch (kind) {
               case WrapUnwrapFormKind.wrap: return calls.wrap;
               case WrapUnwrapFormKind.unwrap: return calls.unwrap;
-              case WrapUnwrapFormKind.wrapSai: return calls.swapSaiToDai;
-              case WrapUnwrapFormKind.unwrapSai: return calls.swapDaiToSai;
             }
           })(state.kind);
-          return call({ proxyAddress, amount, gasPrice, gas })
+          return call({ amount, gasPrice, gas })
           .pipe(
             transactionToX(
               progressChange(ProgressStage.waitingForApproval),
@@ -282,9 +244,6 @@ export function createWrapUnwrapForm$(
   etherPriceUSD$: Observable<BigNumber>,
   ethBalance$: Observable<BigNumber>,
   wethBalance$: Observable<BigNumber>,
-  saiBalance$: Observable<BigNumber>,
-  daiBalance$: Observable<BigNumber>,
-  proxyAddress$: Observable<string>,
   calls$: Calls$,
   kind: WrapUnwrapFormKind,
 ): Observable<WrapUnwrapFormState> {
@@ -306,36 +265,11 @@ export function createWrapUnwrapForm$(
     })
   ));
 
-  const saiBalanceChange$ = saiBalance$.pipe(
-    map(balance => ({
-      balance,
-      kind: BalanceChangeKind.saiBalanceChange
-    })
-  ));
-
-  const daiBalanceChange$ = daiBalance$.pipe(
-    map(balance => ({
-      balance,
-      kind: BalanceChangeKind.daiBalanceChange
-    })
-  ));
-
-  const proxyAddressChange$ = proxyAddress$.pipe(
-      map(address => ({
-        kind: InstantFormChangeKind.proxyChange,
-        value: address,
-      })
-    )
-  );
-
   const environmentChange$ = combineAndMerge(
     toGasPriceChange(gasPrice$),
     toEtherPriceUSDChange(etherPriceUSD$),
-    proxyAddressChange$,
     ethBalanceChange$,
     wethBalanceChange$,
-    saiBalanceChange$,
-    daiBalanceChange$,
   );
 
   const [proceed, cancel, proceedProgressChange$] = prepareProceed(calls$);
@@ -349,12 +283,8 @@ export function createWrapUnwrapForm$(
     cancel,
     ethBalance: zero,
     wethBalance: zero,
-    saiBalance: zero,
-    daiBalance: zero,
-    proxyAddress: '',
     messages: [],
     gasEstimationStatus: GasEstimationStatus.unset,
-
   };
 
   return merge(

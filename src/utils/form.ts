@@ -7,8 +7,8 @@ import { Calls, Calls$, ReadCalls, ReadCalls$ } from '../blockchain/calls/calls'
 import { TxState, TxStatus } from '../blockchain/transactions';
 import { User } from '../blockchain/user';
 import { amountFromWei } from '../blockchain/utils';
+import { TradeWithStatus } from '../exchange/myTrades/openTrades';
 import { Offer, OfferType, Orderbook } from '../exchange/orderbook/orderbook';
-import {TradeWithStatus} from "../exchange/myTrades/openTrades";
 
 export enum FormStage {
   idle = 'idle',

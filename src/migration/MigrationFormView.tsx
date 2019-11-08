@@ -294,7 +294,6 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       throw new Error('Should not get here!');
     }
 
-    console.log(progress.status);
     return <Panel className={styles.modalChild}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
         {
@@ -356,7 +355,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
 
         {
           progress.status === ExchangeMigrationStatus.done
-          && this.props.amount && this.props.amount.eq(new BigNumber(0))
+          && amount && amount.eq(new BigNumber(0))
           && this.setState({
             view: MigrationViews.initial
           })
@@ -370,12 +369,12 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                 color="secondaryOutlined"
                 className={styles.backBtn}
                 disabled={
-                  this.props.progress && (
-                    this.props.progress.status !== ExchangeMigrationStatus.done &&
-                    this.props.progress.status !== ExchangeMigrationStatus.fiasco
+                  progress && (
+                    progress.status !== ExchangeMigrationStatus.done &&
+                    progress.status !== ExchangeMigrationStatus.fiasco
                   )
                 }
-                onClick={() => this.props.change({ kind: FormChangeKind.progress })}
+                onClick={() => change({ kind: FormChangeKind.progress })}
         >
           Back
         </Button>

@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { curry } from 'lodash';
-import { combineLatest, noop, Observable, of } from 'rxjs';
-import {filter, first, map, startWith, switchMap} from 'rxjs/operators';
+import { combineLatest, Observable, of } from 'rxjs';
+import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
 // import { CancelData } from '../blockchain/calls/offerMake';

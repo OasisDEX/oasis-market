@@ -48,8 +48,6 @@ export class WrapUnwrapFormView
           <div>
             {this.props.kind === WrapUnwrapFormKind.wrap && 'Wrap Ether'}
             {this.props.kind === WrapUnwrapFormKind.unwrap && 'Unwrap Ether'}
-            {this.props.kind === WrapUnwrapFormKind.wrapSai && 'Convert to DAI'}
-            {this.props.kind === WrapUnwrapFormKind.unwrapSai && 'Convert to SAI'}
           </div>
         </PanelHeader>
         <WithLoadingIndicator loadable={this.props}>
@@ -83,7 +81,6 @@ export class WrapUnwrapFormView
   }
 
   private summary(state: WrapUnwrapFormState) {
-    console.log(state.daiBalance.valueOf(), state.saiBalance.valueOf());
 
     return <> {
       (state.kind === WrapUnwrapFormKind.wrap || state.kind === WrapUnwrapFormKind.unwrap) &&
@@ -96,21 +93,6 @@ export class WrapUnwrapFormView
           <div className={classnames(styles.infoRow, styles.infoRowMargin)}>
             <Muted>Wrapped</Muted>
             <Money token="WETH" value={state.wethBalance} fallback="-" />
-          </div>
-        </div>
-      )
-    }
-    {
-      (state.kind === WrapUnwrapFormKind.wrapSai || state.kind === WrapUnwrapFormKind.unwrapSai) &&
-      (
-        <div className={styles.summary}>
-          <div className={classnames(styles.infoRow, styles.infoRowMargin)}>
-            <Muted>Wallet</Muted>
-            <Money token="SAI" value={state.saiBalance} fallback="-" />
-          </div>
-          <div className={classnames(styles.infoRow, styles.infoRowMargin)}>
-            <Muted>Wrapped</Muted>
-            <Money token="DAI" value={state.daiBalance} fallback="-" />
           </div>
         </div>
       )
@@ -130,8 +112,6 @@ export class WrapUnwrapFormView
           <span className={styles.checklistTitle}>
             {state.kind === WrapUnwrapFormKind.wrap && 'Wrap Ether'}
             {state.kind === WrapUnwrapFormKind.unwrap && 'Unwrap Ether'}
-            {state.kind === WrapUnwrapFormKind.wrapSai && 'Convert to DAI'}
-            {state.kind === WrapUnwrapFormKind.unwrapSai && 'Convert to SAI'}
           </span>
           <div className={styles.checklistSummary}>
             <TransactionStateDescription progress={state.progress}/>
@@ -146,10 +126,6 @@ export class WrapUnwrapFormView
               .includes(state.kind)
               && <Money value={amount} token="ETH" />
             }
-            {
-              [WrapUnwrapFormKind.unwrapSai, WrapUnwrapFormKind.wrapSai]
-              .includes(state.kind)
-              && <Money value={amount} token="DAI" />}
           </Muted>
         </div>
         <Hr color="dark" className={styles.checklistHrMargin} />
@@ -229,8 +205,6 @@ export class WrapUnwrapFormView
             >
               {(this.props.kind === WrapUnwrapFormKind.wrap && 'ETH')}
               {(this.props.kind === WrapUnwrapFormKind.unwrap && 'WETH')}
-              {(this.props.kind === WrapUnwrapFormKind.wrapSai && 'SAI')}
-              {(this.props.kind === WrapUnwrapFormKind.unwrapSai && 'DAI')}
             </InputGroupAddon>
           </div>
         </InputGroup>

@@ -24,9 +24,6 @@ const gasPrice$ = of(new BigNumber(0.01));
 const etherPriceUSD$ = of(new BigNumber(1));
 const ethBalance$ = of(new BigNumber(1000));
 const wethBalance$ = of(new BigNumber(1000));
-const saiBalance$ = of(new BigNumber(1000));
-const daiBalance$ = of(new BigNumber(1000));
-const proxyAddress$ = of('');
 const calls$ = of(defaultCalls) as Calls$;
 const wrap = WrapUnwrapFormKind.wrap;
 const unwrap = WrapUnwrapFormKind.unwrap;
@@ -41,9 +38,6 @@ describe('Wrapping' , () => {
           etherPriceUSD$,
           ethBalance$,
           wethBalance$,
-          saiBalance$,
-          daiBalance$,
-          proxyAddress$,
           calls$,
           wrap
         ).pipe(shareReplay(1));
@@ -96,9 +90,6 @@ describe('Wrapping' , () => {
         etherPriceUSD$,
         ethBalance$,
         wethBalance$,
-        saiBalance$,
-        daiBalance$,
-        proxyAddress$,
         callsCopy,
         wrap
     ).pipe(shareReplay(1));
@@ -120,9 +111,6 @@ describe('Unwrapping', () => {
             etherPriceUSD$,
             ethBalance$,
             wethBalance$,
-            saiBalance$,
-            daiBalance$,
-            proxyAddress$,
             calls$,
             unwrap
         ).pipe(shareReplay(1));
@@ -175,9 +163,6 @@ describe('Unwrapping', () => {
             etherPriceUSD$,
             ethBalance$,
             wethBalance$,
-            saiBalance$,
-            daiBalance$,
-            proxyAddress$,
             callsCopy,
             unwrap
         ).pipe(shareReplay(1));
