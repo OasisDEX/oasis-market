@@ -19,7 +19,6 @@ const browserHistoryInstance = createBrowserHistory({
 });
 
 browserHistoryInstance.listen(location => {
-  console.debug(`[Analytics] Tracked: ${location.pathname}`);
   mixpanel.track('Pageview', {
     product: 'oasis-trade',
     id: location.pathname

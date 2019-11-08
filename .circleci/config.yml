@@ -34,40 +34,40 @@ jobs:
           name: Run linting & tests
           command: yarn test
 
-  test-e2e:
-    machine:
-      enabled: true
-      image: circleci/classic:201710-01
-      docker_layer_caching: true
-    parallelism: 3
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-          - v3-dependencies-{{ checksum "package.json" }}
-      - run: .circleci/install-yarn.sh
-      - run: 
-          name: Get & run locanode and cache image
-          command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS && ./scripts/dev.sh
-      - run: 
-          name: Wait for localnode to be up
-          command: |
-            ./.circleci/wait-for-it.sh localhost:8545 -t 10
-            ./.circleci/wait-for-it.sh localhost:5432 -t 10
-            ./.circleci/wait-for-it.sh localhost:3001 -t 10
-            sleep 10
-      - run: 
-          name: Run build & e2e tests
-          command: |
-            source /opt/circleci/.nvm/nvm.sh
-            ENV=dev yarn build:ci
-            ./.circleci/run-e2e.sh
-
-      - persist_to_workspace:
-          root: /home/circleci/project
-          paths:
-            - cypress/screenshots
+#  test-e2e:
+#    machine:
+#      enabled: true
+#      image: circleci/classic:201710-01
+#      docker_layer_caching: true
+#    parallelism: 3
+#    steps:
+#      - checkout
+#      - restore_cache:
+#          keys:
+#          - v3-dependencies-{{ checksum "package.json" }}
+#      - run: .circleci/install-yarn.sh
+#      - run:
+#          name: Get & run locanode and cache image
+#          command: |
+#            docker login -u $DOCKER_USER -p $DOCKER_PASS && ./scripts/dev.sh
+#      - run:
+#          name: Wait for localnode to be up
+#          command: |
+#            ./.circleci/wait-for-it.sh localhost:8545 -t 10
+#            ./.circleci/wait-for-it.sh localhost:5432 -t 10
+#            ./.circleci/wait-for-it.sh localhost:3001 -t 10
+#            sleep 10
+#      - run:
+#          name: Run build & e2e tests
+#          command: |
+#            source /opt/circleci/.nvm/nvm.sh
+#            ENV=dev yarn build:ci
+#            ./.circleci/run-e2e.sh
+#
+#      - persist_to_workspace:
+#          root: /home/circleci/project
+#          paths:
+#            - cypress/screenshots
 
   codechecks:
     docker:
@@ -189,13 +189,13 @@ workflows:
             branches:
               ignore:
                 - gh-pages
-      - test-e2e:
-          requires: 
-            - install
-          filters:
-            branches:
-              ignore:
-                - gh-pages
+#      - test-e2e:
+#          requires:
+#            - install
+#          filters:
+#            branches:
+#              ignore:
+#                - gh-pages
       - codechecks:
           requires: 
             - install
@@ -205,8 +205,8 @@ workflows:
                 - gh-pages
 
       - codechecks-e2e:
-          requires:
-            - test-e2e
+#          requires:
+#            - test-e2e
           filters:
             branches:
               ignore:
@@ -215,21 +215,21 @@ workflows:
       - deploy_dev:
           requires:
             - test
-            - test-e2e
+#            - test-e2e
           filters:
             branches:
               only: dev
       - deploy_stage:
           requires:
             - test
-            - test-e2e
+#            - test-e2e
           filters:
             branches:
               only: staging
       - deploy_prod:
           requires:
             - test
-            - test-e2e
+#            - test-e2e
           filters:
             branches:
               only: master
