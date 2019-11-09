@@ -43,7 +43,6 @@ export const tradingPairs: TradingPair[] = [
     { base: 'REP', quote: 'WETH' },
     { base: 'ZRX', quote: 'WETH' },
     { base: 'BAT', quote: 'WETH' },
-    { base: 'DAI', quote: 'USDC' },
     { base: 'REP', quote: 'DAI' },
     { base: 'ZRX', quote: 'DAI' },
     { base: 'BAT', quote: 'DAI' },
@@ -131,21 +130,6 @@ export const tokens = asMap('symbol', [
       iconCircle: SvgImageSimple(batCircleSvg),
       iconColor: SvgImageSimple(batColorSvg),
     },
-    {
-      symbol: 'USDC',
-      precision: 6,
-      digits: 6,
-      digitsInstant: 2,
-      safeCollRatio: 1.5,
-      maxSell: '1000000000000000',
-      name: 'USD Coin',
-      icon: SvgImageSimple(usdcSvg),
-      // iconInverse: SvgImageSimple(usdcInverseSvg),
-      iconCircle: SvgImageSimple(usdcCircleSvg),
-      iconColor: SvgImageSimple(usdcColorSvg),
-      // address: 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
-    },
-  // {
   //   symbol: 'WBTC',
   //   precision: 8,
   //   digits: 5,
@@ -255,7 +239,6 @@ const kovan: NetworkConfig = {
       loadToken('REP', erc20, '0xc7aa227823789e363f29679f23f7e8f6d9904a9b'),
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
-      loadToken('USDC', erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
     ]);
   },
   get otcSupportMethods() {
@@ -308,7 +291,6 @@ const localnet: NetworkConfig =   {
       loadToken('ZRX', erc20, '0xE2ecCEEc6dEB8c7AFF9787E46FEA7078b89ab159'),
       loadToken('BAT', erc20, '0x2f8e256F2f9301d1992CDCCD85A513954C9dDB71'),
       loadToken('REP', erc20, '0x30ed29c4C4bA30ECCcDd0c0D153E454BFCb0A4Dd'),
-      loadToken('USDC', erc20, ''),
     ]);
   },
   get otcSupportMethods() {
