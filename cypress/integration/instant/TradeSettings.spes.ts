@@ -7,7 +7,7 @@ import { cypressVisitWithWeb3, tid, timeout } from '../../utils';
 
 const initiateTrade = () => {
   const trade = new Trade();
-  trade.buy('DAI').amount('100');
+  trade.buy('SAI').amount('100');
   return trade;
 };
 

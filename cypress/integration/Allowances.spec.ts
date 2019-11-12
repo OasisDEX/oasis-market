@@ -24,7 +24,7 @@ describe('Setting allowances', () => {
   });
 
   it('should disable allowance on a given token', () => {
-    const allowance  = Allowance.of('DAI');
+    const allowance  = Allowance.of('SAI');
 
     allowance.shouldBe(ALLOWANCE_STATE.ENABLED);
     allowance.toggle();

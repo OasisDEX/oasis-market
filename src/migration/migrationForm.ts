@@ -174,7 +174,6 @@ export function createMigrationForm$(
   const change = manualChange$.next.bind(manualChange$);
 
   return balance$.pipe(
-    first(),
     switchMap((balance) => {
       const initialState = {
         kind,

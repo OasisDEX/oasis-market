@@ -87,7 +87,7 @@ describe('New trade', () => {
     it('should clear input values on swap', () => {
       const trade = new Trade();
       trade.sell('ETH').amount('280.00');
-      trade.buy('DAI');
+      trade.buy('SAI');
 
       Trade.swapTokens();
 
@@ -124,7 +124,7 @@ describe('New trade', () => {
       trade.expectToPay(willPay);
       trade.expectToReceive(willReceive);
 
-      trade.buy('DAI');
+      trade.buy('SAI');
 
       trade.expectToPay('1.000');
       trade.expectToReceive(willReceive);
@@ -242,7 +242,7 @@ describe('New trade', () => {
 
     it('should clear receive input if 0 is provided to deposit input', () => {
       const trade = new Trade();
-      trade.buy('DAI')
+      trade.buy('SAI')
         .amount('2');
 
       trade.expectToReceive('2');
@@ -263,7 +263,7 @@ describe('New trade', () => {
       trade.expectToReceive('280.00');
       trade.expectToPay('1');
 
-      trade.buy('DAI')
+      trade.buy('SAI')
         .type('{selectall}0');
 
       trade.expectToReceive('0');
