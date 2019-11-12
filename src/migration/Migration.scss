@@ -63,7 +63,7 @@
     flex-direction: column;
   }
 
-  @include media-breakpoint-down(600px) {
+  @include media-breakpoint-down(640px) {
     padding: 1.3rem;
     flex-direction: column;
     justify-content: space-around;
@@ -172,12 +172,22 @@
 }
 
 .amountInput {
+  &Addon {
+    @include media-breakpoint-down(lg){
+      padding: .5rem;
+    }
+  }
+
   &Tail {
     display: inline-flex;
   }
 
   &Group {
     margin-bottom: .5rem;
+
+    @include media-breakpoint-down(md){
+      margin-bottom: 0;
+    }
   }
 
   border-right: 1px solid $element-border;
@@ -210,10 +220,10 @@
 .modalChild {
   width: 100%;
   max-width: 53rem;
-  height: 28.25rem;
+  height: 30.25rem;
 
-  @include media-breakpoint-down(600px) {
-    height: 42.25rem;
+  @include media-breakpoint-down(640px) {
+    height: 44.25rem;
   }
 
   @include media-breakpoint-down(400px) {

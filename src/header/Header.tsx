@@ -176,7 +176,7 @@ class WalletConnectionStatus extends React.Component<WalletConnectionStatusProps
           <theAppContext.Consumer>
             {({ SAI2DAIMigrationTxRx }) =>
               // @ts-ignore
-              <SAI2DAIMigrationTxRx label="Upgrade Dai"/>
+              <SAI2DAIMigrationTxRx label="Upgrade Sai"/>
             }
           </theAppContext.Consumer>
           {

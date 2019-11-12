@@ -2,6 +2,8 @@
 @import "../utils/Mixins";
 @import "../header/Header";
 
+$mdLgBreakpoint: 640px;
+
 .container {
   display: inline-flex;
   flex-direction: column;
@@ -9,7 +11,7 @@
   border-radius: $border-radius;
   width: 100%;
   max-width: 24.25rem;
-  height: 20rem;
+  height: 20.25rem;
   font-size: 15px;
   line-height: 1.5rem;
   margin: 0 1.5rem;
@@ -24,10 +26,11 @@
   }
 
   @include media-breakpoint-down($header-media-breakpoint) {
-    height: 19.5rem;
+    height: 21.5rem;
+    padding: 1rem 1.5rem;
   }
 
-  @include media-breakpoint-down(600px) {
+  @include media-breakpoint-down($mdLgBreakpoint) {
     height: 16.5rem;
     font-size: 13px;
     padding: 1rem;
@@ -45,7 +48,7 @@
   margin: 0 0 1.25rem;
   font-weight: 600;
 
-  @include media-breakpoint-down(600px) {
+  @include media-breakpoint-down($mdLgBreakpoint) {
     font-size: 13px;
     margin-bottom: .625rem;
   }
@@ -56,7 +59,7 @@
   font-weight: 500;
   margin: 0 0 1.25rem;
 
-  @include media-breakpoint-down(600px) {
+  @include media-breakpoint-down($mdLgBreakpoint) {
     margin-bottom: .625rem;
   }
 }
@@ -67,7 +70,7 @@
   margin-top: auto;
   margin-bottom: 1rem;
 
-  @include media-breakpoint-down(600px) {
+  @include media-breakpoint-down($mdLgBreakpoint) {
     margin-bottom: .75rem;
   }
 }
@@ -79,7 +82,7 @@
   font-size: 14px;
   font-weight: 600;
 
-  @include media-breakpoint-down(600px) {
+  @include media-breakpoint-down($mdLgBreakpoint) {
     max-width: unset;
   }
 }

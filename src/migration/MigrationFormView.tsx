@@ -429,7 +429,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       >
         <div className={styles.amountInputGroup}>
           <InputGroup hasError={(messages || []).length > 0}>
-            <InputGroupAddon>
+            <InputGroupAddon className={styles.amountInputAddon}>
               Amount
             </InputGroupAddon>
             <div className={styles.amountInputTail}>
@@ -455,6 +455,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
               />
               <InputGroupAddon
                 // onClick={this.handleAmountFocus}
+                className={styles.amountInputAddon}
               >
                 {fromToken}
               </InputGroupAddon>
