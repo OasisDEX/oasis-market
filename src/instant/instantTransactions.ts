@@ -241,17 +241,12 @@ export function tradePayWithERC20(
   state: InstantFormState
 ): Observable<ProgressChange> {
 
-  console.log('VVVVVVVVVVVVVVVVVVVV');
-
   const sellAllowance$ = proxyAddress ?
     allowance$(state.sellToken, proxyAddress).pipe(first()) :
     of(false);
 
   return sellAllowance$.pipe(
     flatMap(sellAllowance => {
-
-      console.log('AAAAAAAAAAAAAA!!!!!', proxyAddress, sellAllowance);
-
       if (!proxyAddress) {
         return doSetupProxy(calls, state);
       }

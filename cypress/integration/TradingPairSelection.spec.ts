@@ -8,16 +8,16 @@ import { cypressVisitWithWeb3, multiply, tid } from '../utils';
 import { makeScreenshots } from '../utils/makeScreenshots';
 
 describe('Trading pair dropdown', () => {
-  const quote = 'SAI';
+  const quote = 'DAI';
 
   // TODO: Figure out a way to import files from ./src
   // Right now there is compilation error when test suits are ran
   // It looks like proper webpack-preprocessor configuration but it's not working for some reason
   const tradingPairs = [
-    { base: 'WETH', quote: 'SAI' },
-    { base: 'REP', quote: 'SAI' },
-    { base: 'ZRX', quote: 'SAI' },
-    { base: 'BAT', quote: 'SAI' }
+    { base: 'WETH', quote: 'DAI' },
+    { base: 'REP', quote: 'DAI' },
+    { base: 'ZRX', quote: 'DAI' },
+    { base: 'BAT', quote: 'DAI' }
   ] as TradingPair[];
 
   beforeEach(() => {

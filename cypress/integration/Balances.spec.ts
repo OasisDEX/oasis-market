@@ -16,7 +16,7 @@ describe('Balances', () => {
 
     Balance.of('ETH').shouldBe(/8,999.../);
     Balance.of('WETH').shouldBe(/1,001.../);
-    Balance.of('SAI').shouldBe(/170.../);
+    Balance.of('DAI').shouldBe(/170.../);
 
     makeScreenshots('balances');
   });

@@ -195,7 +195,7 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
     ];
 
     return [
-      context.instantMigrationProxyActions.address,
+      context.instantProxyCreationAndExecute.address,
       method.getData(...params)
     ];
   },
@@ -207,13 +207,14 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
     gas: gasEstimation,
   }),
   kind: TxMetaKind.tradePayWithERC20,
+
   description: ({ kind, buyToken, buyAmount, sellToken, sellAmount }: InstantOrderData) =>
     kind === 'sell' ?
       <>
-        Migrate SAi and create Sell Order <Money value={sellAmount} token={sellToken}/>
+        Create Sell Order <Money value={sellAmount} token={sellToken}/>
       </> :
       <>
-        Migrate SAi and create Buy Order <Money value={buyAmount} token={buyToken}/>
+        Create Buy Order <Money value={buyAmount} token={buyToken}/>
       </>
 };
 
@@ -277,10 +278,10 @@ export const migrateTradePayWithERC20: TransactionDef<InstantOrderData> = {
   description: ({ kind, buyToken, buyAmount, sellToken, sellAmount }: InstantOrderData) =>
     kind === 'sell' ?
       <>
-        Create Sell Order <Money value={sellAmount} token={sellToken}/>
+        Migrate SAI and create Sell Order <Money value={sellAmount} token={sellToken}/>
       </> :
       <>
-        Create Buy Order <Money value={buyAmount} token={buyToken}/>
+        Migrate SAI and create Buy Order <Money value={buyAmount} token={buyToken}/>
       </>
 };
 

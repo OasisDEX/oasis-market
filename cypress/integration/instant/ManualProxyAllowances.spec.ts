@@ -57,11 +57,11 @@ describe('Proxy Allowance', () => {
     expectAllowanceStatusFor('WETH', AllowanceStatus.DISABLED);
     setAllowanceOf('WETH');
 
-    expectAllowanceStatusFor('SAI', AllowanceStatus.DISABLED);
-    setAllowanceOf('SAI');
+    expectAllowanceStatusFor('DAI', AllowanceStatus.DISABLED);
+    setAllowanceOf('DAI');
 
     expectAllowanceStatusFor('WETH', AllowanceStatus.ALLOWED);
-    expectAllowanceStatusFor('SAI', AllowanceStatus.ALLOWED);
+    expectAllowanceStatusFor('DAI', AllowanceStatus.ALLOWED);
   });
 
   it('should display allowance if one is set', () => {

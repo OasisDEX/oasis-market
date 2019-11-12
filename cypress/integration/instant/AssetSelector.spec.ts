@@ -15,10 +15,10 @@ describe('Selecting an asset', () => {
     const defaultTokens = () => {
       const trade = new Trade();
       trade.sell('ETH');
-      trade.buy('SAI');
+      trade.buy('DAI');
 
       trade.expectPayToken('ETH');
-      trade.expectReceiveToken('SAI');
+      trade.expectReceiveToken('DAI');
     };
 
     beforeEach(() => {
@@ -27,7 +27,7 @@ describe('Selecting an asset', () => {
 
     it('should replace only the deposit token', () => {
       const payIn = 'WETH';
-      const receiveIn = 'SAI';
+      const receiveIn = 'DAI';
 
       const trade = new Trade();
       trade.sell(payIn);
@@ -37,7 +37,7 @@ describe('Selecting an asset', () => {
     });
 
     it('should swap pay and receive token when receive token is the same as pay token', () => {
-      const payIn = 'SAI';
+      const payIn = 'DAI';
       const receiveIn = 'ETH';
 
       const trade = new Trade();
@@ -49,7 +49,7 @@ describe('Selecting an asset', () => {
 
     // tslint:disable-next-line:max-line-length
     it('should swap pay and receive token when receive token (WETH) is the same as pay token (ETH) ', () => {
-      const payIn = 'SAI';
+      const payIn = 'DAI';
       const receiveIn = 'WETH';
 
       const trade = new Trade();
@@ -61,7 +61,8 @@ describe('Selecting an asset', () => {
 
     // tslint:disable-next-line:max-line-length
     it('should not be able to select receive token that do not form a market with the deposit one', () => {
-      const token = 'BAT';
+      // change from BAT because we introduced WETH markets so BAT/WETH or BAT/ETH is available
+      const token = 'USDC';
 
       cy.get(tid('buying-token', tid('balance')), timeout(2000))
         .click();
@@ -73,10 +74,10 @@ describe('Selecting an asset', () => {
   context('for receive token', () => {
     const defaultTokens = () => {
       const trade = new Trade();
-      trade.sell('SAI');
+      trade.sell('DAI');
       trade.buy('ETH');
 
-      trade.expectPayToken('SAI');
+      trade.expectPayToken('DAI');
       trade.expectReceiveToken('ETH');
     };
 
@@ -85,7 +86,7 @@ describe('Selecting an asset', () => {
     });
 
     it('should replace only the receive token', () => {
-      const payIn = 'SAI';
+      const payIn = 'DAI';
       const receiveIn = 'WETH';
 
       const trade = new Trade();
@@ -97,7 +98,7 @@ describe('Selecting an asset', () => {
 
     it('should swap pay and receive token when receive token is the same as pay token', () => {
       const payIn = 'ETH';
-      const receiveIn = 'SAI';
+      const receiveIn = 'DAI';
 
       const trade = new Trade();
       trade.buy(receiveIn);
@@ -109,7 +110,7 @@ describe('Selecting an asset', () => {
     // tslint:disable-next-line:max-line-length
     it('should swap pay and receive token when receive token (ETH) is the same as pay token (WETH) ', () => {
       const payIn = 'WETH';
-      const receiveIn = 'SAI';
+      const receiveIn = 'DAI';
 
       const trade = new Trade();
       trade.sell(payIn);

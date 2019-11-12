@@ -281,7 +281,7 @@ const kovan: NetworkConfig = {
     return asMap('token', [
       loadToken('WETH', eth, '0xd0a1e359811322d97991e03f863a0c30c2cf029c'),
       loadToken('SAI', erc20, '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'),
-      loadToken('DAI', erc20, '0x1d7e3a1a65a367db1d1d3f51a54ac01a2c4c92ff'),
+      loadToken('DAI', erc20, '0xc27a24e60a89a03bd2f1ffb4ea59076fd8385fe6'),
       loadToken('REP', erc20, '0xc7aa227823789e363f29679f23f7e8f6d9904a9b'),
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
@@ -301,10 +301,10 @@ const kovan: NetworkConfig = {
     return load(proxyCreationAndExecute, '0xee419971e63734fed782cfe49110b1544ae8a773');
   },
   get migration() {
-    return '0x97cb5a9abcdbe291d0cd85915fa5b08746fe948a';
+    return '0xfa793be7cb0cdfe636d19f49f880aebb568e39cf';
   },
   get migrationProxyActions() {
-    return '0x17134c5ab1ea28f21df9c8203b817bd3b9f9a12d';
+    return '0xaafa1ea9486baad4ebc281f9feba922b8b0a1b1f';
   },
   get instantMigrationProxyActions() {
     return load(instantMigrationProxyActions, '0x1320bF8f23b28b7b4160Bd08BA01AD70773957Ca');
@@ -335,41 +335,41 @@ const localnet: NetworkConfig =   {
   safeConfirmations: 0,
   avgBlocksPerDay: 1000,
   startingBlock: 1,
-  get otc() { return load(otc, '0x4e5f802405b29ffae4ae2a7da1d9ceeb53904d55'); },
+  get otc() { return load(otc, '0x177b74CB6679C145Bb428Cc3E16F4a3d3ED905a3'); },
   get saiTub() { return { address: '', contract: null }; },
   get tokens() {
     return asMap('token', [
-      loadToken('WETH', eth, '0x28085cefa9103d3a55fb5afccf07ed2038d31cd4'),
-      loadToken('SAI', erc20, '0xff500c51399a282f4563f2713ffcbe9e53cfb6fa'),
-      loadToken('DAI', erc20, '0xff500c51399a282f4563f2713ffcbe9e53cfb6fa'),
-      // loadToken('MKR', erc20, '0xe80C262f63df9376d2ce9eDd373832EDc9FCA46E'),
-      // loadToken('DGD', erc20, '0x2f42E9A9BA1A8BfE0a46a7b116aD5b0D16d2B105'),
-      loadToken('ZRX', erc20, '0xE2ecCEEc6dEB8c7AFF9787E46FEA7078b89ab159'),
-      loadToken('BAT', erc20, '0x2f8e256F2f9301d1992CDCCD85A513954C9dDB71'),
-      loadToken('REP', erc20, '0x30ed29c4C4bA30ECCcDd0c0D153E454BFCb0A4Dd'),
+      loadToken('WETH', eth, '0x200938Bf7fF25EcF2eB7BC08e18b0892ED34c846'),
+      loadToken('SAI', erc20, '0xF64fc1CDdAD37e61d4558B59693cD6b049cA5F60'),
+      loadToken('DAI', erc20, '0xafAA69DE13bd8766D9d47c9205439B9B06e533C6'),
+      // loadToken('MKR', erc20, '0x3a21aB4539e11f0C06b583796F3F0FD274eFC369'),
+      // loadToken('DGD', erc20, '0x76c37E57A1438E2a0ac7Fec8a552CDD569b2CAfB'),
+      loadToken('ZRX', erc20, '0x2c60CF08c07C212e21e6E2ee4626c478BACe092a'),
+      loadToken('BAT', erc20, '0xd80110E3C107Eb206B556871cFe2532eC7D05E47'),
+      loadToken('REP', erc20, '0xE8d4C2Ab5782c697f06f17610cC03068180d0FaC'),
       loadToken('USDC', erc20, '0x0000000000000000000000000000000000000000'),
     ]);
   },
   get otcSupportMethods() {
-    return load(otcSupport, '0x5de139dbbfd47dd1d2cd906348fd1887135b2804');
+    return load(otcSupport, '0xee9F9B08E2eBc68e88c0e207A09EbaaeF4e5d94E');
   },
   get instantProxyRegistry() {
-    return load(proxyRegistry, '0x22b6C41D0b18193B20B182D8d5854fEFb744cC6A');
+    return load(proxyRegistry, '0x4C59F867abb03235372438Ff8F3685fcc7b3F1d6');
   },
   get instantProxyFactory() {
-    return load(dsProxyFactory, '0x9c27f7553f12e0178c1D767265dFBD27CAEcec68');
+    return load(dsProxyFactory, '0xF52071224Fe0Ecd1E9776815CCc151fa4B79a16c');
   },
   get instantProxyCreationAndExecute() {
-    return load(proxyCreationAndExecute, '0x947308140e877E8EeBcCED93B522407A24278c6A');
+    return load(proxyCreationAndExecute, '0x39E338aDC718b67585AC4bE1A69Db0EE6C186487');
   },
   get migration() {
-    return '';
+    return '0xc1199D132f6B6B72C37F817d103a4E62590e3DC1';
   },
   get migrationProxyActions() {
-    return '';
+    return '0x141048f25b24AEfAF1A13fD9C2e8628121A0f1E7';
   },
   get instantMigrationProxyActions() {
-    return load(instantMigrationProxyActions, '');
+    return load(instantMigrationProxyActions, '0x141048f25b24AEfAF1A13fD9C2e8628121A0f1E7');
   },
   oasisDataService: {
     url: 'http://localhost:3001/v1'
