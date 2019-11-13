@@ -83,7 +83,7 @@ export class AssetsOverviewViewInternal
           <td className="hide-lg">{tokens.ETH.name}</td>
           <td>
             <div className={styles.centeredAsset}>
-              { tokens.ETH.icon }
+              <span className={styles.assetIcon}>{ tokens.ETH.icon }</span>
               <Currency value="ETH"/>
             </div>
           </td>
@@ -122,7 +122,7 @@ export class AssetsOverviewViewInternal
             <td className="hide-lg">{tokens[combinedBalance.name].name}</td>
             <td>
               <div className={styles.centeredAsset}>
-                { tokens[combinedBalance.name].icon }
+                <span className={styles.assetIcon}>{ tokens[combinedBalance.name].icon }</span>
                 <Currency value={combinedBalance.name} />
               </div>
             </td>

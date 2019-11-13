@@ -7,7 +7,7 @@
 
 .loadingIndicator {
   min-height: unset;
-  height: 2.375rem;
+  height: auto;
   margin-right: 1rem;
 
   @include media-breakpoint-down(sm) {
