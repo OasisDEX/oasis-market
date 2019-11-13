@@ -123,7 +123,6 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
   }
 
   public render() {
-
     const view = (() => {
       switch (this.state.view) {
         case MigrationViews.cancelOrders:
@@ -131,7 +130,8 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
             ? this.initialView()
             : this.cancelOrders();
         default:
-          if (this.props.progress) {
+          if (this.props.progress
+            && this.props.progress.status !== ExchangeMigrationStatus.done) {
             return this.migration();
           }
           return this.initialView();
@@ -327,8 +327,8 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
         }
         {
           progress.status === ExchangeMigrationStatus.ready
-          && progress.pending.map((operation, index) => {
-            return this.txRow(operation, index);
+          && progress.pending.map((operation) => {
+            return this.txRow(operation);
           })
         }
         {
@@ -475,12 +475,8 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
     } as AmountFieldChange);
   }
 
-  private txRow = (operation: any, index?: number) => {
-    const status = !operation.txStatus ? {
-      txStatus: index === 0 ? 'Start Migration Process' : 'Waiting',
-      txHash: '',
-      etherscanURI: ''
-    } : {
+  private txRow = (operation: any) => {
+    const status = {
       ...operation
     } as Report;
 
