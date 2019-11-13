@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { merge, Observable, Subject } from 'rxjs';
+import { concat, merge, Observable, of, Subject } from 'rxjs';
 import { first, map, scan, switchMap } from 'rxjs/operators';
 import { Calls$ } from '../blockchain/calls/calls';
 import { CancelData } from '../blockchain/calls/offerMake';
@@ -7,7 +7,7 @@ import { TradeWithStatus } from '../exchange/myTrades/openTrades';
 import { combineAndMerge } from '../utils/combineAndMerge';
 import { AmountFieldChange, FormChangeKind, OrdersChange, toOrdersChange, } from '../utils/form';
 import { zero } from '../utils/zero';
-import { ExchangeMigrationState } from './migration';
+import { ExchangeMigrationState, ExchangeMigrationStatus } from './migration';
 
 export enum MessageKind {
   amount2Big = 'amount2Big',
@@ -104,11 +104,10 @@ function checkIfIsReadyToProceed(state: MigrationFormState) {
 
 function prepareProceed(
   migrate$: (amount: BigNumber) => Observable<ExchangeMigrationState>,
-): [
-  (state: MigrationFormState) => void, Observable<ProgressChange>
-] {
+  balanceChange$: Observable<BalanceChange>
+): [((state: MigrationFormState) => void), Observable<MigrationFormChange>] {
 
-  const proceedChange$ = new Subject<ProgressChange>();
+  const proceedChange$ = new Subject<MigrationFormChange>();
 
   function proceed(state: MigrationFormState) {
 
@@ -121,10 +120,26 @@ function prepareProceed(
     const changes$ = migrate$(amount).pipe(
       map(progress => (
         { progress, kind: FormChangeKind.progress } as ProgressChange
-      ))
+      )),
+      switchMap((change: ProgressChange) => {
+        if (change.progress && change.progress.status === ExchangeMigrationStatus.done) {
+          return concat(
+            balanceChange$.pipe(first()),
+            balanceChange$.pipe(
+              first(),
+              map(({ balance }) => ({
+                kind: FormChangeKind.amountFieldChange,
+                value: balance,
+              } as AmountFieldChange))
+            ),
+            of(change)
+          );
+        }
+        return of(change);
+      })
     );
 
-    changes$.subscribe((change: ProgressChange) => proceedChange$.next(change));
+    changes$.subscribe(proceedChange$);
 
     return changes$;
   }
@@ -136,7 +151,7 @@ function freezeIfInProgress(
   previous: MigrationFormState,
   state: MigrationFormState
 ): MigrationFormState {
-  if (state.progress) {
+  if (state.progress && state.progress.status !== ExchangeMigrationStatus.done) {
     return {
       ...previous,
       progress: state.progress,
@@ -163,17 +178,20 @@ export function createMigrationForm$(
 
   const manualChange$ = new Subject<ManualChange>();
 
+  const balanceChange$ = toBalanceChange(balance$);
+
   const environmentChange$ = combineAndMerge(
-    toBalanceChange(balance$),
+    balanceChange$,
     toOrdersChange(orders$)
   );
 
   const [proceed, proceedProgressChange$] =
-    prepareProceed(migrate$);
+    prepareProceed(migrate$, balanceChange$);
 
   const change = manualChange$.next.bind(manualChange$);
 
   return balance$.pipe(
+    first(),
     switchMap((balance) => {
       const initialState = {
         kind,
