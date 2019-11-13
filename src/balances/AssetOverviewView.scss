@@ -12,6 +12,8 @@
   }
 
   th, td {
+    font-variant-numeric: tabular-nums;
+    
     &:first-child {
       padding-left: 28px;
 
