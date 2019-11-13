@@ -61,7 +61,8 @@ describe('Selecting an asset', () => {
 
     // tslint:disable-next-line:max-line-length
     it('should not be able to select receive token that do not form a market with the deposit one', () => {
-      const token = 'BAT';
+      // change from BAT because we introduced WETH markets so BAT/WETH or BAT/ETH is available
+      const token = 'USDC';
 
       cy.get(tid('buying-token', tid('balance')), timeout(2000))
         .click();

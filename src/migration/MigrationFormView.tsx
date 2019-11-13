@@ -26,6 +26,7 @@ import { BigNumberInput } from '../utils/bigNumberInput/BigNumberInput';
 import { connect } from '../utils/connect';
 import { AmountFieldChange, FormChangeKind } from '../utils/form';
 import { formatAmount } from '../utils/formatters/format';
+import { Money } from '../utils/formatters/Formatters';
 import { ErrorMessage } from '../utils/forms/ErrorMessage';
 import { InputGroup, InputGroupAddon } from '../utils/forms/InputGroup';
 import { SvgImage } from '../utils/icons/utils';
@@ -416,8 +417,10 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                          : `Swap your Multi-Collateral Dai for Single-Collateral Sai`
                      }
                      data={
-                       `${formatAmount(balance, fromToken)}
-                     ${fromToken} to ${fromToken === 'SAI' ? 'upgrade' : 'swap'}`
+                       <>
+                         <Money value={balance} token={fromToken}/>
+                         {` to ${fromToken === 'SAI' ? 'upgrade' : 'swap'}`}
+                       </>
                      }
                      btnLabel={
                        balance.eq(zero) &&

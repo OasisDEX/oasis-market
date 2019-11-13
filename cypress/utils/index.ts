@@ -9,7 +9,7 @@ export const ACCOUNT_3_PRIV = '0x1ff8271bf14ac9bef0b641cced40dc2a7ebd2e37d8e16d2
 export const ACCOUNT_3_PUBLIC = '0x79d7176ae8f93a04bc73b9bc710d4b44f9e362ce';
 
 // tslint:disable-next-line:max-line-length
-export const INSTANT_PROXY_CREATE_AND_EXECUTE_ADDRESS = '0x947308140e877E8EeBcCED93B522407A24278c6A';
+export const INSTANT_PROXY_CREATE_AND_EXECUTE_ADDRESS = '0x39E338aDC718b67585AC4bE1A69Db0EE6C186487';
 
 export let web3: any;
 export let lastSnapshotId = 1;
