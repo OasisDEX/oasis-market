@@ -42,14 +42,14 @@ $panel-border: $element-border;
   font-weight: 500;
   font-size: 18px;
   color: $very-dark-violet;
-  min-height: 4rem;
+  min-height: 64px;
   border-bottom: 1px solid $panel-border;
 
   @include media-breakpoint-down(md) {
     font-size: 14px;
     line-height: 18px;
     padding: 14px 16px;
-    height: 3.62500rem;
+    height:  58px;
   }
 }
 
