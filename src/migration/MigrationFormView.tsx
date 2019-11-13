@@ -37,6 +37,7 @@ import { zero } from '../utils/zero';
 import { CallForAction } from './CallForAction';
 import * as styles from './Migration.scss';
 import { Message, MessageKind, MigrationFormKind, MigrationFormState } from './migrationForm';
+import { Money } from "../utils/formatters/Formatters";
 
 export type MigrationButtonProps = Loadable<MigrationFormState> & {
   label: string;
@@ -416,8 +417,10 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                          : `Swap your Multi-Collateral Dai for Single-Collateral Sai`
                      }
                      data={
-                       `${formatAmount(balance, fromToken)}
-                     ${fromToken} to ${fromToken === 'SAI' ? 'upgrade' : 'swap'}`
+                       <>
+                         <Money value={balance} token={fromToken}/>
+                         {` to ${fromToken === 'SAI' ? 'upgrade' : 'swap'}`}
+                       </>
                      }
                      btnLabel={
                        balance.eq(zero) &&
