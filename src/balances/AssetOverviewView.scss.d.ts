@@ -45,6 +45,7 @@ export const table: string;
 export const center: string;
 export const amount: string;
 export const centeredAsset: string;
+export const assetIcon: string;
 export const transferBtnLeft: string;
 export const wrapUnwrapBtn: string;
 export const redeemBtn: string;
