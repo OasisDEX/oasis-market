@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { concat, merge, Observable, of, Subject } from 'rxjs';
-import {filter, first, map, scan, switchMap} from 'rxjs/operators';
+import { filter, first, map, scan, switchMap } from 'rxjs/operators';
 import { Calls$ } from '../blockchain/calls/calls';
 import { CancelData } from '../blockchain/calls/offerMake';
 import { TradeWithStatus } from '../exchange/myTrades/openTrades';

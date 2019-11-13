@@ -26,6 +26,7 @@ import { BigNumberInput } from '../utils/bigNumberInput/BigNumberInput';
 import { connect } from '../utils/connect';
 import { AmountFieldChange, FormChangeKind } from '../utils/form';
 import { formatAmount } from '../utils/formatters/format';
+import { Money } from '../utils/formatters/Formatters';
 import { ErrorMessage } from '../utils/forms/ErrorMessage';
 import { InputGroup, InputGroupAddon } from '../utils/forms/InputGroup';
 import { SvgImage } from '../utils/icons/utils';
@@ -37,7 +38,6 @@ import { zero } from '../utils/zero';
 import { CallForAction } from './CallForAction';
 import * as styles from './Migration.scss';
 import { Message, MessageKind, MigrationFormKind, MigrationFormState } from './migrationForm';
-import { Money } from "../utils/formatters/Formatters";
 
 export type MigrationButtonProps = Loadable<MigrationFormState> & {
   label: string;

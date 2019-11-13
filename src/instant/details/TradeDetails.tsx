@@ -4,7 +4,6 @@ import * as React from 'react';
 
 import { Approximate } from '../../utils/Approximate';
 import { GasEstimationStatus } from '../../utils/form';
-import { formatAmountInstant } from '../../utils/formatters/format';
 import { FormatPercent, Money } from '../../utils/formatters/Formatters';
 import { ProgressIcon } from '../../utils/icons/Icons';
 import { TradeData } from './TradeData';
