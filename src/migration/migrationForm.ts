@@ -139,7 +139,7 @@ function prepareProceed(
       })
     );
 
-    changes$.subscribe(proceedChange$);
+    changes$.subscribe(change => proceedChange$.next(change));
 
     return changes$;
   }
