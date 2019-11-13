@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
-import { formatPrice } from './formatters/format';
+import { eth2weth } from '../blockchain/calls/instant';
+import { sai2dai } from '../instant/instantForm';
 
 export const calculateTradePrice = (
   sellToken: string,
@@ -9,29 +10,29 @@ export const calculateTradePrice = (
   formatter ?: (amount: BigNumber, token:string) => string
 ) => {
   return (
-    sellToken.toLowerCase() === 'dai'
-    || (sellToken.toLowerCase() === 'eth' && buyToken.toLowerCase() !== 'dai')
+    sai2dai(sellToken) === 'DAI'
+    || (eth2weth(sellToken) === 'WETH' && sai2dai(buyToken) !== 'DAI')
   )
     ?
   {
     price: new BigNumber(formatter
       ? formatter(sellAmount.div(buyAmount), sellToken)
-      : formatPrice(sellAmount.div(buyAmount), sellToken)),
+      : sellAmount.div(buyAmount)),
     quotation: `${buyToken}/${sellToken}`
   }
     :
   {
     price: new BigNumber(formatter
         ? formatter(buyAmount.div(sellAmount), buyToken)
-        : formatPrice(buyAmount.div(sellAmount), buyToken)),
+        : buyAmount.div(sellAmount)),
     quotation: `${sellToken}/${buyToken}`
   };
 };
 
 export const getQuote = (sellToken: string, buyToken: string) => {
   return (
-    sellToken.toLowerCase() === 'dai'
-    || (sellToken.toLowerCase() === 'eth' && buyToken.toLowerCase() !== 'dai')
+    sai2dai(sellToken) === 'DAI'
+    || (eth2weth(sellToken) === 'WETH' && sai2dai(buyToken) !== 'DAI')
   )
     ? `${buyToken}/${sellToken}`
     : `${sellToken}/${buyToken}`;

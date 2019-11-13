@@ -52,7 +52,7 @@ export class TradeDetails extends React.Component<TradeDetailsProps> {
                    data-test-id="trade-price"
                    value={
                      <Approximate>
-                       {formatAmountInstant(price, 'USD')} {quotation || ''}
+                       {price.valueOf()} {quotation || ''}
                      </Approximate>
                    }
                    style={{ marginBottom: '2px' }}

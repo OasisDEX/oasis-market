@@ -568,8 +568,10 @@ function getBestPrice(
     flatMap(offerId =>
       calls.otcOffers(offerId).pipe(
         map(([a, _, b]: BigNumber[]) => {
-          return (sellToken === 'DAI' || (sellToken === 'WETH' && buyToken !== 'DAI')) ?
-            a.div(b) : b.div(a);
+          return (sai2dai((sellToken)) === 'DAI'
+            || (eth2weth(sellToken) === 'WETH' && sai2dai(buyToken) !== 'DAI'))
+            ? a.div(b)
+            : b.div(a);
         })
       )
     )
@@ -578,18 +580,18 @@ function getBestPrice(
 
 function estimateGas(calls$_: Calls$, state: InstantFormState) {
   if (state.tradeEvaluationStatus !== TradeEvaluationStatus.calculated
-  || !state.buyAmount
-  || !state.sellAmount) {
+    || !state.buyAmount
+    || !state.sellAmount) {
     return of(state);
   }
   return state.user &&
-    state.user.account &&
-    !state.message &&
-    (state.sellToken === 'ETH' ||
-      (!!state.proxyAddress && state.allowances && state.allowances[state.sellToken])
-    ) ?
-      doGasEstimation(calls$_, undefined, state, gasEstimation) :
-      of({ ...state, gasEstimationStatus: GasEstimationStatus.unknown });
+  state.user.account &&
+  !state.message &&
+  (state.sellToken === 'ETH' ||
+    (!!state.proxyAddress && state.allowances && state.allowances[state.sellToken])
+  ) ?
+    doGasEstimation(calls$_, undefined, state, gasEstimation) :
+    of({ ...state, gasEstimationStatus: GasEstimationStatus.unknown });
 }
 
 function gasEstimation(
@@ -871,8 +873,12 @@ function validate(state: InstantFormState): InstantFormState {
 function calculatePriceAndImpact(state: InstantFormState): InstantFormState {
 
   const { buyAmount, buyToken, sellAmount, sellToken, bestPrice } = state;
+  const formatToken = sai2dai(sellToken) === 'DAI' ||
+  (eth2weth(sellToken) === 'WETH' && sai2dai(buyToken) !== 'DAI')
+    ? sellToken
+    : buyToken;
   const calculated = buyAmount && sellAmount
-    ? calculateTradePrice(sai2dai(sellToken), sellAmount, buyToken, buyAmount, formatPriceInstant)
+    ? calculateTradePrice(sai2dai(sellToken), sellAmount, buyToken, buyAmount)
     : null;
   const price = calculated ? calculated.price : undefined;
   const quotation = calculated ? calculated.quotation : undefined;
@@ -884,17 +890,13 @@ function calculatePriceAndImpact(state: InstantFormState): InstantFormState {
       .times(100) :
     undefined;
 
-  // console.log('price',
-  //             price && price.toString(),
-  //             bestPrice && bestPrice.toString(),
-  //             quotation && quotation.toString()
-  // );
+  console.log(price && price.valueOf(), bestPrice && bestPrice.valueOf());
 
   return {
     ...state,
-    price,
     quotation,
     priceImpact,
+    price: price ? new BigNumber(formatPriceInstant(price, formatToken)) : undefined
   };
 }
 
