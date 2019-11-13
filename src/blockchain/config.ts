@@ -281,7 +281,7 @@ const kovan: NetworkConfig = {
     return asMap('token', [
       loadToken('WETH', eth, '0xd0a1e359811322d97991e03f863a0c30c2cf029c'),
       loadToken('SAI', erc20, '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'),
-      loadToken('DAI', erc20, '0x1d7e3a1a65a367db1d1d3f51a54ac01a2c4c92ff'),
+      loadToken('DAI', erc20, '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa'),
       loadToken('REP', erc20, '0xc7aa227823789e363f29679f23f7e8f6d9904a9b'),
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
@@ -301,10 +301,10 @@ const kovan: NetworkConfig = {
     return load(proxyCreationAndExecute, '0xee419971e63734fed782cfe49110b1544ae8a773');
   },
   get migration() {
-    return '0x97cb5a9abcdbe291d0cd85915fa5b08746fe948a';
+    return '0x411b2faa662c8e3e5cf8f01dfdae0aee482ca7b0';
   },
   get migrationProxyActions() {
-    return '0x17134c5ab1ea28f21df9c8203b817bd3b9f9a12d';
+    return '0x433870076abd08865f0e038dcc4ac6450e313bd8';
   },
   get instantMigrationProxyActions() {
     return load(instantMigrationProxyActions, '0x1320bF8f23b28b7b4160Bd08BA01AD70773957Ca');
