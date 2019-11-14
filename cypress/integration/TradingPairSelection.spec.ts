@@ -72,7 +72,6 @@ describe('Trading pair dropdown', () => {
 
     TradingPairInfo.lastPrice().contains('100.00');
     TradingPairInfo.dailyVolume().contains('200.00');
-
   });
 
   it('should display orders in the order book for selected pair', () => {
@@ -82,15 +81,15 @@ describe('Trading pair dropdown', () => {
 
     const buyOrders = Orderbook.list(OrderType.BUY);
     buyOrders.countIs(3);
-    buyOrders.first().amount().contains('1.00000');
-    buyOrders.first().price().contains('110.00');
-    buyOrders.first().total().contains('110.00');
+    buyOrders.first().amount().should('have.text', '1.00000');
+    buyOrders.first().price().should('have.text', '110.0000');
+    buyOrders.first().total().should('have.text', '110.0000');
 
     const sellOrders = Orderbook.list(OrderType.SELL);
     sellOrders.countIs(1);
-    sellOrders.first().amount().contains('1.00000');
-    sellOrders.first().price().contains('150.00');
-    sellOrders.first().total().contains('150.00');
+    sellOrders.first().amount().should('have.text', '1.00000');
+    sellOrders.first().price().should('have.text', '150.0000');
+    sellOrders.first().total().should('have.text', '150.0000');
   });
 
   it('should place new buy order for selected pair', () => {
@@ -101,9 +100,9 @@ describe('Trading pair dropdown', () => {
     let sellOrders = Orderbook.list(OrderType.SELL);
 
     sellOrders.countIs(1);
-    sellOrders.first().amount().contains('1.00000');
-    sellOrders.first().price().contains('140.00');
-    sellOrders.first().total().contains('140.00');
+    sellOrders.first().amount().should('have.text', '1.00000');
+    sellOrders.first().price().should('have.text', '140.0000');
+    sellOrders.first().total().should('have.text', '140.0000');
 
     let buyOrders = Orderbook.list(OrderType.BUY);
     buyOrders.countIs(0);
@@ -124,9 +123,9 @@ describe('Trading pair dropdown', () => {
 
     buyOrders = Orderbook.list(OrderType.BUY);
     buyOrders.countIs(1);
-    buyOrders.first().amount().contains('2.00000');
-    buyOrders.first().price().contains('70.00');
-    buyOrders.first().total().contains('140.00');
+    buyOrders.first().amount().should('have.text', '2.00000');
+    buyOrders.first().price().should('have.text', '70.0000');
+    buyOrders.first().total().should('have.text', '140.0000');
   });
 
   it('should place new sell order for selected pair', () => {
@@ -140,8 +139,8 @@ describe('Trading pair dropdown', () => {
 
     sellOrders.countIs(1);
     sellOrders.first().amount().contains('1.00000');
-    sellOrders.first().price().contains('150.00');
-    sellOrders.first().total().contains('150.00');
+    sellOrders.first().price().should('have.text', '150.0000');
+    sellOrders.first().total().should('have.text', '150.0000');
 
     const amount = '2';
     const price = '160';
@@ -156,9 +155,9 @@ describe('Trading pair dropdown', () => {
 
     sellOrders = Orderbook.list(OrderType.SELL);
     sellOrders.countIs(2);
-    sellOrders.first().amount().contains('2.00000');
-    sellOrders.first().price().contains('160.00');
-    sellOrders.first().total().contains('320.00');
+    sellOrders.first().amount().should('have.text', '2.00000');
+    sellOrders.first().price().should('have.text', '160.0000');
+    sellOrders.first().total().should('have.text', '320.0000');
   });
 });
 
@@ -176,5 +175,5 @@ const selectPair = (base: string, quote: string) => {
   TradingPairDropdown.select({ base, quote });
   // It needs time to load the orderbook for the newly selected pair
   // otherwise it selects rows for previous orderbook.
-  cy.wait(1000);
+  cy.wait(2000);
 };
