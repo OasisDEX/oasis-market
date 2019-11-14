@@ -307,7 +307,7 @@ const kovan: NetworkConfig = {
     return '0x433870076abd08865f0e038dcc4ac6450e313bd8';
   },
   get instantMigrationProxyActions() {
-    return load(instantMigrationProxyActions, '0x1320bF8f23b28b7b4160Bd08BA01AD70773957Ca');
+    return load(instantMigrationProxyActions, '0xa623ea3b3219bb59b96c4aff2d26aff0d038af62');
   },
   oasisDataService: {
     url: 'https://kovan-cache.eth2dai.com/api/v1'
