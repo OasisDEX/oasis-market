@@ -5,6 +5,7 @@
   @include tableColumnsWidth(152px 152px 142px);
 
   td, th {
+    font-variant-numeric: tabular-nums;
     // time column
     &:last-child {
       flex-grow: 1;
