@@ -35,7 +35,7 @@ describe('New trade', () => {
       trade.sell().amount('2');
       trade.expectToReceive('555.00');
 
-      TradeData.expectPriceOf(/(277\.50)/);
+      TradeData.expectPriceOf(/(277\.5)/);
       TradeData.expectSlippageLimit(/5\.00%/);
       TradeData.expectPriceImpact(/0\.89%/);
 
@@ -282,7 +282,7 @@ describe('New trade', () => {
       const trade = new Trade();
       trade.sell('ETH').amount('1');
 
-      TradeData.expectPriceOf(/(280.00)/);
+      TradeData.expectPriceOf(/(280)/);
       TradeData.expectSlippageLimit(/5\.00%/);
       TradeData.expectPriceImpact(/0\.00%/);
 

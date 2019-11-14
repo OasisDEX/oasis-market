@@ -35,7 +35,7 @@ describe('Trade Settings', () => {
 
       TradeData.expectPriceImpact('0.00');
       TradeData.expectSlippageLimit('5.00');
-      TradeData.expectPriceOf('280.00');
+      TradeData.expectPriceOf('280');
     });
 
     it('should reflect changed slippage limit', () => {
