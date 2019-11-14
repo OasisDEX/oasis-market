@@ -29,10 +29,11 @@ interface TradingPairViewState {
 
 export class TradingPairView extends React.Component<TradingPairsProps, TradingPairViewState> {
 
-  public static PairVP({ pair, parentMatch, marketsDetailsLoadable }: {
+  public static PairVP({ pair, parentMatch, marketsDetailsLoadable, clickHandler }: {
     pair: TradingPair,
     parentMatch?: string,
     marketsDetailsLoadable: Loadable<MarketsDetails>,
+    clickHandler: () => void,
   }) {
 
     const pathname = `${parentMatch}/${pair.base}/${pair.quote}`;
@@ -45,6 +46,7 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
           activeClassName={styles.active}
           className={classnames(styles.dropdownItemLink, styles.pairView)}
           onClick={() => {
+            clickHandler();
             mixpanel.track('btn-click', {
               pair: `${pair.base}${pair.quote}`,
               id: 'change-asset-pair',
@@ -172,6 +174,7 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
                         parentMatch={parentMatch}
                         pair={pair}
                         marketsDetailsLoadable={this.props.marketsDetails}
+                        clickHandler={this.closeMenuHandler}
                       />
                     ))}
                   </Scrollbar>
@@ -238,16 +241,18 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
   }
 
   private closeMenu = (_event: any) => {
+    if (_event.path.filter((p: any) => p.className === 'TradingPairView_dropdown').length === 0) {
+      this.closeMenuHandler();
+    }
+  }
 
-    // if (!this.dropdownMenu.contains(event.target)) {
+  private closeMenuHandler = () => {
     this.setState({ showMenu: false }, () => {
       document.removeEventListener('click', this.closeMenu);
     });
-    // }
 
     if (this.props.setPairPickerOpen) {
       this.props.setPairPickerOpen(false);
     }
   }
-
 }
