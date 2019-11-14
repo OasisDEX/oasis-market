@@ -12,6 +12,7 @@ import { TopRightCorner } from '../utils/panel/TopRightCorner';
 import { ExchangeMigrationStatus, ExchangeMigrationTxKind } from './migration';
 
 import { BigNumber } from 'bignumber.js';
+import * as mixpanel from 'mixpanel-browser';
 import { default as MediaQuery } from 'react-responsive';
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 import { tokens } from '../blockchain/config';
@@ -88,7 +89,17 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
           return visible ? (
               <Button size="md"
                       className={classnames(styles.redeemBtn, this.props.className)}
-                      onClick={() => this.setup()}
+                      onClick={
+                        () => {
+                          this.setup();
+                          mixpanel.track('btn-click', {
+                            id: 'initiate-sai-dai-migration',
+                            product: 'oasis-trade',
+                            page: 'Sitewide',
+                            section: 'sitewide',
+                          });
+                        }
+                      }
               >
                 {this.props.label}
               </Button>
@@ -194,12 +205,14 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
         <div className={styles.ordersPlaceholder}>
           <Table align="left" className={styles.orders}>
             <thead>
-            <th className={classnames('hide-md', styles.market)}>Market</th>
-            <th className={styles.type}>Type</th>
-            <th className={styles.price}>Price</th>
-            <th className={styles.amount}>Amount</th>
-            <th className={styles.total}>Total</th>
-            <th className={styles.action}>Action</th>
+              <tr>
+                <th className={classnames('hide-md', styles.market)}>Market</th>
+                <th className={styles.type}>Type</th>
+                <th className={styles.price}>Price</th>
+                <th className={styles.amount}>Amount</th>
+                <th className={styles.total}>Total</th>
+                <th className={styles.action}>Action</th>
+              </tr>
             </thead>
           </Table>
         </div>
@@ -398,7 +411,16 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                          : <SvgImage image={tickSvg}/>
                      }
                      btnDisabled={!ordersCount}
-                     btnAction={() => this.setState({ view: MigrationViews.cancelOrders })}
+                     btnAction={() => {
+                       this.setState({ view: MigrationViews.cancelOrders });
+                       mixpanel.track('btn-click', {
+                         id: 'cancel-offers',
+                         product: 'oasis-trade',
+                         page: 'Sitewide',
+                         section: 'sai-dai-migration',
+                       });
+                     }
+                     }
       />
     );
   }
@@ -428,7 +450,16 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                        `${fromToken === 'SAI' ? 'Upgrade' : 'Swap'} ${fromToken}`
                      }
                      btnDisabled={!readyToProceed}
-                     btnAction={() => proceed(this.props)}
+                     btnAction={() => {
+                       proceed(this.props);
+                       mixpanel.track('btn-click', {
+                         id: `${fromToken === 'SAI' ? 'upgrade' : 'swap'}-${fromToken}`,
+                         product: 'oasis-trade',
+                         page: 'Sitewide',
+                         section: 'sai-dai-migration',
+                       });
+                     }
+                     }
       >
         <div className={styles.amountInputGroup}>
           <InputGroup hasError={(messages || []).length > 0}>
@@ -556,6 +587,13 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       type: order.act,
       amount: order.baseAmount,
       token: order.baseToken
+    });
+
+    mixpanel.track('btn-click', {
+      id: 'cancel-single-offer',
+      product: 'oasis-trade',
+      page: 'Sitewide',
+      section: 'sai-dai-migration',
     });
   }
 }
