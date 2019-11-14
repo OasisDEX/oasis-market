@@ -8,7 +8,7 @@ import { cypressVisitWithWeb3, multiply, tid, timeout } from '../../utils';
 import { makeScreenshots } from '../../utils/makeScreenshots';
 
 const waitForBalancesToLoad = () => {
-  cy.wait(500);
+  cy.wait(1000);
   cy.get(tid('selling-token', tid('balance')), timeout()).contains(/8,999.../);
   cy.get(tid('buying-token', tid('balance')), timeout()).contains(/170.../);
 };
@@ -77,7 +77,7 @@ describe('New trade', () => {
       trade.expectToPay('');
     });
 
-    it('should swap tokens', () => {
+    it.only('should swap tokens', () => {
       Trade.swapTokens();
 
       cy.get(tid('selling-token', tid('balance')), timeout()).contains(/170.../);
