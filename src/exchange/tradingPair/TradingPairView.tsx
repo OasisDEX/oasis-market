@@ -241,7 +241,7 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
   }
 
   private closeMenu = (_event: any) => {
-    if (_event.path.filter((p: any) => p.className === 'TradingPairView_dropdown').length === 0) {
+    if (_event.path.filter((p: any) => p.className === styles.dropdown).length === 0) {
       this.closeMenuHandler();
     }
   }
