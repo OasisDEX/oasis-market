@@ -179,7 +179,7 @@ workflows:
   version: 2
 
   mainflow:
-    1jobs:
+    jobs:
       - install
 
       - test:

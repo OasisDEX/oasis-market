@@ -77,7 +77,7 @@ describe('New trade', () => {
       trade.expectToPay('');
     });
 
-    it.only('should swap tokens', () => {
+    it('should swap tokens', () => {
       Trade.swapTokens();
 
       cy.get(tid('selling-token', tid('balance')), timeout()).contains(/170.../);

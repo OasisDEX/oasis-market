@@ -70,9 +70,8 @@ describe('Trading pair dropdown', () => {
 
     selectPair(base, quote);
 
-    TradingPairInfo.lastPrice().should('have.text', '100.0000');
-    TradingPairInfo.dailyVolume().should('have.text', '200.00');
-
+    TradingPairInfo.lastPrice().contains('100.00');
+    TradingPairInfo.dailyVolume().contains('200.00');
   });
 
   it('should display orders in the order book for selected pair', () => {
@@ -176,5 +175,5 @@ const selectPair = (base: string, quote: string) => {
   TradingPairDropdown.select({ base, quote });
   // It needs time to load the orderbook for the newly selected pair
   // otherwise it selects rows for previous orderbook.
-  cy.wait(1000);
+  cy.wait(2000);
 };
