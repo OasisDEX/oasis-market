@@ -219,9 +219,9 @@ workflows:
             branches:
               only: dev
       - deploy_stage:
-#          requires:
-#            - test
-#            - test-e2e
+          requires:
+            - test
+            - test-e2e
           filters:
             branches:
               only: mcd-launch
