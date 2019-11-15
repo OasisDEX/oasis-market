@@ -43,8 +43,6 @@ import { web3 } from './web3';
 export const tradingPairs: TradingPair[] = [
   { base: 'WETH', quote: 'DAI' },
   ...process.env.REACT_APP_OASIS_DEX_ENABLED !== '1' ? [] : [
-    // { base: 'MKR', quote: 'DAI' },
-    // { base: 'MKR', quote: 'WETH' },
     { base: 'REP', quote: 'DAI' },
     { base: 'ZRX', quote: 'DAI' },
     { base: 'BAT', quote: 'DAI' },
@@ -52,10 +50,12 @@ export const tradingPairs: TradingPair[] = [
     { base: 'REP', quote: 'SAI' },
     { base: 'ZRX', quote: 'SAI' },
     { base: 'BAT', quote: 'SAI' },
+    { base: 'SAI', quote: 'USDC' },
+    { base: 'DAI', quote: 'USDC' },
     { base: 'REP', quote: 'WETH' },
     { base: 'ZRX', quote: 'WETH' },
     { base: 'BAT', quote: 'WETH' },
-    { base: 'DAI', quote: 'USDC' },
+
   ]
 ];
 
@@ -63,7 +63,7 @@ function asMap<D>(key: string, data: D[]): { [key: string]: D } {
   return fromPairs(zip(data.map((row: D) => (row as any)[key]), data));
 }
 
-export const tokens = asMap('symbol', [
+const tokens = asMap('symbol', [
   {
     symbol: 'ETH',
     precision: 18,
@@ -75,6 +75,7 @@ export const tokens = asMap('symbol', [
     // iconInverse: SvgImageSimple(ethInverseSvg),
     iconCircle: SvgImageSimple(ethCircleSvg),
     iconColor: SvgImageSimple(ethColorSvg),
+    ticker: 'eth-ethereum'
   },
   {
     symbol: 'WETH',
@@ -87,6 +88,7 @@ export const tokens = asMap('symbol', [
     // iconInverse: SvgImageSimple(ethCircleSvg),
     iconCircle: SvgImageSimple(ethCircleSvg),
     iconColor: SvgImageSimple(ethCircleSvg),
+    ticker: 'eth-ethereum'
   },
   {
     symbol: 'SAI',
@@ -99,6 +101,7 @@ export const tokens = asMap('symbol', [
     // iconInverse: SvgImageSimple(daiInverseSvg),
     iconCircle: SvgImageSimple(saiCircleSvg),
     iconColor: SvgImageSimple(saiColorSvg),
+    ticker: 'dai-dai'
   },
   {
     symbol: 'DAI',
@@ -111,6 +114,7 @@ export const tokens = asMap('symbol', [
     // iconInverse: SvgImageSimple(daiInverseSvg),
     iconCircle: SvgImageSimple(daiCircleSvg),
     iconColor: SvgImageSimple(daiColorSvg),
+    ticker: 'dai-dai'
   },
   ...process.env.REACT_APP_OASIS_DEX_ENABLED !== '1' ? [] : [
     {
@@ -125,6 +129,7 @@ export const tokens = asMap('symbol', [
     // iconInverse: SvgImageSimple(repInverseSvg),
       iconCircle: SvgImageSimple(repCircleSvg),
       iconColor: SvgImageSimple(repColorSvg),
+      ticker: 'rep-augur'
     },
     {
       symbol: 'ZRX',
@@ -138,6 +143,7 @@ export const tokens = asMap('symbol', [
     // iconInverse: SvgImageSimple(mkrInverseSvg),
       iconCircle: SvgImageSimple(zrxCircleSvg),
       iconColor: SvgImageSimple(zrxColorSvg),
+      ticker: 'zrx-0x'
     },
     {
       symbol: 'BAT',
@@ -151,6 +157,7 @@ export const tokens = asMap('symbol', [
     // iconInverse: SvgImageSimple(batInverseSvg),
       iconCircle: SvgImageSimple(batCircleSvg),
       iconColor: SvgImageSimple(batColorSvg),
+      ticker: 'bat-basic-attention-token'
     },
     {
       symbol: 'USDC',
@@ -164,6 +171,7 @@ export const tokens = asMap('symbol', [
       // iconInverse: SvgImageSimple(usdcInverseSvg),
       iconCircle: SvgImageSimple(usdcCircleSvg),
       iconColor: SvgImageSimple(usdcColorSvg),
+      ticker: 'usdc-usd-coin'
       // address: 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
     },
   // {
@@ -178,9 +186,33 @@ export const tokens = asMap('symbol', [
   //   // iconInverse: SvgImageSimple(wbtcInverseSvg),
   //   iconCircle: SvgImageSimple(wbtcCircleSvg),
   //   iconColor: SvgImageSimple(wbtcColorSvg),
+  //   ticker: 'wbtc-wrapped-bitcoin'
   //   // address: 0x2260fac5e5542a773aa44fbcfedf7c193bc2c599
   // }
   ]]);
+
+export function isDAIEnabled() {
+  return tradingTokens.indexOf('DAI') >= 0;
+}
+
+export function getToken(token: string) {
+  return tokens[token];
+}
+
+export const tradingTokens = Array.from(tradingPairs.reduce(
+  (tkns: Set<string>, { base, quote }) => {
+    tkns.add(base);
+    tkns.add(quote);
+    return tkns;
+  },
+  new Set<string>()
+));
+
+tradingTokens.sort((t1, t2) =>
+  Object.keys(tokens).indexOf(t1) - Object.keys(tokens).indexOf(t2)
+);
+
+console.log(tradingTokens);
 
 const load = memoize(
   (abi: any, address: string) => {

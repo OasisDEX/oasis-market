@@ -2,6 +2,10 @@ import { BigNumber } from 'bignumber.js';
 import { eth2weth } from '../blockchain/calls/instant';
 import { sai2dai } from '../instant/instantForm';
 
+export function daiOrSAI(token: string) {
+  return token === 'SAI' || token === 'DAI';
+}
+
 export const calculateTradePrice = (
   sellToken: string,
   sellAmount: BigNumber,
@@ -10,8 +14,7 @@ export const calculateTradePrice = (
   formatter ?: (amount: BigNumber, token:string) => string
 ) => {
   return (
-    sai2dai(sellToken) === 'DAI'
-    || (eth2weth(sellToken) === 'WETH' && sai2dai(buyToken) !== 'DAI')
+    daiOrSAI(sellToken) || (eth2weth(sellToken) === 'WETH' && !daiOrSAI(buyToken))
   )
     ?
   {
@@ -31,8 +34,7 @@ export const calculateTradePrice = (
 
 export const getQuote = (sellToken: string, buyToken: string) => {
   return (
-    sai2dai(sellToken) === 'DAI'
-    || (eth2weth(sellToken) === 'WETH' && sai2dai(buyToken) !== 'DAI')
+    daiOrSAI(sellToken) || (eth2weth(sellToken) === 'WETH' && !daiOrSAI(buyToken))
   )
     ? `${buyToken}/${sellToken}`
     : `${sellToken}/${buyToken}`;

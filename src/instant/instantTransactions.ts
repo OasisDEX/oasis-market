@@ -14,6 +14,7 @@ import {
   ProgressChange,
   ProgressKind, sai2dai
 } from './instantForm';
+import {isDAIEnabled} from "../blockchain/config";
 
 function progressChange(progress?: Progress): ProgressChange {
   return { progress, kind: InstantFormChangeKind.progressChange };
@@ -86,8 +87,7 @@ function doTradePayWithERC20(
   const trade$ = gasCall({
     ...state,
     proxyAddress,
-    sellToken: sai2dai(state.sellToken) !== state.sellToken ?
-      sai2dai(state.sellToken) : state.sellToken,
+    sellToken: sai2dai(state.sellToken),
   } as InstantOrderData).pipe(
     switchMap(gasEstimation => {
       const call = state.sellToken === 'SAI' ?
@@ -99,7 +99,7 @@ function doTradePayWithERC20(
         proxyAddress,
         gasEstimation,
         gasPrice: state.gasPrice,
-        sellToken: state.sellToken === 'SAI' ? sai2dai(state.sellToken) : state.sellToken,
+        sellToken: sai2dai(state.sellToken),
       } as InstantOrderData);
     })
   );
@@ -282,7 +282,7 @@ export function estimateTradePayWithERC20(
   proxyAddress: string | undefined,
   state: InstantFormState,
 ): Observable<number> {
-  const gasCall = state.sellToken === 'SAI' ?
+  const gasCall = state.sellToken === 'SAI' && isDAIEnabled() ?
     calls.migrateTradePayWithERC20EstimateGas :
     calls.tradePayWithERC20EstimateGas;
 

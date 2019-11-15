@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import * as React from 'react';
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 
-import { tokens } from '../blockchain/config';
+import { getToken } from '../blockchain/config';
 import { User } from '../blockchain/user';
 import { OfferType } from '../exchange/orderbook/orderbook';
 import { BigNumberInput } from '../utils/bigNumberInput/BigNumberInput';
@@ -27,7 +27,7 @@ interface TradingSideProps {
 class TradingSide extends React.Component<TradingSideProps> {
   public render() {
     const { amount, asset, balance, placeholder, onAmountChange, user, approx } = this.props;
-    const decimalLimit = tokens[asset] ? tokens[asset].digitsInstant : 3;
+    const decimalLimit = getToken(asset) ? getToken(asset).digitsInstant : 3;
     return (
       <div className={styles.tradingSide} data-test-id={this.props.dataTestId}>
         <div className={styles.tradingAsset}>
