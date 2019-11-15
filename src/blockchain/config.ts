@@ -209,7 +209,7 @@ export const tradingTokens = Array.from(tradingPairs.reduce(
     tkns.add(quote);
     return tkns;
   },
-  new Set<string>()
+  new Set<string>(['ETH'])
 ));
 
 tradingTokens.sort((t1, t2) =>
