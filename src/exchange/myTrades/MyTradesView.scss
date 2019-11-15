@@ -20,6 +20,8 @@
   max-height: 400px;
 
   td, th {
+    font-variant-numeric: tabular-nums;
+
     &:first-child {
       padding-left: 16px;
       @include media-breakpoint-up(lg) {

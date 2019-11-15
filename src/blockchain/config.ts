@@ -239,6 +239,7 @@ const protoMain = {
     repdai: 0.02,
     zrxdai: 0.02,
     batdai: 0.02,
+    daiusdc: 0.05,
   },
   safeConfirmations: 0,
   avgBlocksPerDay: 5760 * 1.05,
@@ -303,6 +304,7 @@ const kovan: NetworkConfig = {
     repdai: 0.025,
     zrxdai: 0.025,
     batdai: 0.025,
+    daiusdc: 0.05,
   },
   safeConfirmations: 0,
   avgBlocksPerDay: 21600 * 0.55,
@@ -317,7 +319,7 @@ const kovan: NetworkConfig = {
       loadToken('REP', erc20, '0xc7aa227823789e363f29679f23f7e8f6d9904a9b'),
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
-      loadToken('USDC', erc20, '0xe22da380ee6b445bb8273c81944adeb6e8450422'),
+      loadToken('USDC', erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
     ]);
   },
   get otcSupportMethods() {
@@ -363,6 +365,7 @@ const localnet: NetworkConfig =   {
     repdai: 0.05,
     zrxdai: 0.05,
     batdai: 0.05,
+    daiusdc: 0.05,
   },
   safeConfirmations: 0,
   avgBlocksPerDay: 1000,
