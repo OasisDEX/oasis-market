@@ -41,11 +41,11 @@ import * as saiTub from './abi/sai-tub.abi.json';
 import { web3 } from './web3';
 
 export const tradingPairs: TradingPair[] = [
-  // { base: 'WETH', quote: 'DAI' },
+  { base: 'WETH', quote: 'DAI' },
   ...process.env.REACT_APP_OASIS_DEX_ENABLED !== '1' ? [] : [
-    // { base: 'REP', quote: 'DAI' },
-    // { base: 'ZRX', quote: 'DAI' },
-    // { base: 'BAT', quote: 'DAI' },
+    { base: 'REP', quote: 'DAI' },
+    { base: 'ZRX', quote: 'DAI' },
+    { base: 'BAT', quote: 'DAI' },
     { base: 'WETH', quote: 'SAI' },
     { base: 'REP', quote: 'SAI' },
     { base: 'ZRX', quote: 'SAI' },
