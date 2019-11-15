@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js';
 import { eth2weth } from '../blockchain/calls/instant';
-import { sai2dai } from '../instant/instantForm';
 
 export function daiOrSAI(token: string) {
   return token === 'SAI' || token === 'DAI';

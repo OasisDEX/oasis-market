@@ -15,7 +15,7 @@ import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
 import { default as MediaQuery } from 'react-responsive';
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
-import {getToken, isDAIEnabled} from '../blockchain/config';
+import { getToken, isDAIEnabled } from '../blockchain/config';
 import { TradeStatus, TradeWithStatus } from '../exchange/myTrades/openTrades';
 import accountSvg from '../icons/account.svg';
 import doneSvg from '../icons/done.svg';

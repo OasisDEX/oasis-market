@@ -22,7 +22,7 @@ import {
 import * as mixpanel from 'mixpanel-browser';
 import { mixpanelIdentify } from '../analytics';
 import * as dsValue from './abi/ds-value.abi.json';
-import {getToken, NetworkConfig, networks, tradingTokens} from './config';
+import { getToken, NetworkConfig, networks, tradingTokens } from './config';
 import { amountFromWei } from './utils';
 import { web3 } from './web3';
 

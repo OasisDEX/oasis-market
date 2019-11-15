@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { first, flatMap, map, startWith, switchMap } from 'rxjs/operators';
 import { Calls } from '../blockchain/calls/calls';
 import { InstantOrderData } from '../blockchain/calls/instant';
+import { isDAIEnabled } from '../blockchain/config';
 import { allowance$, waitUntil } from '../blockchain/network';
 import { getTxHash, isDone, isSuccess, TxState, TxStatus } from '../blockchain/transactions';
 import { amountFromWei } from '../blockchain/utils';
@@ -14,7 +15,6 @@ import {
   ProgressChange,
   ProgressKind, sai2dai
 } from './instantForm';
-import {isDAIEnabled} from "../blockchain/config";
 
 function progressChange(progress?: Progress): ProgressChange {
   return { progress, kind: InstantFormChangeKind.progressChange };

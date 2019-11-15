@@ -6,7 +6,7 @@ import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 
 import * as mixpanel from 'mixpanel-browser';
 import { theAppContext } from '../../AppContext';
-import {getToken, isDAIEnabled} from '../../blockchain/config';
+import { getToken, isDAIEnabled } from '../../blockchain/config';
 import { routerContext } from '../../Main';
 import { BigNumberInput, lessThanOrEqual } from '../../utils/bigNumberInput/BigNumberInput';
 import { FormChangeKind, OfferMatchType } from '../../utils/form';
