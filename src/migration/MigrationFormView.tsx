@@ -44,6 +44,7 @@ export type MigrationButtonProps = Loadable<MigrationFormState> & {
   label: string;
   migration$: Observable<MigrationFormState>;
   className?: string;
+  tid?: string;
 };
 
 // TODO: Probably extract all Tooltip Definitions in a separate file.
@@ -87,9 +88,12 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
             migrationState.kind === MigrationFormKind.dai2sai &&
             migrationState.balance.gt(zero);
 
+          const { tid, className, label } = this.props;
+
           return visible ? (
               <Button size="md"
-                      className={classnames(styles.redeemBtn, this.props.className)}
+                      className={classnames(styles.redeemBtn, className)}
+                      data-test-id={tid}
                       onClick={
                         () => {
                           this.setup();
@@ -102,7 +106,7 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
                         }
                       }
               >
-                {this.props.label}
+                {label}
               </Button>
             )
             : <></>;
@@ -158,19 +162,25 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       overlayClassName={styles.modalOverlay}
       closeTimeoutMS={250}
     >
-      {view}
+      <section data-test-id="migration-wizard"
+               className={styles.modalChild}
+      >
+        {view}
+      </section>
     </ReactModal>;
   }
 
   private initialView = () => {
     const { fromToken, close } = this.props;
     return (
-      <Panel footerBordered={true} className={styles.modalChild}>
+      <Panel footerBordered={true} className={styles.panel}>
         <PanelHeader bordered={true} className={styles.panelHeader}>
-          {fromToken === 'SAI'
-            ? 'Multi-Collateral Dai Upgrade'
-            : 'Single-Collateral Sai Swap'
-          }
+          <span data-test-id="panel-header">
+            {fromToken === 'SAI'
+              ? 'Multi-Collateral Dai Upgrade'
+              : 'Single-Collateral Sai Swap'
+            }
+          </span>
           <TopRightCorner className={styles.closeBtn}>
             <CloseButton theme="danger" onClick={close}/>
           </TopRightCorner>
@@ -185,7 +195,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
 
   private cancelOrders = () => {
     const orders = this.props.orders;
-    return <Panel className={styles.modalChild}>
+    return <Panel className={styles.panel}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
         Cancel Pending Orders
         <TopRightCorner className={styles.closeBtn}>
@@ -206,14 +216,14 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
         <div className={styles.ordersPlaceholder}>
           <Table align="left" className={styles.orders}>
             <thead>
-              <tr>
-                <th className={classnames('hide-md', styles.market)}>Market</th>
-                <th className={styles.type}>Type</th>
-                <th className={styles.price}>Price</th>
-                <th className={styles.amount}>Amount</th>
-                <th className={styles.total}>Total</th>
-                <th className={styles.action}>Action</th>
-              </tr>
+            <tr>
+              <th className={classnames('hide-md', styles.market)}>Market</th>
+              <th className={styles.type}>Type</th>
+              <th className={styles.price}>Price</th>
+              <th className={styles.amount}>Amount</th>
+              <th className={styles.total}>Total</th>
+              <th className={styles.action}>Action</th>
+            </tr>
             </thead>
           </Table>
         </div>
@@ -255,6 +265,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                                 if (matches) {
                                   return (
                                     <CloseButton theme="danger"
+                                                 data-test-id="cancel"
                                                  onClick={
                                                    () => this.cancel(order)
                                                  }
@@ -264,6 +275,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
 
                                 return (
                                   <Button size="sm"
+                                          data-test-id="cancel"
                                           color="secondaryOutlined"
                                           onClick={
                                             () => this.cancel(order)
@@ -291,6 +303,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       >
         <Button size="sm"
                 color="secondaryOutlined"
+                data-test-id="back"
                 className={styles.backBtn}
                 onClick={() => this.setState({ view: MigrationViews.initial })}
         >
@@ -309,7 +322,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       throw new Error('Should not get here!');
     }
 
-    return <Panel className={styles.modalChild}>
+    return <Panel className={styles.panel}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
         {
           fromToken === 'SAI'
@@ -382,6 +395,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       >
         <Button size="sm"
                 color="secondaryOutlined"
+                data-test-id="back"
                 className={styles.backBtn}
                 disabled={
                   progress && (
@@ -409,7 +423,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                      btnLabel={
                        ordersCount
                          ? 'Cancel Orders'
-                         : <SvgImage image={tickSvg}/>
+                         : <SvgImage data-test-id="step-completed" image={tickSvg}/>
                      }
                      btnDisabled={!ordersCount}
                      btnAction={() => {
@@ -420,8 +434,8 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                          page: 'Sitewide',
                          section: 'sai-dai-migration',
                        });
-                     }
-                     }
+                     }}
+                     tid="cfa-cancel-orders"
       />
     );
   }
@@ -459,8 +473,8 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                          page: 'Sitewide',
                          section: 'sai-dai-migration',
                        });
-                     }
-                     }
+                     }}
+                     tid="cfa-upgrade-balance"
       >
         <div className={styles.amountInputGroup}>
           <InputGroup hasError={(messages || []).length > 0}>
@@ -540,9 +554,14 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                            <TradeData
                              data-test-id="set-allowance"
                              theme="reversed"
-                             label="Unlock SAI"
+                             label={
+                               this.props.kind === MigrationFormKind.sai2dai
+                                 ? 'Unlock SAI'
+                                 : 'Unlock DAI'
+                             }
                              tooltip={allowanceTooltip}
-                           />}
+                           />
+                         }
                          status={<ProgressReport report={status}/>}
             />
           </div>

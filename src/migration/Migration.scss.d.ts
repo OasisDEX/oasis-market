@@ -47,6 +47,7 @@ export const loadingIndicator: string;
 export const orderCancellationIndicator: string;
 export const processLoadingIndicator: string;
 export const redeemBtn: string;
+export const panel: string;
 export const panelHeader: string;
 export const panelBody: string;
 export const process: string;

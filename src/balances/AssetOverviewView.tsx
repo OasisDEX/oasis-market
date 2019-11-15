@@ -165,6 +165,7 @@ export class AssetsOverviewViewInternal
                   {({ SAI2DAIMigrationTxRx }) =>
                     // @ts-ignore
                     <SAI2DAIMigrationTxRx label={ 'Upgrade Sai' }
+                                          tid="update-btn-account"
                                           className={styles.redeemBtn}
                     />
                   }
@@ -176,6 +177,7 @@ export class AssetsOverviewViewInternal
                   {({ DAI2SAIMigrationTxRx }) =>
                     // @ts-ignore
                     <DAI2SAIMigrationTxRx label={ 'Swap for Sai' }
+                                          tid="swap-btn-account"
                                           className={styles.redeemBtn}
                     />
                   }
