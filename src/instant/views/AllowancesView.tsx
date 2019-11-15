@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { tradingTokens } from '../../blockchain/config';
+import { getToken, tradingTokens } from '../../blockchain/config';
 import doneSvg from '../../icons/done.svg';
 import { Button, CloseButton } from '../../utils/forms/Buttons';
 import { SvgImage } from '../../utils/icons/utils';
@@ -69,15 +69,14 @@ export class AllowancesView extends React.Component<InstantFormState> {
               .filter(token => token !== 'ETH')
               .map(
                 (token: any, index: number) => {
-                  const symbol = token.symbol;
-                  const progress = manualAllowancesProgress && manualAllowancesProgress[symbol];
+                  const progress = manualAllowancesProgress && manualAllowancesProgress[token];
 
-                  return <AssetAllowance isAllowed={(allowances ? allowances[symbol] : false)}
+                  return <AssetAllowance isAllowed={(allowances ? allowances[token] : false)}
                                          inProgress={progress && !progress.done}
                                          key={index}
-                                         asset={token}
+                                         asset={getToken(token)}
                                          onClick={() => {
-                                           toggleAllowance(symbol);
+                                           toggleAllowance(token);
                                          }}
                   />;
                 }
