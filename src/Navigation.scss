@@ -1,9 +1,10 @@
 @import "header/Header";
 @import "utils/Mixins";
+@import "utils/Variables";
 
 $navBackground: #1E2C37;
-$navColor: #708390;
-$navHilight: #F6F8F9;
+$navColor: $dark-grayish-blue;
+$navHilight: $another-light-grayish-blue-2;
 
 @mixin mobile() {
   @include media-breakpoint-down($header-media-breakpoint) {
