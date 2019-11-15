@@ -4,6 +4,7 @@ import { Redirect, Route, Router, Switch } from 'react-router';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import * as mixpanel from 'mixpanel-browser';
+import { default as MediaQuery }from 'react-responsive';
 import { map } from 'rxjs/operators';
 import { setupAppContext, theAppContext } from './AppContext';
 import { BalancesView } from './balances/BalancesView';
@@ -12,6 +13,7 @@ import { ExchangeViewTxRx } from './exchange/ExchangeView';
 import { HeaderTxRx } from './header/Header';
 import * as styles from './index.scss';
 import { InstantExchange } from './instant/InstantViewPanel';
+import { Banner } from './landingPage/Banner';
 import { connect } from './utils/connect';
 
 const browserHistoryInstance = createBrowserHistory({
@@ -44,6 +46,29 @@ export class MainContent extends React.Component<RouterProps> {
   public render() {
     return (
       <routerContext.Provider value={{ rootUrl: this.props.match.url }}>
+        <Banner buttonLabel={
+          //tslint:disable
+          <a href="https://blog.makerdao.com/what-to-expect-with-the-launch-of-multi-collateral-dai/"
+             target="_blank"
+             rel="noreferrer noopener">
+            <MediaQuery maxWidth={824}>
+              {
+                (match: boolean) => match
+                  ? 'Blog'
+                  : 'Blog Post'
+              }
+            </MediaQuery></a>}
+                content={
+                  <span>
+                    {/*tslint:disable*/}
+                    We have renamed current DAI to SAI. Your balance haven't changed
+                    <br/>
+                    <strong>Check our blog post explaining the case...</strong>
+                  </span>
+                }
+                continue={
+                  () => false
+                }/>
         <div className={styles.container}>
           <theAppContext.Consumer>
             {({ TransactionNotifierTxRx }) =>
