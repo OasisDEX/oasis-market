@@ -17,7 +17,7 @@ import {
 import { Allowances, Balances, DustLimits } from '../balances/balances';
 import { Calls, calls$, Calls$, ReadCalls, ReadCalls$ } from '../blockchain/calls/calls';
 import { eth2weth, weth2eth } from '../blockchain/calls/instant';
-import { getToken, isDAIEnabled, NetworkConfig, tradingTokens } from '../blockchain/config';
+import { getToken, isDAIEnabled, NetworkConfig } from '../blockchain/config';
 import { EtherscanConfig } from '../blockchain/etherscan';
 import { GasPrice$ } from '../blockchain/network';
 import {

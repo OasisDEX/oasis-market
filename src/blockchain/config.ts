@@ -216,8 +216,6 @@ tradingTokens.sort((t1, t2) =>
   Object.keys(tokens).indexOf(t1) - Object.keys(tokens).indexOf(t2)
 );
 
-console.log(tradingTokens);
-
 const load = memoize(
   (abi: any, address: string) => {
     return {
