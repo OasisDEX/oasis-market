@@ -16,7 +16,7 @@ import { shareReplay } from 'rxjs/internal/operators';
 import { GasPrice$, Ticker } from 'src/blockchain/network';
 import { Calls$ } from '../blockchain/calls/calls';
 import { TxMetaKind } from '../blockchain/calls/txMeta';
-import { NetworkConfig, tokens } from '../blockchain/config';
+import { NetworkConfig, tradingTokens } from '../blockchain/config';
 import { TxState, TxStatus } from '../blockchain/transactions';
 import { amountFromWei } from '../blockchain/utils';
 
@@ -61,7 +61,7 @@ export function createBalances$(
     switchMap(([context, account]) =>
       !account ? of({}) :
         forkJoin(
-          Object.keys(tokens).filter(name => name !== 'ETH').map((token: string) =>
+          tradingTokens.filter(name => name !== 'ETH').map((token: string) =>
             balance$(context, token, account).pipe(
               map(balance => ({
                 [token]: balance
@@ -97,7 +97,7 @@ export function createDustLimits$(context$: Observable<NetworkConfig>): Observab
   return combineLatest(context$).pipe(
     switchMap(([context]) =>
       forkJoin(
-        Object.keys(tokens).filter(name => name !== 'ETH').map((token: string) => {
+        tradingTokens.filter(name => name !== 'ETH').map((token: string) => {
           return bindNodeCallback(context.otc.contract.getMinSell as Dust)(
             context.tokens[token].address
           ).pipe(
@@ -129,7 +129,7 @@ export function createAllowances$(
   return combineLatest(context$, initializedAccount$, onEveryBlock$).pipe(
     switchMap(([context, account]) =>
       forkJoin(
-        Object.keys(tokens)
+        tradingTokens
           .filter(token => token !== 'ETH')
           .map((token: string) =>
             bindNodeCallback(context.tokens[token].contract.allowance as Allowance)(
@@ -204,7 +204,7 @@ export function combineBalances(
   etherPriceUsd: BigNumber, transactions: TxState[],
   currentBlock: number
 ) {
-  return Object.keys(tokens)
+  return tradingTokens
     .filter(name => name !== 'ETH')
     .map(name => {
       return {

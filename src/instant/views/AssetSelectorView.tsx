@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import classnames from 'classnames';
 import * as React from 'react';
 import { eth2weth } from '../../blockchain/calls/instant';
-import { tokens, tradingPairs } from '../../blockchain/config';
+import { tradingPairs, tradingTokens } from '../../blockchain/config';
 import { OfferType } from '../../exchange/orderbook/orderbook';
 import { CloseButton } from '../../utils/forms/Buttons';
 import { marketsOf } from '../../utils/markets';
@@ -27,22 +27,21 @@ class AssetSelectorView extends React.Component<InstantFormState & {side: OfferT
           <div className={styles.assets}>
             <ul className={styles.list}>
               {
-                Object.values(tokens).map((token, index) => {
-                  const asset = token.symbol;
+                tradingTokens.map((token, index) => {
                   const balance = user && user.account
-                    ? balances ? balances[asset] : new BigNumber(0)
+                    ? balances ? balances[token] : new BigNumber(0)
                     : new BigNumber(0);
 
                   return (
-                    <li data-test-id={asset.toLowerCase()}
+                    <li data-test-id={token.toLowerCase()}
                         className={styles.listItem}
                         key={index}
                     >
-                      <Asset currency={token.symbol}
+                      <Asset currency={token}
                              balance={balance}
                              user={user}
-                             isLocked={this.isLocked(asset)}
-                             onClick={() => this.selectAsset(asset)}/>
+                             isLocked={this.isLocked(token)}
+                             onClick={() => this.selectAsset(token)}/>
                     </li>
                   );
                 })

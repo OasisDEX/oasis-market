@@ -6,7 +6,7 @@ import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 
 import * as mixpanel from 'mixpanel-browser';
 import { theAppContext } from '../../AppContext';
-import { tokens } from '../../blockchain/config';
+import { getToken, isDAIEnabled } from '../../blockchain/config';
 import { routerContext } from '../../Main';
 import { BigNumberInput, lessThanOrEqual } from '../../utils/bigNumberInput/BigNumberInput';
 import { FormChangeKind, OfferMatchType } from '../../utils/form';
@@ -110,7 +110,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
   }
 
   public render() {
-    const isSaiMarket = this.props.quoteToken === 'SAI';
+    const isSaiMarket = this.props.quoteToken === 'SAI' && isDAIEnabled();
     return this.props.pickerOpen ?
       this.orderTypePicker() :
       isSaiMarket ?
@@ -294,7 +294,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
         >
           <span className={styles.icon}>
             {
-              this.props.baseToken && tokens[this.props.baseToken].icon
+              this.props.baseToken && getToken(this.props.baseToken).icon
             }
           </span>
           <span data-test-id="base-balance">
@@ -315,7 +315,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
         >
           <span className={styles.icon}>
             {
-              this.props.quoteToken && tokens[this.props.quoteToken].icon
+              this.props.quoteToken && getToken(this.props.quoteToken).icon
             }
           </span>
           <span data-test-id="quote-balance">
@@ -612,7 +612,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
   }
 }
 
-const maxTokenValue = (token: string) => new BigNumber(tokens[token].maxSell)
+const maxTokenValue = (token: string) => new BigNumber(getToken(token).maxSell)
   .minus(new BigNumber(1));
 
 const Error = ({ field, messages }: { field: string, messages?: Message[] }) => {

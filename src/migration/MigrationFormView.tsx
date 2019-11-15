@@ -15,7 +15,7 @@ import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
 import { default as MediaQuery } from 'react-responsive';
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
-import { tokens } from '../blockchain/config';
+import { getToken, isDAIEnabled } from '../blockchain/config';
 import { TradeStatus, TradeWithStatus } from '../exchange/myTrades/openTrades';
 import accountSvg from '../icons/account.svg';
 import doneSvg from '../icons/done.svg';
@@ -81,6 +81,7 @@ export class MigrationButton extends React.Component<MigrationButtonProps & Moda
       {
         (migrationState) => {
           const visible =
+            isDAIEnabled() &&
             migrationState.kind === MigrationFormKind.sai2dai &&
             (migrationState.balance.gt(zero) || migrationState.orders.length > 0) ||
             migrationState.kind === MigrationFormKind.dai2sai &&
@@ -549,13 +550,13 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       case ExchangeMigrationTxKind.sai2dai:
         return (
           <div key={operation.kind} className={styles.txRow}>
-            <TxStatusRow icon={tokens.SAI.iconColor}
+            <TxStatusRow icon={getToken('SAI').iconColor}
                          label={
                            <TradeData
                              data-test-id="upgrade"
                              theme="reversed"
                              label="Upgrade"
-                             value={`${operation.amount.toFormat(tokens.SAI.digits)} SAI`}
+                             value={`${operation.amount.toFormat(getToken('SAI').digits)} SAI`}
                            />}
                          status={<ProgressReport report={status}/>}
             />
@@ -564,13 +565,13 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       case ExchangeMigrationTxKind.dai2sai:
         return (
           <div key={operation.kind} className={styles.txRow}>
-            <TxStatusRow icon={tokens.DAI.iconColor}
+            <TxStatusRow icon={getToken('DAI').iconColor}
                          label={
                            <TradeData
                              data-test-id="upgrade"
                              theme="reversed"
                              label="Swap"
-                             value={`${operation.amount.toFormat(tokens.DAI.digits)} DAI`}
+                             value={`${operation.amount.toFormat(getToken('DAI').digits)} DAI`}
                            />}
                          status={<ProgressReport report={status}/>}
             />

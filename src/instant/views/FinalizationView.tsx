@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import * as React from 'react';
-import { tokens } from '../../blockchain/config';
+import { getToken } from '../../blockchain/config';
 import { TxStatus } from '../../blockchain/transactions';
 import accountSvg from '../../icons/account.svg';
 import doneSvg from '../../icons/done.svg';
@@ -113,7 +113,7 @@ export class FinalizationView extends React.Component<InstantFormState> {
                          status={<ProgressReport report={this._tradeProgress()}/>}/>
           }
           {sai2dai(sellToken) !== sellToken &&
-          <TxStatusRow icon={tokens[sellToken].iconColor}
+          <TxStatusRow icon={getToken(sellToken).iconColor}
             label={
               <TradeData
                 data-test-id="pay-token"
@@ -128,7 +128,7 @@ export class FinalizationView extends React.Component<InstantFormState> {
             <ProgressReport report={this._tradeProgress()}/>}
           />}
 
-          <TxStatusRow icon={tokens[sellToken].iconColor}
+          <TxStatusRow icon={getToken(sellToken).iconColor}
                        label={
                          <TradeData
                            data-test-id="pay-token"
@@ -142,7 +142,7 @@ export class FinalizationView extends React.Component<InstantFormState> {
                        status={progress.kind !== ProgressKind.noProxyPayWithETH &&
                        sai2dai(sellToken) === sellToken &&
                        <ProgressReport report={this._tradeProgress()}/>}/>
-          <TxStatusRow icon={tokens[buyToken].iconColor}
+          <TxStatusRow icon={getToken(buyToken).iconColor}
                        label={
                          <TradeData
                            data-test-id="buy-token"
