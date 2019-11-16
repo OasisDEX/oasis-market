@@ -322,7 +322,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       throw new Error('Should not get here!');
     }
 
-    return <Panel className={styles.panel}>
+    return <Panel className={styles.panel} data-test-id="migration">
       <PanelHeader bordered={true} className={styles.panelHeader}>
         {
           fromToken === 'SAI'
@@ -461,7 +461,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                      }
                      btnLabel={
                        balance.eq(zero) &&
-                       <SvgImage image={tickSvg}/> ||
+                       <SvgImage image={tickSvg}  data-test-id="step-completed"/> ||
                        `${fromToken === 'SAI' ? 'Upgrade' : 'Swap'} ${fromToken}`
                      }
                      btnDisabled={!readyToProceed}
@@ -532,7 +532,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
     switch (operation.kind) {
       case ExchangeMigrationTxKind.createProxy:
         return (
-          <div key={operation.kind} className={styles.txRow}>
+          <div key={operation.kind} className={styles.txRow} data-test-id="tx-row">
             <TxStatusRow icon={<SvgImage image={accountSvg}/>}
                          label={
                            <TradeData
@@ -548,7 +548,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
         );
       case ExchangeMigrationTxKind.allowance4Proxy:
         return (
-          <div key={operation.kind} className={styles.txRow}>
+          <div key={operation.kind} className={styles.txRow} data-test-id="tx-row">
             <TxStatusRow icon={<SvgImage image={doneSvg}/>}
                          label={
                            <TradeData
@@ -568,7 +568,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
         );
       case ExchangeMigrationTxKind.sai2dai:
         return (
-          <div key={operation.kind} className={styles.txRow}>
+          <div key={operation.kind} className={styles.txRow} data-test-id="tx-row">
             <TxStatusRow icon={getToken('SAI').iconColor}
                          label={
                            <TradeData
@@ -583,7 +583,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
         );
       case ExchangeMigrationTxKind.dai2sai:
         return (
-          <div key={operation.kind} className={styles.txRow}>
+          <div key={operation.kind} className={styles.txRow} data-test-id="tx-row">
             <TxStatusRow icon={getToken('DAI').iconColor}
                          label={
                            <TradeData

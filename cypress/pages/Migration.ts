@@ -1,4 +1,4 @@
-import { tid } from '../utils';
+import { tid, timeout } from '../utils';
 import { Trades } from './Trades';
 
 export const migrationBtnInHeader = () => cy.get(tid('update-btn-header'));
@@ -57,6 +57,61 @@ class Cancellation {
   }
 }
 
+class Migration {
+  public shouldCreateProxy = () => {
+    cy.get(tid('migration-wizard', tid('migration'))).within(
+      () => {
+        cy.get(tid('create-proxy', tid('label'))).contains('Create Account');
+      }
+    );
+
+    return this;
+  }
+
+  public shouldNotCreateProxy = () => {
+    cy.get(tid('migration-wizard', tid('migration'))).within(
+      () => {
+        cy.get(tid('tx-row'));
+        cy.get(tid('create-proxy'), timeout(0)).should('not.exist');
+      }
+    );
+
+    return this;
+  }
+
+  public shouldSetAllowanceTo = (token: string) => {
+    cy.get(tid('migration-wizard', tid('migration'))).within(
+      () => {
+        cy.get(tid('set-allowance', tid('label'))).contains(`Unlock ${token}`);
+      }
+    );
+
+    return this;
+  }
+
+  public shouldNotSetAllowanceTo = (token: string) => {
+    cy.get(tid('migration-wizard', tid('migration'))).within(
+      () => {
+        cy.get(tid('tx-row'));
+        cy.get(tid('set-allowance'), timeout(0)).should('not.exist');
+      }
+    );
+
+    return this;
+  }
+
+  public shouldMigrate = (amount: string, token: string) => {
+    cy.get(tid('migration-wizard', tid('migration'))).within(
+      () => {
+        cy.get(tid('upgrade', tid('label'))).contains(`Upgrade`);
+        cy.get(tid('upgrade', tid('value'))).contains(`${amount} ${token}`);
+      }
+    );
+
+    return this;
+  }
+}
+
 export class MigrationWizardModal {
   public static openFrom = (button: () => Chainable<JQuery>) => {
     click(button);
@@ -97,7 +152,15 @@ export class MigrationWizardModal {
       },
 
       hasNoOrdersToCancel: () => {
-        cy.get(tid('migration-wizard')).within(
+        cy.get(tid('migration-wizard', tid('cfa-cancel-orders'))).within(
+          () => {
+            cy.get(tid('step-completed')).should('exist');
+          }
+        );
+      },
+
+      nothingToMigrate: () => {
+        cy.get(tid('migration-wizard', tid('cfa-upgrade-balance'))).within(
           () => {
             cy.get(tid('step-completed')).should('exist');
           }
@@ -110,16 +173,20 @@ export class MigrationWizardModal {
         return new Cancellation();
       },
 
-      migrate: (amount: string) => {
-        cy.get(
-          tid('migration-wizard',
-            tid('cfa-upgrade-balance',
-              tid('type-amount')
+      migrate: (amount?: string) => {
+        if (amount) {
+          cy.get(
+            tid('migration-wizard',
+              tid('cfa-upgrade-balance',
+                tid('type-amount')
+              )
             )
-          )
-        ).type(`{selectall}${amount}`);
+          ).type(`{selectall}${amount}`);
+        }
 
         click(migrate);
+
+        return new Migration();
       }
     };
   }
