@@ -10,7 +10,7 @@ describe('Migration Wizard', () => {
     WalletConnection.isConnected();
   });
 
-  context.skip('order cancellation', () => {
+  context('order cancellation', () => {
     it('should display all open orders in the SAI market', () => {
       MigrationWizardModal
         .openFrom(migrationBtnInHeader)
@@ -64,8 +64,8 @@ describe('Migration Wizard', () => {
     });
   });
 
-  context('migration', () => {
-    it.skip('should have input field populated with amount equal to the balance', () => {
+  context.skip('migration', () => {
+    it('should have input field populated with amount equal to the balance', () => {
       const wizard = MigrationWizardModal
         .openFrom(migrationBtnInHeader);
 
