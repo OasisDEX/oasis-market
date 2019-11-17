@@ -9,6 +9,7 @@ import { FlexLayoutRow } from '../utils/layout/FlexLayoutRow';
 import { Panel } from '../utils/panel/Panel';
 import * as styles from './ExchangeView.scss';
 import { currentTradingPair$, TradingPair } from './tradingPair/tradingPair';
+import {tradingPairs} from "../blockchain/config";
 
 export interface ExchangeViewOwnProps {
   setTradingPair: (tp: TradingPair) => void;
@@ -118,14 +119,25 @@ export class ExchangeView extends React.Component<ExchangeViewProps> {
         <Switch>
           <Route
             path={`${matchUrl}/:base/:quote`}
-            render={props => (
-              <Content
+            render={props => {
+
+              const valid = tradingPairs.find(t =>
+                t.base === tp.base && t.quote === tp.quote);
+
+              if (!valid) {
+                // It should be a redirect, but I can't make it work!
+                window.location.href =
+                  `${matchUrl}/${tradingPairs[0].base}/${tradingPairs[0].quote}`;
+                return;
+              }
+
+              return <Content
                 {...props}
                 tp={tp}
                 parentMatch={matchUrl}
                 setTradingPair={this.props.setTradingPair}
-                 />
-            )}
+              />;
+            }}
           />
           <Redirect push={false} from={'/market'} to={`/market/${tp.base}/${tp.quote}`} />
         </Switch>
