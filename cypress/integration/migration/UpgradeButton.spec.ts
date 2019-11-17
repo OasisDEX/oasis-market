@@ -81,5 +81,40 @@ describe('Upgrade button', () => {
         .openFrom(migrationBtnInMarket)
         .headerIs(ViewHeaders.updateSai);
     });
+
+    // tslint:disable-next-line:max-line-length
+    it('should not be visible when all orders are cancelled and there is no SAI to migrate', () => {
+      const wizard = MigrationWizardModal
+        .openFrom(migrationBtnInHeader);
+
+      wizard.ordersToCancelIs(4);
+      const cancellation = wizard.cancelOrders();
+      cancellation.cancel();
+      cancellation.cancel();
+      cancellation.cancel();
+      cancellation.cancel();
+
+      wizard.ordersToCancelIs(0);
+
+      wizard.amountToMigrateIs('1,000.0000');
+
+      const migration = wizard.migrate('1000');
+      migration.shouldCreateProxy()
+        .shouldSetAllowanceTo('SAI')
+        .shouldMigrate('1,000.0000', 'SAI');
+
+      wizard.amountToMigrateIs('0');
+
+      wizard.close();
+
+      migrationBtnInHeader().should('not.exist');
+
+      Tab.balances();
+      migrationBtnInAccount().should('not.exist');
+
+      Tab.market();
+      TradingPairDropdown.select({ base: 'WETH', quote: 'SAI' });
+      migrationBtnInMarket().should('not.exist');
+    });
   });
 });

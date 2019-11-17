@@ -182,7 +182,9 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
             }
           </span>
           <TopRightCorner className={styles.closeBtn}>
-            <CloseButton theme="danger" onClick={close}/>
+            <CloseButton data-test-id="close-button"
+                         theme="danger"
+                         onClick={close}/>
           </TopRightCorner>
         </PanelHeader>
         <PanelBody paddingVertical={true} className={styles.panelBody}>
@@ -194,12 +196,14 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
   }
 
   private cancelOrders = () => {
-    const orders = this.props.orders;
+    const { orders, close } = this.props;
     return <Panel className={styles.panel}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
         Cancel Pending Orders
         <TopRightCorner className={styles.closeBtn}>
-          <CloseButton theme="danger" onClick={this.props.close}/>
+          <CloseButton data-test-id="close-button"
+                       theme="danger"
+                       onClick={close}/>
         </TopRightCorner>
       </PanelHeader>
       <PanelBody paddingVertical={true}
@@ -322,6 +326,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       throw new Error('Should not get here!');
     }
 
+    // TODO: Extract duplicated parts ( the panel + close button )
     return <Panel className={styles.panel} data-test-id="migration">
       <PanelHeader bordered={true} className={styles.panelHeader}>
         {
@@ -330,7 +335,9 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
             : 'Single-Collateral Sai Swap'
         }
         <TopRightCorner className={styles.closeBtn}>
-          <CloseButton theme="danger" onClick={close}/>
+          <CloseButton data-test-id="close-button"
+                       theme="danger"
+                       onClick={close}/>
         </TopRightCorner>
       </PanelHeader>
       <PanelBody paddingVertical={true}
@@ -466,6 +473,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                      }
                      btnDisabled={!readyToProceed}
                      btnAction={() => {
+                       this.setState({ view: MigrationViews.initial });
                        proceed(this.props);
                        mixpanel.track('btn-click', {
                          id: `${fromToken === 'SAI' ? 'upgrade' : 'swap'}-${fromToken}`,

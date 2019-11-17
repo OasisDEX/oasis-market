@@ -112,82 +112,98 @@ class Migration {
   }
 }
 
+class MigrationWizard {
+  public headerIs = (text: string | Headers | RegExp) => {
+    cy.get(tid('migration-wizard', tid('panel-header'))).contains(text);
+
+    return this;
+  }
+
+  public ordersToCancelIs = (count: number) => {
+    cy.get(
+      tid('migration-wizard',
+        tid('cfa-cancel-orders',
+          tid('cfa-data')
+        )
+      )
+    ).contains(new RegExp(`${count} Open`, 'gm'));
+
+    return this;
+  }
+
+  public amountToMigrateIs = (amount: string) => {
+    cy.get(
+      tid('migration-wizard',
+        tid('cfa-upgrade-balance',
+          tid('cfa-data')
+        )
+      )
+    ).contains(new RegExp(`${amount}`, 'gm'));
+
+    return this;
+  }
+
+  public amountInTheInputIs = (amount: string) => {
+    cy.get(
+      tid('migration-wizard',
+        tid('cfa-upgrade-balance',
+          tid('type-amount')
+        )
+      )
+    ).should('have.value', amount);
+
+    return this;
+  }
+
+  public hasNoOrdersToCancel = () => {
+    cy.get(tid('migration-wizard', tid('cfa-cancel-orders'))).within(
+      () => {
+        cy.get(tid('step-completed')).should('exist');
+      }
+    );
+
+    return this;
+  }
+
+  public nothingToMigrate = () => {
+    cy.get(tid('migration-wizard', tid('cfa-upgrade-balance'))).within(
+      () => {
+        cy.get(tid('step-completed')).should('exist');
+      }
+    );
+  }
+
+  public cancelOrders = () => {
+    click(cancelOrders);
+
+    return new Cancellation();
+  }
+
+  public migrate = (amount?: string) => {
+    if (amount) {
+      cy.get(
+        tid('migration-wizard',
+          tid('cfa-upgrade-balance',
+            tid('type-amount')
+          )
+        )
+      ).type(`{selectall}${amount}`);
+    }
+
+    click(migrate);
+
+    return new Migration();
+  }
+
+  public close = () => {
+    cy.get(tid('migration-wizard', tid('close-button'))).click();
+  }
+}
+
 export class MigrationWizardModal {
   public static openFrom = (button: () => Chainable<JQuery>) => {
     click(button);
 
-    return {
-      headerIs: (text: string | Headers | RegExp) => {
-        cy.get(tid('migration-wizard', tid('panel-header'))).contains(text);
-      },
-
-      ordersToCancelIs: (count: number) => {
-        cy.get(
-          tid('migration-wizard',
-            tid('cfa-cancel-orders',
-              tid('cfa-data')
-            )
-          )
-        ).contains(new RegExp(`${count} Open`, 'gm'));
-      },
-
-      amountToMigrateIs: (amount: string) => {
-        cy.get(
-          tid('migration-wizard',
-            tid('cfa-upgrade-balance',
-              tid('cfa-data')
-            )
-          )
-        ).contains(new RegExp(`${amount}`, 'gm'));
-      },
-
-      amountInTheInputIs: (amount: string) => {
-        cy.get(
-          tid('migration-wizard',
-            tid('cfa-upgrade-balance',
-              tid('type-amount')
-            )
-          )
-        ).should('have.value', amount);
-      },
-
-      hasNoOrdersToCancel: () => {
-        cy.get(tid('migration-wizard', tid('cfa-cancel-orders'))).within(
-          () => {
-            cy.get(tid('step-completed')).should('exist');
-          }
-        );
-      },
-
-      nothingToMigrate: () => {
-        cy.get(tid('migration-wizard', tid('cfa-upgrade-balance'))).within(
-          () => {
-            cy.get(tid('step-completed')).should('exist');
-          }
-        );
-      },
-
-      cancelOrders: () => {
-        click(cancelOrders);
-
-        return new Cancellation();
-      },
-
-      migrate: (amount?: string) => {
-        if (amount) {
-          cy.get(
-            tid('migration-wizard',
-              tid('cfa-upgrade-balance',
-                tid('type-amount')
-              )
-            )
-          ).type(`{selectall}${amount}`);
-        }
-
-        click(migrate);
-
-        return new Migration();
-      }
-    };
+    return new MigrationWizard();
   }
 }

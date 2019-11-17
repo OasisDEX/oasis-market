@@ -1,9 +1,19 @@
-import { migrationBtnInHeader, MigrationWizardModal } from '../../pages/Migration';
+import {
+  checkProxyAllowances,
+  expectAllowanceStatusFor,
+  setAllowanceOf
+} from '../../pages/Allowance';
+import {
+  migrationBtnInHeader,
+  migrationBtnInMarket,
+  MigrationWizardModal
+} from '../../pages/Migration';
+import * as Proxy from '../../pages/Proxy';
+import { Tab } from '../../pages/Tab';
+import { Trades } from '../../pages/Trades';
+import { TradingPairDropdown } from '../../pages/TradingPairDropdown';
 import { WalletConnection } from '../../pages/WalletConnection';
 import { cypressVisitWithWeb3 } from '../../utils';
-import { Tab } from "../../pages/Tab";
-import * as Proxy from "../../pages/Proxy";
-import { checkProxyAllowances, expectAllowanceStatusFor, setAllowanceOf } from "../../pages/Allowance";
 // No point of testing when the user is neither connected nor doesn't have a provider
 // Supposedly there is no way you get to this step in those case.
 describe('Migration Wizard', () => {
@@ -49,7 +59,7 @@ describe('Migration Wizard', () => {
       wizard.ordersToCancelIs(3);
     });
 
-    it.only('should display initial wizard view when user cancel all of his orders', () => {
+    it('should display initial wizard view when user cancel all of his orders', () => {
       const wizard = MigrationWizardModal
         .openFrom(migrationBtnInHeader);
 
@@ -63,6 +73,39 @@ describe('Migration Wizard', () => {
 
       cancellation.hasOrdersLeft(0);
 
+      wizard.hasNoOrdersToCancel();
+    });
+
+    it('should update the amount of SAI that need to be migrated', () => {
+      const wizard = MigrationWizardModal
+        .openFrom(migrationBtnInHeader);
+
+      let cancellation = wizard.cancelOrders();
+      cancellation.cancel();
+      cancellation.hasOrdersLeft(3);
+      cancellation.back();
+
+      wizard.amountToMigrateIs('520.0000 SAI');
+
+      cancellation = wizard.cancelOrders();
+      cancellation.cancel();
+      cancellation.hasOrdersLeft(2);
+      cancellation.back();
+
+      wizard.amountToMigrateIs('800.0000 SAI');
+
+      cancellation = wizard.cancelOrders();
+      cancellation.cancel();
+      cancellation.hasOrdersLeft(1);
+      cancellation.back();
+
+      wizard.amountToMigrateIs('900.0000 SAI');
+
+      cancellation = wizard.cancelOrders();
+      cancellation.cancel();
+      cancellation.hasOrdersLeft(0);
+
+      wizard.amountToMigrateIs('1,000.0000 SAI');
       wizard.hasNoOrdersToCancel();
     });
   });
@@ -104,9 +147,9 @@ describe('Migration Wizard', () => {
         .openFrom(migrationBtnInHeader);
 
       wizard.migrate(amount)
-      .shouldNotCreateProxy()
-      .shouldSetAllowanceTo(token)
-      .shouldMigrate(amount, token);
+        .shouldNotCreateProxy()
+        .shouldSetAllowanceTo(token)
+        .shouldMigrate(amount, token);
 
       wizard.amountToMigrateIs(balanceAfterMigration);
     });
@@ -136,7 +179,7 @@ describe('Migration Wizard', () => {
       wizard.amountToMigrateIs(balanceAfterMigration);
     });
 
-    it('should display to the user that all SAI is migrated',  () => {
+    it('should display to the user that all SAI is migrated', () => {
       const amount = '20.0000';
       const token = 'SAI';
       const balanceAfterMigration = '0.0000';
@@ -152,5 +195,27 @@ describe('Migration Wizard', () => {
       wizard.amountToMigrateIs(balanceAfterMigration);
       wizard.nothingToMigrate();
     });
+  });
+
+  context('external changes', () => {
+    it(`should update open orders count and the amount of SAI that needs to be migrated
+    when user cancels an order from my trades widget under market tab`,
+      () => {
+        Tab.market();
+        TradingPairDropdown.select({ base: 'WETH', quote: 'SAI' });
+
+        MigrationWizardModal
+          .openFrom(migrationBtnInMarket)
+          .ordersToCancelIs(4)
+          .amountToMigrateIs('220')
+          .close();
+
+        Trades.first().cancel();
+
+        MigrationWizardModal
+          .openFrom(migrationBtnInMarket)
+          .ordersToCancelIs(3)
+          .amountToMigrateIs('520');
+      });
   });
 });
