@@ -252,7 +252,7 @@ const protoMain = {
     return asMap('token', [
       loadToken('WETH', eth, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
       loadToken('SAI', erc20, '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'),
-      loadToken('DAI', erc20, '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'),
+      loadToken('DAI', erc20, '0x6B175474E89094C44Da98b954EedeAC495271d0F'),
       loadToken('REP', erc20, '0x1985365e9f78359a9B6AD760e32412f4a445E862'),
       loadToken('ZRX', erc20, '0xe41d2489571d322189246dafa5ebde1f4699f498'),
       loadToken('BAT', erc20, '0x0d8775f648430679a709e98d2b0cb6250d2887ef'),
@@ -272,13 +272,13 @@ const protoMain = {
     return load(proxyCreationAndExecute, '0x793ebbe21607e4f04788f89c7a9b97320773ec59');
   },
   get migration() {
-    return '';
+    return '0xc73e0383F3Aff3215E6f04B0331D58CeCf0Ab849';
   },
   get migrationProxyActions() {
-    return '';
+    return '0xe4B22D484958E582098A98229A24e8A43801b674';
   },
   get instantMigrationProxyActions() {
-    return load(instantMigrationProxyActions, '0x211d3beb0b077a1679e6bd83ecab48dd187ec99d');
+    return load(instantMigrationProxyActions, '0x396Ea3C3376cC78864f51ce2FDdb275D3dC0968b');
   },
   oasisDataService: {
     url: 'https://cache.eth2dai.com/api/v1'
