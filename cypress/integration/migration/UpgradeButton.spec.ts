@@ -1,5 +1,4 @@
 import {
-  click,
   migrationBtnInAccount,
   migrationBtnInHeader,
   migrationBtnInMarket, MigrationWizardModal,
@@ -8,7 +7,7 @@ import {
 import { Tab } from '../../pages/Tab';
 import { TradingPairDropdown } from '../../pages/TradingPairDropdown';
 import { WalletConnection } from '../../pages/WalletConnection';
-import { cypressVisitWithoutProvider, cypressVisitWithWeb3, tid } from '../../utils';
+import { cypressVisitWithoutProvider, cypressVisitWithWeb3 } from '../../utils';
 import { makeScreenshots } from '../../utils/makeScreenshots';
 
 const saiMarket = { base: 'WETH', quote: 'SAI' };

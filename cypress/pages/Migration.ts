@@ -7,15 +7,15 @@ export const migrationBtnInAccount = () => cy.get(tid('update-btn-account'));
 export const swapBtnInAccount = () => cy.get(tid('swap-btn-account'));
 export const cancelOrders = () => cy.get(
   tid('migration-wizard',
-    tid('cfa-cancel-orders',
-      tid('cfa-btn')
+      tid('cfa-cancel-orders',
+          tid('cfa-btn')
     )
   )
 );
 export const migrate = () => cy.get(
   tid('migration-wizard',
-    tid('cfa-upgrade-balance',
-      tid('cfa-btn')
+      tid('cfa-upgrade-balance',
+          tid('cfa-btn')
     )
   )
 );
@@ -89,7 +89,7 @@ class Migration {
     return this;
   }
 
-  public shouldNotSetAllowanceTo = (token: string) => {
+  public shouldNotSetAllowanceTo = () => {
     cy.get(tid('migration-wizard', tid('migration'))).within(
       () => {
         cy.get(tid('tx-row'));
@@ -122,8 +122,8 @@ class MigrationWizard {
   public ordersToCancelIs = (count: number) => {
     cy.get(
       tid('migration-wizard',
-        tid('cfa-cancel-orders',
-          tid('cfa-data')
+          tid('cfa-cancel-orders',
+              tid('cfa-data')
         )
       )
     ).contains(new RegExp(`${count} Open`, 'gm'));
@@ -134,8 +134,8 @@ class MigrationWizard {
   public amountToMigrateIs = (amount: string) => {
     cy.get(
       tid('migration-wizard',
-        tid('cfa-upgrade-balance',
-          tid('cfa-data')
+          tid('cfa-upgrade-balance',
+              tid('cfa-data')
         )
       )
     ).contains(new RegExp(`${amount}`, 'gm'));
@@ -146,8 +146,8 @@ class MigrationWizard {
   public amountInTheInputIs = (amount: string) => {
     cy.get(
       tid('migration-wizard',
-        tid('cfa-upgrade-balance',
-          tid('type-amount')
+          tid('cfa-upgrade-balance',
+              tid('type-amount')
         )
       )
     ).should('have.value', amount);
@@ -183,8 +183,8 @@ class MigrationWizard {
     if (amount) {
       cy.get(
         tid('migration-wizard',
-          tid('cfa-upgrade-balance',
-            tid('type-amount')
+            tid('cfa-upgrade-balance',
+                tid('type-amount')
           )
         )
       ).type(`{selectall}${amount}`);

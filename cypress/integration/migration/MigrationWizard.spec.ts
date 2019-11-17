@@ -200,22 +200,22 @@ describe('Migration Wizard', () => {
   context('external changes', () => {
     it(`should update open orders count and the amount of SAI that needs to be migrated
     when user cancels an order from my trades widget under market tab`,
-      () => {
-        Tab.market();
-        TradingPairDropdown.select({ base: 'WETH', quote: 'SAI' });
+       () => {
+         Tab.market();
+         TradingPairDropdown.select({ base: 'WETH', quote: 'SAI' });
 
-        MigrationWizardModal
+         MigrationWizardModal
           .openFrom(migrationBtnInMarket)
           .ordersToCancelIs(4)
           .amountToMigrateIs('220')
           .close();
 
-        Trades.first().cancel();
+         Trades.first().cancel();
 
-        MigrationWizardModal
+         MigrationWizardModal
           .openFrom(migrationBtnInMarket)
           .ordersToCancelIs(3)
           .amountToMigrateIs('520');
-      });
+       });
   });
 });
