@@ -107,7 +107,7 @@ export class FinalizationView extends React.Component<InstantFormState> {
                            <TradeData
                              data-test-id="create-proxy"
                              theme="reversed"
-                             label="Create Acc  ount"
+                             label="Create Account"
                              tooltip={proxyTooltip}
                            />}
                          status={<ProgressReport report={this._tradeProgress()}/>}/>
