@@ -877,7 +877,7 @@ function calculatePriceAndImpact(state: InstantFormState): InstantFormState {
     ? sellToken
     : buyToken;
   const calculated = buyAmount && sellAmount
-    ? calculateTradePrice(sai2dai(sellToken), sellAmount, buyToken, buyAmount)
+    ? calculateTradePrice(sellToken, sellAmount, buyToken, buyAmount)
     : null;
   const price = calculated ? calculated.price : undefined;
   const quotation = calculated ? calculated.quotation : undefined;
