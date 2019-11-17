@@ -96,7 +96,7 @@ export const Money = (props: FormatAmountProps) => {
   const { className, style, ...otherProps } = props;
   return (<span className={className} style={style}>
     <FormatAmount data-test-id="amount" {...otherProps} />
-    &nbsp;
+    {' '}
     <Currency value={otherProps.token}/>
   </span>);
 };
