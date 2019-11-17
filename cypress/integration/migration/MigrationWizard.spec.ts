@@ -173,7 +173,7 @@ describe('Migration Wizard', () => {
 
       wizard.migrate(amount)
         .shouldNotCreateProxy()
-        .shouldNotSetAllowanceTo(token)
+        .shouldNotSetAllowance()
         .shouldMigrate(amount, token);
 
       wizard.amountToMigrateIs(balanceAfterMigration);

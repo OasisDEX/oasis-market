@@ -95,7 +95,9 @@ export class Finalization {
   ) => {
     cy.get(tid('trade-tx')).within(
       () => {
-        cy.get(tid('pay-token', tid('amount'))).contains(`${pay}`);
+        cy.get(tid('upgrade')).contains('Upgrade');
+        cy.get(tid('upgrade', tid('amount'))).contains(`${pay}`);
+        cy.get(tid('upgrade', tid('currency'))).contains(`${from}`);
         cy.get(tid('pay-token', tid('amount'))).contains(`${pay}`);
         cy.get(tid('pay-token', tid('currency'))).contains(`${from}`);
         cy.get(tid('buy-token', tid('amount'))).contains(`${receive}`);

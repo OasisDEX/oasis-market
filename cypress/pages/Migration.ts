@@ -20,13 +20,17 @@ export const migrate = () => cy.get(
   )
 );
 
+const click = () => ({ click: () => null });
+
+type Clickable = typeof click;
+
 export const ViewHeaders = {
   updateSai: 'Multi-Collateral Dai Upgrade',
   swapDai: 'Single-Collateral Sai Swap',
   cancelOrders: 'Cancel Pending Orders',
 };
 
-const click = (button: () => Chainable<Jquery>) => {
+const click = (button: Clickable) => {
   button().click();
 };
 
@@ -89,7 +93,7 @@ class Migration {
     return this;
   }
 
-  public shouldNotSetAllowanceTo = () => {
+  public shouldNotSetAllowance = () => {
     cy.get(tid('migration-wizard', tid('migration'))).within(
       () => {
         cy.get(tid('tx-row'));
@@ -113,7 +117,7 @@ class Migration {
 }
 
 class MigrationWizard {
-  public headerIs = (text: string | Headers | RegExp) => {
+  public headerIs = (text: string | RegExp) => {
     cy.get(tid('migration-wizard', tid('panel-header'))).contains(text);
 
     return this;
@@ -201,7 +205,7 @@ class MigrationWizard {
 }
 
 export class MigrationWizardModal {
-  public static openFrom = (button: () => Chainable<JQuery>) => {
+  public static openFrom = (button: Clickable) => {
     click(button);
 
     return new MigrationWizard();
