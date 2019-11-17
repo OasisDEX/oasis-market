@@ -99,7 +99,7 @@ export class FinalizationView extends React.Component<InstantFormState> {
 
     return (
       <>
-        <div className={classnames(styles.details, styles.transaction)}>
+        <div className={classnames(styles.details, styles.transaction)} data-test-id="trade-tx">
           {
             progress && progress.kind === ProgressKind.noProxyPayWithETH &&
             <TxStatusRow icon={<SvgImage image={accountSvg}/>}
@@ -116,9 +116,9 @@ export class FinalizationView extends React.Component<InstantFormState> {
           <TxStatusRow icon={getToken(sellToken).iconColor}
             label={
               <TradeData
-                data-test-id="pay-token"
+                data-test-id="upgrade"
                 theme="reversed"
-                label="Redeem"
+                label="Upgrade"
                 value={
                   <Money formatter={formatAmountInstant} value={sellAmount}
                          token={sellToken}/>

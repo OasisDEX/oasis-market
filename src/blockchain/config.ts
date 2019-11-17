@@ -403,7 +403,7 @@ const localnet: NetworkConfig =   {
     return '0xc1199D132f6B6B72C37F817d103a4E62590e3DC1';
   },
   get migrationProxyActions() {
-    return '0x141048f25b24AEfAF1A13fD9C2e8628121A0f1E7';
+    return '0xEF4A15D64832cF7e2efa6DeBfad5520ff5F70755';
   },
   get instantMigrationProxyActions() {
     return load(instantMigrationProxyActions, '0x141048f25b24AEfAF1A13fD9C2e8628121A0f1E7');
