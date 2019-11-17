@@ -20,17 +20,13 @@ export const migrate = () => cy.get(
   )
 );
 
-const click = () => ({ click: () => null });
-
-type Clickable = typeof click;
-
 export const ViewHeaders = {
   updateSai: 'Multi-Collateral Dai Upgrade',
   swapDai: 'Single-Collateral Sai Swap',
   cancelOrders: 'Cancel Pending Orders',
 };
 
-const click = (button: Clickable) => {
+const click = (button:any) => {
   button().click();
 };
 
@@ -159,6 +155,16 @@ class MigrationWizard {
     return this;
   }
 
+  public shouldHaveAnError = (message: string | RegExp) => {
+    cy.get(
+      tid('migration-wizard',
+          tid('cfa-upgrade-balance',
+              tid('error-message')
+        )
+      )
+    ).contains(message);
+  }
+
   public hasNoOrdersToCancel = () => {
     cy.get(tid('migration-wizard', tid('cfa-cancel-orders'))).within(
       () => {
@@ -183,15 +189,19 @@ class MigrationWizard {
     return new Cancellation();
   }
 
+  public typeAmount = (amount: string) => {
+    cy.get(
+      tid('migration-wizard',
+          tid('cfa-upgrade-balance',
+              tid('type-amount')
+        )
+      )
+    ).type(`{selectall}${amount}`);
+  }
+
   public migrate = (amount?: string) => {
     if (amount) {
-      cy.get(
-        tid('migration-wizard',
-            tid('cfa-upgrade-balance',
-                tid('type-amount')
-          )
-        )
-      ).type(`{selectall}${amount}`);
+      this.typeAmount(amount);
     }
 
     click(migrate);
@@ -205,7 +215,7 @@ class MigrationWizard {
 }
 
 export class MigrationWizardModal {
-  public static openFrom = (button: Clickable) => {
+  public static openFrom = (button:any) => {
     click(button);
 
     return new MigrationWizard();

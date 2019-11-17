@@ -518,7 +518,9 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
               </InputGroupAddon>
             </div>
           </InputGroup>
-          <ErrorMessage messages={messages.map(messageContent)}/>
+          <ErrorMessage messages={messages.map(messageContent)}
+                        data-test-id="error-message"
+          />
         </div>
       </CallForAction>
     );

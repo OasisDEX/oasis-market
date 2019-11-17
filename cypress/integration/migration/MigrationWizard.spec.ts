@@ -118,6 +118,16 @@ describe('Migration Wizard', () => {
       wizard.amountInTheInputIs('220.0000');
     });
 
+    // tslint:disable-next-line:max-line-length
+    it('should display an error if the user tries to enter a value bigger than his balance',  () => {
+      const wizard = MigrationWizardModal
+        .openFrom(migrationBtnInHeader);
+
+      wizard.amountToMigrateIs('220.0000');
+      wizard.typeAmount('260.0000');
+      wizard.shouldHaveAnError('You don\'t have enough funds');
+    });
+
     it('should migrate amount specified from the user', () => {
       const amount = '20.0000';
       const token = 'SAI';
