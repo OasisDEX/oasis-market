@@ -13,7 +13,7 @@ import { Tab } from '../../pages/Tab';
 import { Trades } from '../../pages/Trades';
 import { TradingPairDropdown } from '../../pages/TradingPairDropdown';
 import { WalletConnection } from '../../pages/WalletConnection';
-import { cypressVisitWithWeb3 } from '../../utils';
+import { cypressVisitWithWeb3, tid } from '../../utils';
 // No point of testing when the user is neither connected nor doesn't have a provider
 // Supposedly there is no way you get to this step in those case.
 describe('Migration Wizard', () => {
@@ -119,7 +119,7 @@ describe('Migration Wizard', () => {
     });
 
     // tslint:disable-next-line:max-line-length
-    it('should display an error if the user tries to enter a value bigger than his balance',  () => {
+    it('should display an error if the user tries to enter a value bigger than his balance', () => {
       const wizard = MigrationWizardModal
         .openFrom(migrationBtnInHeader);
 
@@ -205,6 +205,28 @@ describe('Migration Wizard', () => {
       wizard.amountToMigrateIs(balanceAfterMigration);
       wizard.nothingToMigrate();
     });
+  });
+
+  // tslint:disable-next-line:max-line-length
+  it('should not display the progress if migration is ongoing by user closed modal but should update changes', () => {
+    const token = 'SAI';
+    const amount = '220.0000';
+    const wizard = MigrationWizardModal
+      .openFrom(migrationBtnInHeader);
+
+    wizard.migrate();
+
+    cy.wait(1000);
+
+    wizard.close();
+
+    MigrationWizardModal.openFrom(migrationBtnInHeader)
+      .migrate()
+      .shouldNotCreateProxy()
+      .shouldSetAllowanceTo('SAI')
+      .shouldMigrate(amount, token);
+
+    wizard.nothingToMigrate();
   });
 
   context('external changes', () => {

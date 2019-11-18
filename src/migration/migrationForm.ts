@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { concat, merge, Observable, of, Subject } from 'rxjs';
+import { concat, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { filter, first, map, scan, switchMap } from 'rxjs/operators';
 import { Calls$ } from '../blockchain/calls/calls';
 import { CancelData } from '../blockchain/calls/offerMake';
@@ -54,6 +54,7 @@ export interface MigrationFormState {
   progress?: ExchangeMigrationState;
   change: (change: ManualChange | ProgressChange) => void;
   proceed: (state: MigrationFormState) => void;
+  halt: () => void;
   cancelOffer: (cancelData: CancelData) => void;
 }
 
@@ -65,7 +66,7 @@ function applyChange(
     case BalanceChangeKind.balanceChange:
       return { ...state, balance: change.balance };
     case FormChangeKind.amountFieldChange:
-      return { ...state, amount: change.value  };
+      return { ...state, amount: change.value };
     case FormChangeKind.progress:
       return { ...state, progress: change.progress };
     case FormChangeKind.ordersChange:
@@ -105,9 +106,11 @@ function checkIfIsReadyToProceed(state: MigrationFormState) {
 function prepareProceed(
   migrate$: (amount: BigNumber) => Observable<ExchangeMigrationState>,
   balance$: Observable<BigNumber>
-): [((state: MigrationFormState) => void), Observable<MigrationFormChange>] {
+): [((state: MigrationFormState) => void), () => void, Observable<MigrationFormChange>] {
 
   const proceedChange$ = new Subject<MigrationFormChange>();
+
+  let progressSubscription: Subscription | undefined;
 
   function proceed(state: MigrationFormState) {
 
@@ -145,12 +148,19 @@ function prepareProceed(
       )
     );
 
-    changes$.subscribe(change => proceedChange$.next(change));
+    progressSubscription = changes$.subscribe(change => proceedChange$.next(change));
 
     return changes$;
   }
 
-  return [proceed, proceedChange$];
+  function halt() {
+    if (progressSubscription) {
+      progressSubscription.unsubscribe();
+      progressSubscription = undefined;
+    }
+  }
+
+  return [proceed, halt, proceedChange$];
 }
 
 function freezeIfInProgress(
@@ -191,7 +201,7 @@ export function createMigrationForm$(
     toOrdersChange(orders$)
   );
 
-  const [proceed, proceedProgressChange$] =
+  const [proceed, halt, proceedProgressChange$] =
     prepareProceed(migrate$, balance$);
 
   const change = manualChange$.next.bind(manualChange$);
@@ -203,6 +213,7 @@ export function createMigrationForm$(
         kind,
         change,
         proceed,
+        halt,
         balance,
         amount: balance,
         messages: [],
