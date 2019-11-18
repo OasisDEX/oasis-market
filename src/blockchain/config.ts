@@ -42,18 +42,18 @@ import { web3 } from './web3';
 
 export const tradingPairs: TradingPair[] = [
   { base: 'WETH', quote: 'DAI' },
-    { base: 'REP', quote: 'DAI' },
-    { base: 'ZRX', quote: 'DAI' },
-    { base: 'BAT', quote: 'DAI' },
-    { base: 'WETH', quote: 'SAI' },
-    { base: 'REP', quote: 'SAI' },
-    { base: 'ZRX', quote: 'SAI' },
-    { base: 'BAT', quote: 'SAI' },
-    { base: 'SAI', quote: 'USDC' },
-    { base: 'DAI', quote: 'USDC' },
-    { base: 'REP', quote: 'WETH' },
-    { base: 'ZRX', quote: 'WETH' },
-    { base: 'BAT', quote: 'WETH' },
+  { base: 'REP', quote: 'DAI' },
+  { base: 'ZRX', quote: 'DAI' },
+  { base: 'BAT', quote: 'DAI' },
+  { base: 'DAI', quote: 'USDC' },
+  { base: 'SAI', quote: 'USDC' },
+  { base: 'REP', quote: 'WETH' },
+  { base: 'ZRX', quote: 'WETH' },
+  { base: 'BAT', quote: 'WETH' },
+  { base: 'WETH', quote: 'SAI' },
+  { base: 'REP', quote: 'SAI' },
+  { base: 'ZRX', quote: 'SAI' },
+  { base: 'BAT', quote: 'SAI' },
 ];
 
 function asMap<D>(key: string, data: D[]): { [key: string]: D } {
