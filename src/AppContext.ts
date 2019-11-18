@@ -402,12 +402,14 @@ export function setupAppContext() {
   );
 
   const sai2DAIMigration$ = (amount: BigNumber) => createExchangeMigration$(
+    context$,
     proxyAddress$,
     calls$,
     sai2DAIOps$(amount),
   );
 
   const dai2SAIMigration$ = (amount: BigNumber) => createExchangeMigration$(
+    context$,
     proxyAddress$,
     calls$,
     dai2SAIOps$(amount),

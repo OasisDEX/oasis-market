@@ -4,6 +4,7 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import { Allowances } from '../balances/balances';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
+import { NetworkConfig } from '../blockchain/config';
 // import { CancelData } from '../blockchain/calls/offerMake';
 import { getTxHash, TxState, TxStatus } from '../blockchain/transactions';
 // import { TradeWithStatus } from '../exchange/myTrades/openTrades';
@@ -53,6 +54,7 @@ type ExchangeMigrationOperation =
 type ExchangeMigrationOperationInProgress = ({
   txStatus: TxStatus;
   txHash?: string;
+  etherscanURI: string;
 }) & ExchangeMigrationOperation;
 
 export enum ExchangeMigrationStatus {
@@ -68,11 +70,13 @@ interface ExchangeMigrationInitialState {
 }
 
 interface ExchangeMigrationReadyState {
+  context: NetworkConfig;
   status: ExchangeMigrationStatus.ready;
   pending: ExchangeMigrationOperation[];
 }
 
 interface ExchangeMigrationInProgressState {
+  context: NetworkConfig;
   status: ExchangeMigrationStatus.inProgress;
   pending: ExchangeMigrationOperation[];
   current: ExchangeMigrationOperationInProgress;
@@ -80,11 +84,13 @@ interface ExchangeMigrationInProgressState {
 }
 
 interface ExchangeMigrationDoneState {
+  context: NetworkConfig;
   status: ExchangeMigrationStatus.done;
   done: ExchangeMigrationOperationInProgress[];
 }
 
 interface ExchangeMigrationFiascoState {
+  context: NetworkConfig;
   status: ExchangeMigrationStatus.fiasco;
   pending: ExchangeMigrationOperation[];
   current: ExchangeMigrationOperationInProgress;
@@ -156,6 +162,7 @@ function startTransaction(
 }
 
 function start(
+  context: NetworkConfig,
   proxyAddress$: Observable<string | undefined>,
   calls: Calls,
   current: ExchangeMigrationOperation,
@@ -166,7 +173,11 @@ function start(
     map((tx: TxState) => ({
       pending,
       done,
-      current: { ...current, txStatus: tx.status, txHash: getTxHash(tx) },
+      current: { ...current,
+        txStatus: tx.status,
+        txHash: getTxHash(tx),
+        etherscanURI: context.etherscan.url,
+      },
       status: ExchangeMigrationStatus.inProgress
     } as ExchangeMigrationState))
   );
@@ -187,7 +198,7 @@ function next(
       } as ExchangeMigrationState);
     }
     const [current, ...pending] = state.pending;
-    return start(proxyAddress$, calls, current, pending, []).pipe(
+    return start(state.context, proxyAddress$, calls, current, pending, []).pipe(
       map((newState) => ({
         ...state,
         ...newState
@@ -202,7 +213,7 @@ function next(
     ) {
       const [current, ...pending] = state.pending;
       const done = [...state.done, state.current];
-      return start(proxyAddress$, calls, current, pending, done).pipe(
+      return start(state.context, proxyAddress$, calls, current, pending, done).pipe(
         map((newState) => ({
           ...state,
           ...newState
@@ -280,18 +291,21 @@ export function createMigrationOps$(
 }
 
 export function createExchangeMigration$(
+  context$: Observable<NetworkConfig>,
   proxyAddress$: Observable<string>,
   calls$: Calls$,
   operations$: Observable<ExchangeMigrationOperation[]>,
 ): Observable<ExchangeMigrationState> {
   return combineLatest(
+    context$,
     calls$,
     operations$,
   ).pipe(
     first(),
-    switchMap(([calls, operations]) => {
+    switchMap(([context, calls, operations]) => {
       return inductor(
         {
+          context,
           status: ExchangeMigrationStatus.ready,
           pending: operations
         },
