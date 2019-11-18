@@ -1,13 +1,13 @@
 import { BigNumber } from 'bignumber.js';
 
-import { tokens } from './config';
+import { getToken } from './config';
 
 export function amountFromWei(amount: BigNumber, token: string): BigNumber {
-  return amount.div(new BigNumber(10).pow(tokens[token].precision));
+  return amount.div(new BigNumber(10).pow(getToken(token).precision));
 }
 
 export function amountToWei(amount: BigNumber, token: string): BigNumber {
-  const precision = tokens[token].precision;
+  const precision = getToken(token).precision;
   return amount.times(new BigNumber(10).pow(precision));
 }
 

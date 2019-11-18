@@ -3,7 +3,8 @@ import * as React from 'react';
 import { Observable } from 'rxjs/internal/Observable';
 
 import * as mixpanel from 'mixpanel-browser';
-import { tokens } from '../blockchain/config';
+import { theAppContext } from '../AppContext';
+import { getToken } from '../blockchain/config';
 import { TxState } from '../blockchain/transactions';
 import { Authorizable } from '../utils/authorizable';
 import '../utils/Common.scss';
@@ -79,10 +80,10 @@ export class AssetsOverviewViewInternal
         </thead>
         <tbody>
         <tr data-test-id="ETH-overview">
-          <td className="hide-lg">{tokens.ETH.name}</td>
+          <td className="hide-lg">{getToken('ETH').name}</td>
           <td>
             <div className={styles.centeredAsset}>
-              { tokens.ETH.icon }
+              <span className={styles.assetIcon}>{ getToken('ETH').icon }</span>
               <Currency value="ETH"/>
             </div>
           </td>
@@ -118,10 +119,10 @@ export class AssetsOverviewViewInternal
 
         { this.props.balances && this.props.balances.map(combinedBalance => (
           <tr data-test-id={`${combinedBalance.name}-overview`} key={combinedBalance.name}>
-            <td className="hide-lg">{tokens[combinedBalance.name].name}</td>
+            <td className="hide-lg">{getToken(combinedBalance.name).name}</td>
             <td>
               <div className={styles.centeredAsset}>
-                { tokens[combinedBalance.name].icon }
+                <span className={styles.assetIcon}>{ getToken(combinedBalance.name).icon }</span>
                 <Currency value={combinedBalance.name} />
               </div>
             </td>
@@ -157,6 +158,30 @@ export class AssetsOverviewViewInternal
               >
                 Unwrap
               </Button>
+              }
+              {
+                combinedBalance.name === 'SAI' &&
+                <theAppContext.Consumer>
+                  {({ SAI2DAIMigrationTxRx }) =>
+                    // @ts-ignore
+                    <SAI2DAIMigrationTxRx label={ 'Upgrade Sai' }
+                                          tid="update-btn-account"
+                                          className={styles.redeemBtn}
+                    />
+                  }
+                </theAppContext.Consumer>
+              }
+              {
+                combinedBalance.name === 'DAI' &&
+                <theAppContext.Consumer>
+                  {({ DAI2SAIMigrationTxRx }) =>
+                    // @ts-ignore
+                    <DAI2SAIMigrationTxRx label={ 'Swap for Sai' }
+                                          tid="swap-btn-account"
+                                          className={styles.redeemBtn}
+                    />
+                  }
+                </theAppContext.Consumer>
               }
             </td>
             <td data-test-id={`${combinedBalance.name}-balance`}

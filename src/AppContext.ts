@@ -7,9 +7,10 @@ import {
   filter,
   first,
   flatMap,
-  map, mergeMap,
+  map,
+  mergeMap,
   shareReplay,
-  switchMap
+  switchMap,
 } from 'rxjs/operators';
 import {
   AssetOverviewView,
@@ -21,10 +22,11 @@ import {
   CombinedBalances,
   createBalances$,
   createCombinedBalances$,
-  createDustLimits$, createProxyAllowances$,
+  createDustLimits$,
+  createProxyAllowances$,
+  createTokenBalances$,
   createWalletApprove,
   createWalletDisapprove,
-  createWethBalances$,
 } from './balances/balances';
 import { createTaxExport$ } from './balances/taxExporter';
 import { TaxExporterView } from './balances/TaxExporterView';
@@ -37,19 +39,24 @@ import {
   etherPriceUsd$,
   gasPrice$,
   initializedAccount$,
-  onEveryBlock$, tokenPricesInUSD$
+  onEveryBlock$,
+  tokenPricesInUSD$
 } from './blockchain/network';
 import { user$ } from './blockchain/user';
-import { loadOrderbook$, Orderbook } from './exchange/orderbook/orderbook';
+import { loadOrderbook$, Offer, Orderbook } from './exchange/orderbook/orderbook';
 import {
   createTradingPair$,
   currentTradingPair$,
   loadablifyPlusTradingPair,
   memoizeTradingPair,
+  TradingPair,
 } from './exchange/tradingPair/tradingPair';
 
+import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
 import { of } from 'rxjs/index';
+import { TxMetaKind } from './blockchain/calls/txMeta';
+import { tradingPairs } from './blockchain/config';
 import { transactions$, TxState } from './blockchain/transactions';
 import {
   createAllTrades$,
@@ -104,6 +111,17 @@ import { createFooter$, TheFooter } from './footer/Footer';
 import { Network } from './header/Network';
 import { createFormController$ as createInstantFormController$ } from './instant/instantForm';
 import { InstantViewPanel } from './instant/InstantViewPanel';
+import {
+  createExchangeMigration$,
+  createMigrationOps$,
+  ExchangeMigrationState
+} from './migration/migration';
+import {
+  createMigrationForm$,
+  MigrationFormKind,
+  MigrationFormState
+} from './migration/migrationForm';
+import { MigrationButton } from './migration/MigrationFormView';
 import { createTransactionNotifier$ } from './transactionNotifier/transactionNotifier';
 import { TransactionNotifierView } from './transactionNotifier/TransactionNotifierView';
 import { Authorizable, authorizablify } from './utils/authorizable';
@@ -117,6 +135,14 @@ export function setupAppContext() {
 
   const NetworkTxRx = connect(Network, context$);
   const TheFooterTxRx = connect(TheFooter, createFooter$(context$));
+
+  const proxyAddress$ = onEveryBlock$.pipe(
+    switchMap(() =>
+      calls$.pipe(
+        flatMap(calls => calls.proxyAddress())
+      )),
+    distinctUntilChanged(isEqual)
+  );
 
   const balances$ = createBalances$(context$, initializedAccount$, onEveryBlock$).pipe(
     shareReplay(1)
@@ -132,10 +158,18 @@ export function setupAppContext() {
     map(([balances, etherBalance]) => ({ ...balances, ETH: etherBalance })),
   );
 
-  const wethBalance$ = createWethBalances$(context$, initializedAccount$, onEveryBlock$);
+  const wethBalance$ = createTokenBalances$(context$, initializedAccount$, onEveryBlock$, 'WETH');
+  const saiBalance$ = createTokenBalances$(context$, initializedAccount$, onEveryBlock$, 'SAI');
+  const daiBalance$ = createTokenBalances$(context$, initializedAccount$, onEveryBlock$, 'DAI');
 
   const wrapUnwrapForm$ =
-    curry(createWrapUnwrapForm$)(gasPrice$, etherPriceUsd$, etherBalance$, wethBalance$, calls$);
+    curry(createWrapUnwrapForm$)(
+      gasPrice$,
+      etherPriceUsd$,
+      etherBalance$,
+      wethBalance$,
+      calls$
+    );
 
   const approve = createWalletApprove(calls$, gasPrice$);
   const disapprove = createWalletDisapprove(calls$, gasPrice$);
@@ -229,7 +263,7 @@ export function setupAppContext() {
   const myTradesKind$ = createMyTradesKind$();
   const myOpenTrades$ = loadablifyPlusTradingPair(
     currentTradingPair$,
-    memoizeTradingPair(curry(createMyOpenTrades$)(loadOrderbook, account$, transactions$))
+    memoizeTradingPair(curry(createMyOpenTrades$)(currentOrderbook$, account$, transactions$))
   );
 
   const myClosedTrades$ = loadablifyPlusTradingPair(
@@ -284,14 +318,6 @@ export function setupAppContext() {
     });
   });
 
-  const proxyAddress$ = onEveryBlock$.pipe(
-    switchMap(() =>
-      calls$.pipe(
-        flatMap(calls => calls.proxyAddress())
-      )),
-    distinctUntilChanged(isEqual)
-  );
-
   const instant$ = createInstantFormController$(
     {
       gasPrice$,
@@ -321,6 +347,110 @@ export function setupAppContext() {
     export: () => createTaxExport$(context$, initializedAccount$)
   });
 
+  const aggregatedOpenOrders$ = (token: 'SAI' | 'DAI') => createMyOpenTrades$(
+    combineLatest(...tradingPairs
+      .filter(pair => pair.quote === token)
+      .map(pair => loadOrderbook(pair))
+    )
+      .pipe(
+        map((orderbooks) => {
+          const aggregatedOrderbook = {
+            buy: [] as Offer[],
+            sell: [] as Offer[],
+            blockNumber: 0,
+          };
+
+          return orderbooks.reduce(
+            (aggregate, currentOrderbook) => {
+              aggregate.buy = [...aggregate.buy, ...currentOrderbook.buy];
+              aggregate.sell = [...aggregate.sell, ...currentOrderbook.sell];
+              // the blockNumber is the same for all of them
+              aggregate.blockNumber = currentOrderbook.blockNumber;
+              return aggregate;
+            },
+            aggregatedOrderbook
+          );
+        })),
+    account$,
+    transactions$.pipe(
+      map((transactions: TxState[]) => transactions
+        .filter(tx => tx.meta.kind === TxMetaKind.cancel)),
+    ),
+    {} as TradingPair
+  );
+
+  const sai2DAIOps$ = curry(createMigrationOps$)(
+    'SAI',
+    createProxyAllowances$(
+      context$,
+      initializedAccount$,
+      proxyAddress$,
+      onEveryBlock$
+    ),
+    proxyAddress$,
+  );
+
+  const dai2SAIOps$ = curry(createMigrationOps$)(
+    'DAI',
+    createProxyAllowances$(
+      context$,
+      initializedAccount$,
+      proxyAddress$,
+      onEveryBlock$
+    ),
+    proxyAddress$,
+  );
+
+  const sai2DAIMigration$ = (amount: BigNumber) => createExchangeMigration$(
+    proxyAddress$,
+    calls$,
+    sai2DAIOps$(amount),
+  );
+
+  const dai2SAIMigration$ = (amount: BigNumber) => createExchangeMigration$(
+    proxyAddress$,
+    calls$,
+    dai2SAIOps$(amount),
+  );
+
+  const sai2DAIMigrationForm$ = createMigrationForm$(
+    saiBalance$,
+    MigrationFormKind.sai2dai,
+    sai2DAIMigration$,
+    calls$,
+    aggregatedOpenOrders$('SAI')
+  );
+
+  const dai2SAIMigrationForm$ = createMigrationForm$(
+    daiBalance$,
+    MigrationFormKind.dai2sai,
+    dai2SAIMigration$,
+    calls$,
+    aggregatedOpenOrders$('DAI')
+  );
+
+  const SAI2DAIMigrationTxRx =
+    inject<{ migration$: Observable<ExchangeMigrationState> }, any>(
+      withModal(
+        connect<Loadable<MigrationFormState>, any>(
+          MigrationButton,
+          loadablifyLight<MigrationFormState>(sai2DAIMigrationForm$)
+        )
+      ),
+      { migration$: sai2DAIMigrationForm$ }
+    );
+
+  const DAI2SAIMigrationTxRx =
+    inject<{ migration$: Observable<ExchangeMigrationState> }, any>(
+      withModal(
+        connect<Loadable<MigrationFormState>, any>(
+          MigrationButton,
+          loadablifyLight<MigrationFormState>(dai2SAIMigrationForm$)
+        )
+      ),
+      { migration$: dai2SAIMigrationForm$ }
+    );
+
   return {
     AllTradesTxRx,
     AssetOverviewViewRxTx,
@@ -333,7 +463,9 @@ export function setupAppContext() {
     TransactionNotifierTxRx,
     NetworkTxRx,
     TheFooterTxRx,
-    TaxExporterTxRx
+    TaxExporterTxRx,
+    SAI2DAIMigrationTxRx,
+    DAI2SAIMigrationTxRx,
   };
 }
 
@@ -379,9 +511,10 @@ function offerMake(
 
   const OrderbookPanelTxRx = connect(
     inject<OrderbookPanelProps, SubViewsProps>(
-      OrderbookPanel,
-      { DepthChartWithLoadingTxRx, OrderbookViewTxRx }),
-    orderbookPanel$);
+      OrderbookPanel, { DepthChartWithLoadingTxRx, OrderbookViewTxRx }
+    ),
+    orderbookPanel$
+  );
 
   return {
     OfferMakePanelTxRx,

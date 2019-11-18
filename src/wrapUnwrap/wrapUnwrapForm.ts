@@ -3,6 +3,9 @@ import { curry } from 'ramda';
 import { merge, Observable, of, Subject } from 'rxjs';
 import { first, map, scan, switchMap, takeUntil } from 'rxjs/operators';
 import { Calls, Calls$ } from '../blockchain/calls/calls';
+import {
+  ProxyChange
+} from '../instant/instantForm';
 import { combineAndMerge } from '../utils/combineAndMerge';
 import {
   AmountFieldChange, doGasEstimation,
@@ -28,7 +31,7 @@ export type Message = {
 
 export enum WrapUnwrapFormKind {
   wrap = 'wrap',
-  unwrap = 'unwrap'
+  unwrap = 'unwrap',
 }
 
 enum BalanceChangeKind {
@@ -40,6 +43,7 @@ export type ManualChange = AmountFieldChange;
 
 type EnvironmentChange =
   GasPriceChange |
+  ProxyChange |
   EtherPriceUSDChange |
   { kind: BalanceChangeKind, balance: BigNumber };
 
@@ -85,7 +89,6 @@ function applyChange(
         gasEstimationStatus: GasEstimationStatus.unset };
     case FormChangeKind.progress:
       return { ...state, progress: change.progress };
-    // default:
     //   const _exhaustiveCheck: never = change; // tslint:disable-line
   }
   return state;
@@ -93,10 +96,24 @@ function applyChange(
 
 function validate(state: WrapUnwrapFormState) {
   const messages: Message[] = [];
-  const balance = state.kind === WrapUnwrapFormKind.wrap ? state.ethBalance : state.wethBalance;
-  const insufficientTest = state.amount && (state.kind === WrapUnwrapFormKind.wrap
-    ? state.amount.gte
-    : state.amount.gt).bind(state.amount);
+
+  const balance = ((kind: WrapUnwrapFormKind) => {
+    switch (kind){
+      case WrapUnwrapFormKind.wrap:
+        return state.ethBalance;
+      case WrapUnwrapFormKind.unwrap:
+        return state.wethBalance;
+    }
+  })(state.kind);
+
+  const insufficientTest = state.amount && (() => {
+    switch (state.kind){
+      case WrapUnwrapFormKind.wrap:
+        return state.amount && state.amount.gte;
+      default:
+        return state.amount && state.amount.gt;
+    }
+  })().bind(state.amount);
 
   if (state.amount && state.amount.lte(zero)) {
     messages.push({
@@ -106,7 +123,12 @@ function validate(state: WrapUnwrapFormState) {
   if (balance && insufficientTest && insufficientTest(balance)) {
     messages.push({
       kind: MessageKind.insufficientAmount,
-      token: state.kind === WrapUnwrapFormKind.wrap ? 'ETH' : 'WETH'
+      token: ((kind: WrapUnwrapFormKind) => {
+        switch (kind) {
+          case WrapUnwrapFormKind.wrap: return 'ETH';
+          case WrapUnwrapFormKind.unwrap: return 'WETH';
+        }
+      })(state.kind)
     });
   }
   return {
@@ -119,20 +141,27 @@ function estimateGasPrice(
   calls$: Calls$, state: WrapUnwrapFormState
 ): Observable<WrapUnwrapFormState> {
   return doGasEstimation(calls$, undefined, state, (calls: Calls) => {
+
     if (!state.amount || !state.gasPrice) {
+
       return undefined;
     }
-    const call = state.kind === WrapUnwrapFormKind.wrap ?
-      calls.wrapEstimateGas :
-      calls.unwrapEstimateGas;
-    return call({ amount: state.amount, gasPrice: state.gasPrice });
+
+    const call:any = ((kind: WrapUnwrapFormKind) => {
+      switch (kind){
+        case WrapUnwrapFormKind.wrap: return calls.wrapEstimateGas;
+        case WrapUnwrapFormKind.unwrap: return calls.unwrapEstimateGas;
+      }
+    })(state.kind);
+
+    const args: any = { amount: state.amount, gasPrice: state.gasPrice };
+    return call(args);
   });
 }
 
 function checkIfIsReadyToProceed(state: WrapUnwrapFormState) {
   const readyToProceed = state.amount &&
-    state.messages.length === 0 &&
-    state.gasEstimationStatus === GasEstimationStatus.calculated;
+    state.messages.length === 0 && state.gasEstimationStatus === GasEstimationStatus.calculated;
   return {
     ...state,
     readyToProceed,
@@ -150,7 +179,6 @@ function prepareProceed(calls$: Calls$): [
 
   function proceed(state: WrapUnwrapFormState) {
 
-    const kind = state.kind;
     const amount = state.amount;
     const gasPrice = state.gasPrice;
     const gas = state.gasEstimation;
@@ -166,10 +194,12 @@ function prepareProceed(calls$: Calls$): [
       calls$.pipe(
         first(),
         switchMap((calls): Observable<ProgressChange> => {
-          const call =
-            kind === WrapUnwrapFormKind.wrap ?
-              calls.wrap :
-              calls.unwrap;
+          const call:any = ((kind: WrapUnwrapFormKind) => {
+            switch (kind) {
+              case WrapUnwrapFormKind.wrap: return calls.wrap;
+              case WrapUnwrapFormKind.unwrap: return calls.unwrap;
+            }
+          })(state.kind);
           return call({ amount, gasPrice, gas })
           .pipe(
             transactionToX(
@@ -255,7 +285,6 @@ export function createWrapUnwrapForm$(
     wethBalance: zero,
     messages: [],
     gasEstimationStatus: GasEstimationStatus.unset,
-
   };
 
   return merge(

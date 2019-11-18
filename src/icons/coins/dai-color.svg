@@ -1,11 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 20 20" fill="none">
-    <path d="M10 20C15.5228 20 20 15.5228 20 10C20 4.47715 15.5228 0 10 0C4.47715 0 0 4.47715 0 10C0 15.5228 4.47715 20 10 20Z"
-          fill="#F7A600"
-          class="icon-background"
-    />
-    <path fill-rule="evenodd" clip-rule="evenodd"
-          d="M15.5 10.0309L9.9691 4.5L4.5 9.9691L10.0309 15.5L15.5 10.0309ZM13.9286 10.0221L11.5714 10.0088L9.99118 8.42857L8.42858 9.99117L6.07144 9.97792L9.97794 6.07142L13.9286 10.0221Z"
-          fill="white"
-          class="icon-content"
-    />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+    <linearGradient id="a" gradientUnits="userSpaceOnUse" x1="300" y1="685" x2="300" y2="-63"
+                    gradientTransform="matrix(1 0 0 -1 0 600)">
+        <stop offset="0" stop-color="#f9a606"/>
+        <stop offset="1" stop-color="#fbcc5f"/>
+    </linearGradient>
+    <circle cx="300" cy="300" r="300" fill="url(#a)"/>
+    <path d="M477.9 250.5h-35.6c-19.6-54.4-72.3-91.7-141.8-91.7H186.2v91.7h-39.7v32.9h39.7v34.5h-39.7v32.9h39.7v90.6h114.3c68.7 0 121-37 141.1-90.6h36.3v-32.9h-28.3c.7-5.8 1.1-11.8 1.1-17.8v-.8c0-5.4-.3-10.7-.8-15.9H478v-32.9zm-259.7-62.4h82.3c51 0 88.9 25.1 106.4 62.3H218.2v-62.3zm82.3 223.7h-82.3v-61.1h188.5c-17.6 36.6-55.4 61.1-106.2 61.1zm117.1-111c0 5.8-.4 11.5-1.2 17H218.2v-34.5h198.3c.7 5.4 1.1 11 1.1 16.7v.8z"
+          fill="#fff"/>
 </svg>

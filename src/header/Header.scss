@@ -2,7 +2,7 @@
 @import "../utils/Variables";
 @import "../utils/forms/Buttons";
 
-$header-media-breakpoint: 800px;
+$header-media-breakpoint: 880px;
 
 :global(.paper) {
   @include media-breakpoint-down($header-media-breakpoint) {
@@ -25,6 +25,10 @@ $header-media-breakpoint: 800px;
 
     svg:hover :global(#bg) {
       fill-opacity: 0.35;
+    }
+
+    @include media-breakpoint-down(sm) {
+      margin: 0;
     }
   }
 }
@@ -202,6 +206,10 @@ $header-media-breakpoint: 800px;
   height: 12px;
   margin-right: 1rem;
   border-radius: 100%;
+
+  @include media-breakpoint-down(sm){
+    margin-right: .5rem;
+  }
 }
 
 .networkIndicator.kovan {

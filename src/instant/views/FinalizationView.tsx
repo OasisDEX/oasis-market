@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import * as React from 'react';
-import { tokens } from '../../blockchain/config';
+import { getToken } from '../../blockchain/config';
 import { TxStatus } from '../../blockchain/transactions';
 import accountSvg from '../../icons/account.svg';
 import doneSvg from '../../icons/done.svg';
@@ -16,7 +16,7 @@ import * as styles from '../Instant.scss';
 import {
   InstantFormChangeKind,
   InstantFormState,
-  ProgressKind,
+  ProgressKind, sai2dai,
   ViewKind
 } from '../instantForm';
 import { InstantFormWrapper } from '../InstantFormWrapper';
@@ -99,7 +99,7 @@ export class FinalizationView extends React.Component<InstantFormState> {
 
     return (
       <>
-        <div className={classnames(styles.details, styles.transaction)}>
+        <div className={classnames(styles.details, styles.transaction)} data-test-id="trade-tx">
           {
             progress && progress.kind === ProgressKind.noProxyPayWithETH &&
             <TxStatusRow icon={<SvgImage image={accountSvg}/>}
@@ -112,7 +112,23 @@ export class FinalizationView extends React.Component<InstantFormState> {
                            />}
                          status={<ProgressReport report={this._tradeProgress()}/>}/>
           }
-          <TxStatusRow icon={tokens[sellToken].iconColor}
+          {sai2dai(sellToken) !== sellToken &&
+          <TxStatusRow icon={getToken(sellToken).iconColor}
+            label={
+              <TradeData
+                data-test-id="upgrade"
+                theme="reversed"
+                label="Upgrade"
+                value={
+                  <Money formatter={formatAmountInstant} value={sellAmount}
+                         token={sellToken}/>
+                }
+              />}
+            status={progress.kind !== ProgressKind.noProxyPayWithETH &&
+            <ProgressReport report={this._tradeProgress()}/>}
+          />}
+
+          <TxStatusRow icon={getToken(sellToken).iconColor}
                        label={
                          <TradeData
                            data-test-id="pay-token"
@@ -124,8 +140,9 @@ export class FinalizationView extends React.Component<InstantFormState> {
                            }
                          />}
                        status={progress.kind !== ProgressKind.noProxyPayWithETH &&
+                       sai2dai(sellToken) === sellToken &&
                        <ProgressReport report={this._tradeProgress()}/>}/>
-          <TxStatusRow icon={tokens[buyToken].iconColor}
+          <TxStatusRow icon={getToken(buyToken).iconColor}
                        label={
                          <TradeData
                            data-test-id="buy-token"

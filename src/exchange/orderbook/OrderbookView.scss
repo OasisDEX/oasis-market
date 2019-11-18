@@ -31,6 +31,8 @@
   @include tableColumnsWidth(146px 146px 146px);
 
   td, th {
+    font-variant-numeric: tabular-nums;
+
     &:last-child {
       flex-grow: 1;
     }

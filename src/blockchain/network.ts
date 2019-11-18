@@ -22,7 +22,7 @@ import {
 import * as mixpanel from 'mixpanel-browser';
 import { mixpanelIdentify } from '../analytics';
 import * as dsValue from './abi/ds-value.abi.json';
-import { NetworkConfig, networks } from './config';
+import { getToken, NetworkConfig, networks, tradingTokens } from './config';
 import { amountFromWei } from './utils';
 import { web3 } from './web3';
 
@@ -136,24 +136,6 @@ export const gasPrice$: GasPrice$ = onEveryBlock$.pipe(
   shareReplay(1),
 );
 
-const tokens = [
-  {
-    symbol: 'DAI', ticker: 'dai-dai'
-  },
-  {
-    symbol: 'ZRX', ticker: 'zrx-0x'
-  },
-  {
-    symbol: 'BAT', ticker: 'bat-basic-attention-token'
-  },
-  {
-    symbol: 'REP', ticker: 'rep-augur'
-  },
-  {
-    symbol: 'USDC', ticker: 'usdc-usd-coin'
-  }
-];
-
 export interface Ticker {
   [label: string]: BigNumber;
 }
@@ -165,24 +147,24 @@ export const tokenPricesInUSD$: Observable<Ticker> = onEveryBlock$.pipe(
   switchMap(
     () =>
       forkJoin(
-        tokens.map(
+        tradingTokens.map(
           (token) =>
-          ajax({
-            url: `https://api.coinpaprika.com/v1/tickers/${token.ticker}/`,
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-            },
-          }).pipe(
-            map(({ response }) => ({
-              [response.symbol]: new BigNumber(response.quotes.USD.price)
-            })),
-            catchError((error) => {
-              console.debug(`Error fetching price data: ${error}`);
-              return of({});
-            }),
+            ajax({
+              url: `https://api.coinpaprika.com/v1/tickers/${getToken(token).ticker}/`,
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
+              },
+            }).pipe(
+              map(({ response }) => ({
+                [token]: new BigNumber(response.quotes.USD.price)
+              })),
+              catchError((error) => {
+                console.debug(`Error fetching price data: ${error}`);
+                return of({});
+              }),
+            )
           )
-        )
       )
   ),
   map((prices) => prices.reduce((a, e) => ({ ...a, ...e }))),

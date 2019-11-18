@@ -9,14 +9,14 @@ import {
   last,
   map,
   scan,
-  switchMap
+  switchMap, take
 } from 'rxjs/operators';
 
 import { shareReplay } from 'rxjs/internal/operators';
 import { GasPrice$, Ticker } from 'src/blockchain/network';
 import { Calls$ } from '../blockchain/calls/calls';
 import { TxMetaKind } from '../blockchain/calls/txMeta';
-import { NetworkConfig, tokens } from '../blockchain/config';
+import { NetworkConfig, tradingTokens } from '../blockchain/config';
 import { TxState, TxStatus } from '../blockchain/transactions';
 import { amountFromWei } from '../blockchain/utils';
 
@@ -61,7 +61,7 @@ export function createBalances$(
     switchMap(([context, account]) =>
       !account ? of({}) :
         forkJoin(
-          Object.keys(tokens).filter(name => name !== 'ETH').map((token: string) =>
+          tradingTokens.filter(name => name !== 'ETH').map((token: string) =>
             balance$(context, token, account).pipe(
               map(balance => ({
                 [token]: balance
@@ -74,10 +74,11 @@ export function createBalances$(
   );
 }
 
-export function createWethBalances$(
+export function  createTokenBalances$(
   context$: Observable<NetworkConfig>,
   initializedAccount$: Observable<string>,
   onEveryBlock$: Observable<number>,
+  token: string
 ) {
   return combineLatest(
     context$,
@@ -85,7 +86,7 @@ export function createWethBalances$(
     onEveryBlock$
   ).pipe(
     switchMap(([context, account]) =>
-      balance$(context, 'WETH', account)),
+      balance$(context, token, account)),
     distinctUntilChanged(isEqual)
   );
 }
@@ -96,7 +97,7 @@ export function createDustLimits$(context$: Observable<NetworkConfig>): Observab
   return combineLatest(context$).pipe(
     switchMap(([context]) =>
       forkJoin(
-        Object.keys(tokens).filter(name => name !== 'ETH').map((token: string) => {
+        tradingTokens.filter(name => name !== 'ETH').map((token: string) => {
           return bindNodeCallback(context.otc.contract.getMinSell as Dust)(
             context.tokens[token].address
           ).pipe(
@@ -128,7 +129,7 @@ export function createAllowances$(
   return combineLatest(context$, initializedAccount$, onEveryBlock$).pipe(
     switchMap(([context, account]) =>
       forkJoin(
-        Object.keys(tokens)
+        tradingTokens
           .filter(token => token !== 'ETH')
           .map((token: string) =>
             bindNodeCallback(context.tokens[token].contract.allowance as Allowance)(
@@ -146,7 +147,7 @@ export function createAllowances$(
 export function createProxyAllowances$(
   context$: Observable<NetworkConfig>,
   initializedAccount$: Observable<string>,
-  proxyAccount$: Observable<string>,
+  proxyAccount$: Observable<string | undefined>,
   onEveryBlock$: Observable<number>,
 ): Observable<Allowances> {
   return combineLatest(context$, initializedAccount$, proxyAccount$, onEveryBlock$).pipe(
@@ -155,11 +156,14 @@ export function createProxyAllowances$(
         Object.keys(context.tokens)
           .filter(token => token !== 'ETH')
           .map((token: string) =>
-            bindNodeCallback(context.tokens[token].contract.allowance as Allowance)(
-              account, proxy
-            ).pipe(
-              map((x: BigNumber) => ({ [token]: x.gte(MIN_ALLOWANCE) }))
-            )
+            proxy ?
+              bindNodeCallback(context.tokens[token].contract.allowance as Allowance)(
+                account, proxy
+              ).pipe(
+                map((x: BigNumber) => ({ [token]: x.gte(MIN_ALLOWANCE) }))
+              )
+            :
+              of({ [token]: false })
           )
       ).pipe(concatAll(), scan((a, e) => ({ ...a, ...e }), {}), last())
     ),
@@ -200,7 +204,7 @@ export function combineBalances(
   etherPriceUsd: BigNumber, transactions: TxState[],
   currentBlock: number
 ) {
-  return Object.keys(tokens)
+  return tradingTokens
     .filter(name => name !== 'ETH')
     .map(name => {
       return {
@@ -289,4 +293,22 @@ export function createWalletDisapprove(calls$: Calls$, gasPrice$: GasPrice$) {
     r.subscribe();
     return r;
   };
+}
+
+export function createSaiSwap(calls$: Calls$, proxyAddress$: Observable<string>) {
+  return (amount: BigNumber) => combineLatest(calls$, proxyAddress$).pipe(
+    take(1),
+    switchMap(([calls, proxyAddress]) => {
+      return calls.swapSaiToDai({ proxyAddress, amount });
+    })
+  ).subscribe();
+}
+
+export function createDaiSwap(calls$: Calls$, proxyAddress$: Observable<string>) {
+  return (amount: BigNumber) => combineLatest(calls$, proxyAddress$).pipe(
+    take(1),
+    switchMap(([calls, proxyAddress]) => {
+      return calls.swapDaiToSai({ proxyAddress, amount });
+    })
+  ).subscribe();
 }

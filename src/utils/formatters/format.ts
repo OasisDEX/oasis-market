@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import * as moment from 'moment';
 
-import { tokens } from '../../blockchain/config';
+import { getToken } from '../../blockchain/config';
 
 BigNumber.config({
   FORMAT: {
@@ -15,29 +15,29 @@ BigNumber.config({
 });
 
 export function formatAmount(amount: BigNumber, token: string): string {
-  const digits = token === 'USD' ? 2 : tokens[token].digits;
+  const digits = token === 'USD' ? 2 : getToken(token).digits;
   return amount.toFormat(digits, BigNumber.ROUND_DOWN);
 }
 
 export function formatAmountInstant(amount: BigNumber, token: string): string {
-  const digits = token === 'USD' ? 2 : tokens[token].digitsInstant;
+  const digits = token === 'USD' ? 2 : getToken(token).digitsInstant;
   return amount.toFormat(digits, BigNumber.ROUND_DOWN);
 }
 
 export function formatPrice(amount: BigNumber, token: string): string {
-  return amount.toFormat(tokens[token].digits, BigNumber.ROUND_HALF_UP);
+  return amount.toFormat(getToken(token).digits, BigNumber.ROUND_HALF_UP);
 }
 
 export function formatPriceInstant(amount: BigNumber, token: string): string {
-  return amount.toFormat(tokens[token].digitsInstant, BigNumber.ROUND_HALF_UP);
+  return amount.toFormat(getToken(token).digitsInstant, BigNumber.ROUND_HALF_UP);
 }
 
 export function formatPriceUp(amount: BigNumber, token: string): string {
-  return amount.toFormat(tokens[token].digits, BigNumber.ROUND_UP);
+  return amount.toFormat(getToken(token).digits, BigNumber.ROUND_UP);
 }
 
 export function formatPriceDown(amount: BigNumber, token: string): string {
-  return amount.toFormat(tokens[token].digits, BigNumber.ROUND_DOWN);
+  return amount.toFormat(getToken(token).digits, BigNumber.ROUND_DOWN);
 }
 
 export function formatPrecision(amount: BigNumber, precision: number): string {

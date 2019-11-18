@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 
 import * as mixpanel from 'mixpanel-browser';
-import { tokens } from '../../blockchain/config';
+import { theAppContext } from '../../AppContext';
+import { getToken, isDAIEnabled } from '../../blockchain/config';
 import { routerContext } from '../../Main';
 import { BigNumberInput, lessThanOrEqual } from '../../utils/bigNumberInput/BigNumberInput';
 import { FormChangeKind, OfferMatchType } from '../../utils/form';
@@ -109,9 +110,12 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
   }
 
   public render() {
+    const isSaiMarket = this.props.quoteToken === 'SAI' && isDAIEnabled();
     return this.props.pickerOpen ?
       this.orderTypePicker() :
-      this.formProper();
+      isSaiMarket ?
+        this.lockedForm() :
+        this.formProper();
   }
 
   private slippageLimit() {
@@ -204,6 +208,45 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
     </div>;
   }
 
+  private lockedForm() {
+    return <div data-test-id="create-order-widget">
+      <PanelHeader bordered={true}>
+        Create order
+        {this.headerButtons()}
+      </PanelHeader>
+
+      <PanelBody paddingVertical={true}>
+        {this.balanceButtons(true)}
+        <Hr color="dark" className={styles.hrMargin}/>
+        <div className={styles.migrationDescription}>
+          <p className={styles.text}>
+            Oasis Trade does not support SAI markets.
+          </p>
+          <p className={styles.text}>
+            You can cancel resting orders manually or use our migration
+            process which will cancel your resting orders
+            and swap your SAI to DAI
+          </p>
+        </div>
+        {
+          this.props.user && this.props.user.account && (
+            <theAppContext.Consumer>
+              {({ SAI2DAIMigrationTxRx }) =>
+                // @ts-ignore
+                <SAI2DAIMigrationTxRx
+                  label={'Start Dai Migration'}
+                  className={styles.migrateButton}
+                  tid="update-btn-market"
+                />
+              }
+            </theAppContext.Consumer>
+          )
+        }
+
+      </PanelBody>
+    </div>;
+  }
+
   private headerButtons() {
     const disabled = this.props.stage === 'waitingForApproval';
     return (
@@ -228,7 +271,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
     );
   }
 
-  private balanceButtons() {
+  private balanceButtons(enforceDisabled?:boolean) {
     if (!this.props.user || !this.props.user.account) {
       return (
         <div className={styles.noResourcesInfoBox}>
@@ -237,7 +280,8 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
       );
     }
 
-    const disabled = this.props.stage === 'waitingForApproval';
+    const disabled = this.props.stage === 'waitingForApproval'
+      || enforceDisabled;
     const setMaxSellDisabled = this.props.kind === OfferType.buy || disabled;
     const setMaxBuyDisabled = this.props.kind === OfferType.sell ||
       this.props.matchType === OfferMatchType.direct ||
@@ -256,7 +300,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
         >
           <span className={styles.icon}>
             {
-              this.props.baseToken && tokens[this.props.baseToken].icon
+              this.props.baseToken && getToken(this.props.baseToken).icon
             }
           </span>
           <span data-test-id="base-balance">
@@ -277,7 +321,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
         >
           <span className={styles.icon}>
             {
-              this.props.quoteToken && tokens[this.props.quoteToken].icon
+              this.props.quoteToken && getToken(this.props.quoteToken).icon
             }
           </span>
           <span data-test-id="quote-balance">
@@ -574,10 +618,10 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
   }
 }
 
-const maxTokenValue = (token: string) => new BigNumber(tokens[token].maxSell)
+const maxTokenValue = (token: string) => new BigNumber(getToken(token).maxSell)
   .minus(new BigNumber(1));
 
-const Error = ({ field, messages } : { field: string, messages?: Message[] }) => {
+const Error = ({ field, messages }: { field: string, messages?: Message[] }) => {
   const myMsg = (messages || [])
     .filter((message: Message) => message.field === field)
     .sort((m1, m2) => m2.priority - m1.priority)

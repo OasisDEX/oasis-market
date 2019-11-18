@@ -8,7 +8,7 @@ import { cypressVisitWithWeb3, multiply, tid, timeout } from '../../utils';
 import { makeScreenshots } from '../../utils/makeScreenshots';
 
 const waitForBalancesToLoad = () => {
-  cy.wait(500);
+  cy.wait(1000);
   cy.get(tid('selling-token', tid('balance')), timeout()).contains(/8,999.../);
   cy.get(tid('buying-token', tid('balance')), timeout()).contains(/170.../);
 };
@@ -35,7 +35,7 @@ describe('New trade', () => {
       trade.sell().amount('2');
       trade.expectToReceive('555.00');
 
-      TradeData.expectPriceOf(/(277\.50)/);
+      TradeData.expectPriceOf(/(277\.5)/);
       TradeData.expectSlippageLimit(/5\.00%/);
       TradeData.expectPriceImpact(/0\.89%/);
 
@@ -139,7 +139,7 @@ describe('New trade', () => {
       trade.resultsInError(`You don't have 200.00 DAI in your wallet`, 'bottom');
     });
 
-    it('should highlight the price impact in the trade details', () => {
+    it.only('should highlight the price impact in the trade details', () => {
       Tab.market();
 
       const price = '50';
@@ -156,6 +156,8 @@ describe('New trade', () => {
       const orders = Orderbook.list(OrderType.BUY);
       orders.countIs(4);
 
+      cy.get(tid('notification-cross')).click();
+
       Tab.instant();
 
       const trade = new Trade();
@@ -163,8 +165,6 @@ describe('New trade', () => {
         .amount('5');
 
       trade.expectPriceImpact(`19.28%`, true);
-
-      cy.get(tid('notification-cross')).click();
 
       cy.wait(500);
       makeScreenshots('price-impact-highlight');
@@ -282,7 +282,7 @@ describe('New trade', () => {
       const trade = new Trade();
       trade.sell('ETH').amount('1');
 
-      TradeData.expectPriceOf(/(280.00)/);
+      TradeData.expectPriceOf(/(280)/);
       TradeData.expectSlippageLimit(/5\.00%/);
       TradeData.expectPriceImpact(/0\.00%/);
 

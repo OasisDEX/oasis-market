@@ -33,8 +33,14 @@ describe('Wrapping' , () => {
 
   beforeEach(() => {
     controller =
-        createWrapUnwrapForm$(gasPrice$, etherPriceUSD$, ethBalance$, wethBalance$, calls$, wrap)
-            .pipe(shareReplay(1));
+        createWrapUnwrapForm$(
+          gasPrice$,
+          etherPriceUSD$,
+          ethBalance$,
+          wethBalance$,
+          calls$,
+          wrap
+        ).pipe(shareReplay(1));
   });
 
   test('initial state', () => {
