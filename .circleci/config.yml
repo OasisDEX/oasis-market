@@ -147,17 +147,7 @@ jobs:
             - v5-dependencies-{{ checksum "package.json" }}
       - run: yarn run deploy:dev
 
-  deploy_stage:
-    docker:
-      - image: circleci/node:8.11.2-stretch
-    steps:
-      - checkout
-      - restore_cache:
-            keys:
-            - v5-dependencies-{{ checksum "package.json" }}
-      - run: yarn run deploy:stage
-
-  deploy_prod:
+   deploy_prod:
     docker:
       - image: circleci/node:8.11.2-stretch
     steps:
@@ -203,13 +193,13 @@ workflows:
               ignore:
                 - gh-pages
 
-      - codechecks-e2e:
-          requires:
-            - test-e2e
-          filters:
-            branches:
-              ignore:
-                - gh-pages
+#      - codechecks-e2e:
+#          requires:
+#            - test-e2e
+#          filters:
+#            branches:
+#              ignore:
+#                - gh-pages
       - deploy_dev:
           requires:
             - test
@@ -217,13 +207,6 @@ workflows:
           filters:
             branches:
               only: dev
-      - deploy_stage:
-          requires:
-            - test
-#            - test-e2e
-          filters:
-            branches:
-              only: mcd-launch
       - deploy_prod:
           requires:
             - test
