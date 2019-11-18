@@ -54,7 +54,6 @@ export interface MigrationFormState {
   progress?: ExchangeMigrationState;
   change: (change: ManualChange | ProgressChange) => void;
   proceed: (state: MigrationFormState) => void;
-  halt: () => void;
   cancelOffer: (cancelData: CancelData) => void;
 }
 
@@ -106,7 +105,7 @@ function checkIfIsReadyToProceed(state: MigrationFormState) {
 function prepareProceed(
   migrate$: (amount: BigNumber) => Observable<ExchangeMigrationState>,
   balance$: Observable<BigNumber>
-): [((state: MigrationFormState) => void), () => void, Observable<MigrationFormChange>] {
+): [((state: MigrationFormState) => void), Observable<MigrationFormChange>] {
 
   const proceedChange$ = new Subject<MigrationFormChange>();
 
@@ -163,14 +162,7 @@ function prepareProceed(
     };
   });
 
-  function halt() {
-    // if (progressSubscription) {
-    //   progressSubscription.unsubscribe();
-    //   progressSubscription = undefined;
-    // }
-  }
-
-  return [proceed, halt, progressChanges$];
+  return [proceed, progressChanges$];
 }
 
 function freezeIfInProgress(
@@ -214,7 +206,7 @@ export function createMigrationForm$(
     toOrdersChange(orders$)
   );
 
-  const [proceed, halt, proceedProgressChange$] =
+  const [proceed, proceedProgressChange$] =
     prepareProceed(migrate$, balance$);
 
   const change = manualChange$.next.bind(manualChange$);
@@ -226,7 +218,6 @@ export function createMigrationForm$(
         kind,
         change,
         proceed,
-        halt,
         balance,
         amount: balance,
         messages: [],

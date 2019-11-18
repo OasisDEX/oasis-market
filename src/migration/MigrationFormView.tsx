@@ -612,7 +612,6 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
   }
 
   private close = () => {
-    this.props.halt();
     this.props.close();
   }
 
