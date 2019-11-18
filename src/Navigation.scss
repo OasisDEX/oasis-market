@@ -2,9 +2,22 @@
 @import "utils/Mixins";
 @import "utils/Variables";
 
-$navBackground: #1E2C37;
-$navColor: $dark-grayish-blue;
-$navHilight: $another-light-grayish-blue-2;
+.connected {
+  background-color: #1E2C37;
+  color: $dark-grayish-blue;
+  .activeItem {
+    color: $another-light-grayish-blue-2;
+  }
+}
+
+.disconnected {
+  background-color: $white;
+  color: grey;
+  .activeItem {
+    color: black;
+    background-color: #ebebeb;
+  }
+}
 
 @mixin mobile() {
   @include media-breakpoint-down($header-media-breakpoint) {
@@ -38,11 +51,10 @@ $navHilight: $another-light-grayish-blue-2;
 }
 
 .verticalContent {
-  background-color: $navBackground;
-  color: $navColor;
   height: 100%;
   margin-right: 10px;
   padding-top: 40px;
+  font-size: 12px;
   a {
     display: flex;
     flex-direction: column;
@@ -55,23 +67,20 @@ $navHilight: $another-light-grayish-blue-2;
 }
 
 .horizontalContent {
-  background-color: $navBackground;
-  color: $navColor;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  padding-left: 10px;
+  padding-left: 8px;
+  font-size: 12px;
   a {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px 20px;
+    padding: 12px 24px;
+    margin: 10px 2px;
+    border-radius: 4px;
     * {
       margin-bottom: 1px;
     }
   }
-}
-
-.activeItem {
-  color: $navHilight;
 }

@@ -12,7 +12,7 @@ import { account$, networkId$ } from './blockchain/network';
 import { Web3Status, web3Status$ } from './blockchain/web3';
 import { LoadingState } from './landingPage/LandingPage';
 import { Main } from './Main';
-import { Navigation } from './Navigation';
+import { NavigationTxRx } from './Navigation';
 import { connect } from './utils/connect';
 import { UnreachableCaseError } from './utils/UnreachableCaseError';
 
@@ -56,7 +56,7 @@ class App extends React.Component<Props> {
         *     nextView={<Main/>}
         *     />
         * */
-        return <Main/>;
+        return <NavigationTxRx><Main/></NavigationTxRx>;
       default:
         throw new UnreachableCaseError(this.props.status);
     }
@@ -92,7 +92,7 @@ if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_SENTRY_DNS) {
   Raven.config(
     process.env.REACT_APP_SENTRY_DNS
   ).install();
-  Raven.context(() => ReactDOM.render(<Navigation><AppTxRx/></Navigation>, root));
+  Raven.context(() => ReactDOM.render(<AppTxRx/>, root));
 } else {
-  ReactDOM.render(<Navigation><AppTxRx/></Navigation>, root);
+  ReactDOM.render(<AppTxRx/>, root);
 }
