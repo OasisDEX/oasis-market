@@ -33,12 +33,16 @@
   }
 
   th, td {
-    padding: 8px 28px 8px 28px;
+    padding: 8px 28px 8px 0;
   }
 
 
   td.numerical {
     @include ellipsis;
+  }
+
+  th:first-child, td:first-child{
+    padding-left: 16px;
   }
 
   @include media-breakpoint-down(md) {
