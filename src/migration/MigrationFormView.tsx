@@ -536,7 +536,8 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
 
   private txRow = (operation: any) => {
     const status = {
-      ...operation
+      ...operation,
+      etherscanURI: this.props.etherscan && this.props.etherscan.url
     } as Report;
 
     switch (operation.kind) {
