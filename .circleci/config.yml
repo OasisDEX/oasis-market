@@ -178,13 +178,13 @@ workflows:
             branches:
               ignore:
                 - gh-pages
-      - test-e2e:
-          requires: 
-            - install
-          filters:
-            branches:
-              ignore:
-                - gh-pages
+#      - test-e2e:
+#          requires:
+#            - install
+#          filters:
+#            branches:
+#              ignore:
+#                - gh-pages
       - codechecks:
           requires: 
             - install
