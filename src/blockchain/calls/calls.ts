@@ -14,12 +14,13 @@ import {
   getBestOffer,
   getBuyAmount,
   getOffersAmount,
-  getPayAmount,
+  getPayAmount, migrateTradePayWithERC20,
   offers,
   proxyAddress$, setOwner, setupProxy, tradePayWithERC20,
   tradePayWithETHNoProxy, tradePayWithETHWithProxy
 } from './instant';
 import { cancelOffer, offerMake, offerMakeDirect } from './offerMake';
+import { swapDaiToSai, swapSaiToDai } from './swapCalls';
 import { unwrap, wrap } from './wrapUnwrapCalls';
 
 function calls([context, account]: [NetworkConfig, string]) {
@@ -30,6 +31,7 @@ function calls([context, account]: [NetworkConfig, string]) {
 
   return {
     cancelOffer: sendTransactionWithGasConstraints(cancelOffer),
+    cancelOffer2: sendTransaction(cancelOffer),
     offerMake: sendTransaction(offerMake),
     offerMakeDirect: sendTransaction(offerMakeDirect),
     offerMakeEstimateGas: estimateGas(offerMake),
@@ -43,15 +45,21 @@ function calls([context, account]: [NetworkConfig, string]) {
     tradePayWithETHNoProxy: sendTransaction(tradePayWithETHNoProxy),
     tradePayWithETHWithProxy: sendTransaction(tradePayWithETHWithProxy),
     tradePayWithERC20: sendTransaction(tradePayWithERC20),
+    tradePayWithERC20EstimateGas: estimateGas(tradePayWithERC20),
+    migrateTradePayWithERC20: sendTransaction(migrateTradePayWithERC20),
+    migrateTradePayWithERC20EstimateGas: estimateGas(migrateTradePayWithERC20),
     tradePayWithETHNoProxyEstimateGas: estimateGas(tradePayWithETHNoProxy),
     tradePayWithETHWithProxyEstimateGas: estimateGas(tradePayWithETHWithProxy),
-    tradePayWithERC20EstimateGas: estimateGas(tradePayWithERC20),
     proxyAddress: () => proxyAddress$(context, account),
     setupProxy: sendTransaction(setupProxy),
     setupProxyEstimateGas: estimateGas(setupProxy),
     approveProxy: sendTransaction(approveProxy),
     approveProxyEstimateGas: estimateGas(approveProxy),
     disapproveProxy: sendTransaction(disapproveProxy),
+    swapSaiToDai : sendTransaction(swapSaiToDai),
+    swapSaiToDaiEstimateGas: estimateGas(swapSaiToDai),
+    swapDaiToSai : sendTransaction(swapDaiToSai),
+    swapDaiToSaiEstimateGas: estimateGas(swapDaiToSai),
     setOwner: sendTransaction(setOwner),
   };
 }

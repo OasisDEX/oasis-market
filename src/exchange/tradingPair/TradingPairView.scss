@@ -12,7 +12,7 @@ $sm: 400px;
     border-top-right-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
     background: inherit;
-
+    padding: 0 16px;
     width: 100%;
 
     @include media-breakpoint-down(md-lg) {
@@ -202,6 +202,7 @@ $sm: 400px;
 
     @include media-breakpoint-down($sm) {
       padding: 7px 8px;
+      line-height: 1.5;
     }
 
     .iconQuote {
@@ -219,6 +220,11 @@ $sm: 400px;
 
     .iconBase, .iconQuote {
       height: 26px;
+      width: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: content-box;
     }
 
     .tokenBase, .tokenQuote {
@@ -264,19 +270,13 @@ $sm: 400px;
 
 // style of box with info like current or yesterday price
 .pairInfo {
-    padding: 0 16px;
     flex-grow: 1;
-    display: flex;
+    display: inline-flex;
     align-items: center;
 
     @include media-breakpoint-down(md){
-      padding: 10px 16px;
       flex-direction: column-reverse;
       align-items: flex-end;
-    }
-
-    @include media-breakpoint-down($sm){
-      padding: 10px;
     }
 }
 

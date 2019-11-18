@@ -13,7 +13,9 @@ export enum TxMetaKind {
   tradePayWithERC20 = 'tradePayWithERC20',
   setupProxy = 'setupProxy',
   approveProxy = 'approveProxy',
-  disapproveProxy = 'disapproveProxy'
+  disapproveProxy = 'disapproveProxy',
+  swapSai = 'swapSai',
+  swapDai = 'swapDai'
 }
 
 export type TxMeta = {

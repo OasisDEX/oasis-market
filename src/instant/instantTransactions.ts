@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { first, flatMap, map, startWith, switchMap } from 'rxjs/operators';
 import { Calls } from '../blockchain/calls/calls';
 import { InstantOrderData } from '../blockchain/calls/instant';
+import { isDAIEnabled } from '../blockchain/config';
 import { allowance$, waitUntil } from '../blockchain/network';
 import { getTxHash, isDone, isSuccess, TxState, TxStatus } from '../blockchain/transactions';
 import { amountFromWei } from '../blockchain/utils';
@@ -12,7 +13,7 @@ import {
   InstantFormState,
   Progress,
   ProgressChange,
-  ProgressKind
+  ProgressKind, sai2dai
 } from './instantForm';
 
 function progressChange(progress?: Progress): ProgressChange {
@@ -79,16 +80,26 @@ function doTradePayWithERC20(
   initialProgress: Progress
 ): Observable<Progress> {
 
-  const trade$ = calls.tradePayWithERC20EstimateGas({
+  const gasCall = sai2dai(state.sellToken) !== state.sellToken ?
+    calls.migrateTradePayWithERC20EstimateGas :
+    calls.tradePayWithERC20EstimateGas;
+
+  const trade$ = gasCall({
     ...state,
     proxyAddress,
+    sellToken: sai2dai(state.sellToken),
   } as InstantOrderData).pipe(
     switchMap(gasEstimation => {
-      return calls.tradePayWithERC20({
+      const call = state.sellToken === 'SAI' ?
+        calls.migrateTradePayWithERC20 :
+        calls.tradePayWithERC20;
+
+      return call({
         ...state,
         proxyAddress,
         gasEstimation,
         gasPrice: state.gasPrice,
+        sellToken: sai2dai(state.sellToken),
       } as InstantOrderData);
     })
   );
@@ -271,7 +282,15 @@ export function estimateTradePayWithERC20(
   proxyAddress: string | undefined,
   state: InstantFormState,
 ): Observable<number> {
-  return calls.tradePayWithERC20EstimateGas({ ...state, proxyAddress } as InstantOrderData);
+  const gasCall = state.sellToken === 'SAI' && isDAIEnabled() ?
+    calls.migrateTradePayWithERC20EstimateGas :
+    calls.tradePayWithERC20EstimateGas;
+
+  return gasCall({
+    ...state,
+    proxyAddress,
+    sellToken: state.sellToken === 'SAI' ? sai2dai(state.sellToken) : state.sellToken,
+  } as InstantOrderData);
 }
 
 function extractTradeSummary(

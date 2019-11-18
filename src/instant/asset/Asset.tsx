@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import classnames from 'classnames';
 import * as React from 'react';
 
-import { tokens } from '../../blockchain/config';
+import { getToken } from '../../blockchain/config';
 import { User } from '../../blockchain/user';
 import { formatAmountInstant } from '../../utils/formatters/format';
 import { ProgressIcon } from '../../utils/icons/Icons';
@@ -27,7 +27,7 @@ export class Asset extends React.Component<AssetProps> {
               data-test-id="asset-button"
               onClick={onClick}>
         <span className={styles.icon}>
-          {tokens[currency].iconColor}
+          {getToken(currency).iconColor}
         </span>
         {
           !balance && <ProgressIcon size="sm"/>

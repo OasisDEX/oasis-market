@@ -175,10 +175,17 @@ class WalletConnectionStatus extends React.Component<WalletConnectionStatusProps
           </theAppContext.Consumer>
           {
             isConnected
-              ? (
-                <div onClick={open} data-test-id="wallet-status">
-                  <StatusTxRx/>
-                </div>
+              ? (<>
+                  <theAppContext.Consumer>
+                    {({ SAI2DAIMigrationTxRx }) =>
+                      // @ts-ignore
+                      <SAI2DAIMigrationTxRx label="Upgrade Sai" tid="update-btn-header"/>
+                    }
+                  </theAppContext.Consumer>
+                  <div onClick={open} data-test-id="wallet-status">
+                    <StatusTxRx/>
+                  </div>
+                </>
               )
               : (
 

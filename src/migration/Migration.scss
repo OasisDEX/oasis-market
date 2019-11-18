@@ -1,0 +1,247 @@
+@import "../utils/Mixins";
+@import "../utils/forms/Buttons.mixins";
+@import "../utils/Variables";
+@import "../header/Header";
+
+@include modal();
+
+.loadingIndicator {
+  min-height: unset;
+  height: auto;
+  margin-right: 1rem;
+
+  @include media-breakpoint-down(sm) {
+    height: 2rem;
+  }
+}
+
+.orderCancellationIndicator {
+  height: 1.875rem;
+  margin-left: 1.25rem;
+}
+
+.processLoadingIndicator {
+  position: relative;
+  top: 35%;
+}
+
+.redeemBtn {
+  margin-right: 1rem;
+
+  @include button((
+    color: $white,
+    bg: $vivid-orange,
+    border-color: $vivid-orange,
+    bg-hover: $bright-orange,
+    border-color-hover: $bright-orange
+  ));
+
+  @include media-breakpoint-down($header-media-breakpoint) {
+    height: 2rem;
+    margin-right: .5rem;
+    font-size: 13px;
+  }
+}
+
+.panel {
+  height: 100%;
+}
+
+.panelHeader {
+  position: relative;
+
+  @include media-breakpoint-down(400px) {
+    padding: 1rem;
+  }
+}
+
+.panelBody {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 1.5rem;
+
+  &.process {
+    justify-content: flex-start;
+    flex-direction: column;
+  }
+
+  @include media-breakpoint-down(640px) {
+    padding: 1.3rem;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  @include media-breakpoint-down(400px) {
+    padding: 1rem;
+  }
+}
+
+.panelFooter {
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+
+  button {
+    height: 34px;
+    margin-right: 1.25rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.closeBtn {
+  right: 1rem;
+  top: 1.1rem;
+}
+
+.backBtn {
+  width: 100%;
+  max-width: 7.75rem;
+}
+
+.migrateBtn {
+  width: 100%;
+  max-width: 11.625rem;
+}
+
+.description {
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.ordersPlaceholder {
+  display: flex;
+  border-top: 1px solid $element-border;
+  border-bottom: 1px solid $element-border;
+  width: 100%;
+}
+
+.orders {
+  max-height: 400px;
+
+  @include media-breakpoint-down(lg) {
+    th, td {
+      padding-right: 0 !important;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    td {
+      font-size: 11px !important;
+    }
+  }
+
+  .market {
+    padding-left: 24px;
+  }
+
+  .type {
+    text-align: center;
+    padding-right: 0;
+
+    @include media-breakpoint-down(md){
+      text-align: left;
+      width: 35px;
+    }
+  }
+
+  .price {
+    @include media-breakpoint-down(sm){
+      width: 40px;
+    }
+  }
+
+  .amount {
+    @include media-breakpoint-down(md){
+      text-align: right;
+    }
+  }
+
+  .total {
+    @include media-breakpoint-down(md){
+      text-align: right;
+    }
+  }
+
+  .action {
+    @include media-breakpoint-down(md){
+      text-align: center;
+    }
+  }
+
+}
+
+.amountInput {
+  &Addon {
+    @include media-breakpoint-down(lg){
+      padding: .5rem;
+    }
+  }
+
+  &Tail {
+    display: inline-flex;
+  }
+
+  &Group {
+    margin-bottom: .5rem;
+
+    @include media-breakpoint-down(md){
+      margin-bottom: 0;
+    }
+  }
+
+  border-right: 1px solid $element-border;
+  border-left: 1px solid $element-border;
+}
+
+.txRow {
+  position: relative;
+  max-width: 720px;
+  width: 100%;
+  border: 1px solid $element-border;
+  border-radius: $border-radius;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+
+  @include media-breakpoint-down(md) {
+    padding-bottom: 2rem;
+  }
+
+  @include media-breakpoint-down(sm) {
+    padding-right: .75rem;
+    padding-left: .75rem;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.modalChild {
+  width: 100%;
+  max-width: 53rem;
+  height: 30.25rem;
+
+  @include media-breakpoint-down(640px) {
+    height: 44.25rem;
+  }
+
+  @include media-breakpoint-down(400px) {
+    height: 46rem;
+  }
+}
+
+.modalButtonsPlaceholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+
+  button {
+    max-width: 100px;
+  }
+}

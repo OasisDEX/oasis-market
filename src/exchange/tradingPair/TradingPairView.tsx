@@ -4,7 +4,7 @@ import * as mixpanel from 'mixpanel-browser';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { tokens, tradingPairs } from '../../blockchain/config';
+import { getToken, tradingPairs } from '../../blockchain/config';
 import {
   FormatAmount, FormatPercent, FormatPrice, FormatQuoteToken
 } from '../../utils/formatters/Formatters';
@@ -29,10 +29,11 @@ interface TradingPairViewState {
 
 export class TradingPairView extends React.Component<TradingPairsProps, TradingPairViewState> {
 
-  public static PairVP({ pair, parentMatch, marketsDetailsLoadable }: {
+  public static PairVP({ pair, parentMatch, marketsDetailsLoadable, clickHandler }: {
     pair: TradingPair,
     parentMatch?: string,
     marketsDetailsLoadable: Loadable<MarketsDetails>,
+    clickHandler: () => void,
   }) {
 
     const pathname = `${parentMatch}/${pair.base}/${pair.quote}`;
@@ -45,6 +46,7 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
           activeClassName={styles.active}
           className={classnames(styles.dropdownItemLink, styles.pairView)}
           onClick={() => {
+            clickHandler();
             mixpanel.track('btn-click', {
               pair: `${pair.base}${pair.quote}`,
               id: 'change-asset-pair',
@@ -67,7 +69,7 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
     const { base, quote } = pair;
     return (
       <>
-        <div className={styles.iconBase}>{tokens[base].icon}</div>
+        <div className={styles.iconBase}>{getToken(base).icon}</div>
         <div data-test-id="base" className={styles.tokenBase}>{base}</div>
         <div data-test-id="quote" className={styles.tokenQuote}>
           <FormatQuoteToken token={quote}/>
@@ -77,7 +79,7 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
             const { price, priceDiff } = marketsDetails[tradingPairResolver(pair)];
             return (<>
               <div data-test-id="price" className={styles.price}>
-                <span className={styles.iconQuote}>{tokens[quote].icon}</span>
+                <span className={styles.iconQuote}>{getToken(quote).icon}</span>
                 {
                   price &&
                   <FormatPrice value={price} token={quote} dontGroup={true}/>
@@ -100,7 +102,7 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
   public static ActivePairView({ base, quote }: any) {
     return (
       <div  data-test-id="active-pair" className={styles.activePairView}>
-        <div className={styles.activePairViewIcon}>{tokens[base].iconCircle}</div>
+        <div className={styles.activePairViewIcon}>{getToken(base).iconCircle}</div>
         <span data-test-id="base" className={styles.activePairViewTokenBase}>{base}</span>
         <span data-test-id="quote" className={styles.activePairViewTokenQuote}>
           <FormatQuoteToken token={quote} />
@@ -172,6 +174,7 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
                         parentMatch={parentMatch}
                         pair={pair}
                         marketsDetailsLoadable={this.props.marketsDetails}
+                        clickHandler={this.closeMenuHandler}
                       />
                     ))}
                   </Scrollbar>
@@ -238,16 +241,18 @@ export class TradingPairView extends React.Component<TradingPairsProps, TradingP
   }
 
   private closeMenu = (_event: any) => {
+    if (_event.path.filter((p: any) => p.className === styles.dropdown).length === 0) {
+      this.closeMenuHandler();
+    }
+  }
 
-    // if (!this.dropdownMenu.contains(event.target)) {
+  private closeMenuHandler = () => {
     this.setState({ showMenu: false }, () => {
       document.removeEventListener('click', this.closeMenu);
     });
-    // }
 
     if (this.props.setPairPickerOpen) {
       this.props.setPairPickerOpen(false);
     }
   }
-
 }

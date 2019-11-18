@@ -198,7 +198,74 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
       context.instantProxyCreationAndExecute.address,
       method.getData(...params)
     ];
+  },
+  options: ({
+    gasPrice,
+    gasEstimation
+  }: InstantOrderData) => ({
+    gasPrice,
+    gas: gasEstimation,
+  }),
+  kind: TxMetaKind.tradePayWithERC20,
 
+  description: ({ kind, buyToken, buyAmount, sellToken, sellAmount }: InstantOrderData) =>
+    kind === 'sell' ?
+      <>
+        Create Sell Order <Money value={sellAmount} token={sellToken}/>
+      </> :
+      <>
+        Create Buy Order <Money value={buyAmount} token={buyToken}/>
+      </>
+};
+
+export const migrateTradePayWithERC20: TransactionDef<InstantOrderData> = {
+  call: ({ proxyAddress }: InstantOrderData) => {
+    return web3.eth.contract(dsProxy as any).at(proxyAddress!).execute['address,bytes'];
+  },
+  prepareArgs: (
+    {
+      kind,
+      buyToken, buyAmount,
+      sellToken, sellAmount,
+      slippageLimit,
+    }: InstantOrderData,
+    context: NetworkConfig
+  ) => {
+    if (sellToken === 'ETH') {
+      throw new Error('Pay with ETH not handled here!');
+    }
+
+    const method = kind === OfferType.sell ?
+      buyToken === 'ETH' ?
+        context.instantMigrationProxyActions.contract.sellAllAmountBuyEthAndMigrateSai :
+        context.instantMigrationProxyActions.contract.sellAllAmountAndMigrateSai
+      :
+      buyToken === 'ETH' ?
+        context.instantMigrationProxyActions.contract.buyAllAmountBuyEthAndMigrateSai :
+        context.instantMigrationProxyActions.contract.buyAllAmountAndMigrateSai;
+
+    const params = kind === OfferType.sell ? [
+      context.otc.address,
+      context.tokens[sellToken].address,
+      amountToWei(sellAmount, sellToken).toFixed(0),
+      context.tokens[eth2weth(buyToken)].address,
+      amountToWei(fixBuyAmount(buyAmount, slippageLimit), buyToken).toFixed(0),
+      context.migration
+    ] : [
+      context.otc.address,
+      context.tokens[eth2weth(buyToken)].address,
+      amountToWei(buyAmount, buyToken).toFixed(0),
+      context.tokens[sellToken].address,
+      amountToWei(fixSellAmount(sellAmount, slippageLimit), sellToken).toFixed(0),
+      context.migration
+    ];
+
+    console.log('params', kind, params, method.getData(...params));
+
+    return [
+      context.instantMigrationProxyActions.address,
+      method.getData(...params)
+    ];
   },
   options: ({
     gasPrice,
@@ -211,10 +278,10 @@ export const tradePayWithERC20: TransactionDef<InstantOrderData> = {
   description: ({ kind, buyToken, buyAmount, sellToken, sellAmount }: InstantOrderData) =>
     kind === 'sell' ?
       <>
-        Create Sell Order <Money value={sellAmount} token={sellToken}/>
+        Migrate SAI and create Sell Order <Money value={sellAmount} token={sellToken}/>
       </> :
       <>
-        Create Buy Order <Money value={buyAmount} token={buyToken}/>
+        Migrate SAI and create Buy Order <Money value={buyAmount} token={buyToken}/>
       </>
 };
 

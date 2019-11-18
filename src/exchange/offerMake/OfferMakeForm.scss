@@ -5,7 +5,7 @@
   display: flex;
   justify-content: space-between;
 
-  @include media-breakpoint-down(md){
+  @include media-breakpoint-down(md) {
     flex-direction: column;
   }
 }
@@ -20,6 +20,21 @@
   color: #828288;
 }
 
+.migrationDescription {
+  @extend .noResourcesInfoBox;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 28px;
+  height: 240px;
+
+  .text {
+    text-align: center;
+    line-height: 20px;
+    margin: .5rem auto;
+  }
+}
+
 .btnGroup {
   margin-left: auto;
 }
@@ -28,7 +43,7 @@
   width: 68px;
   font-size: 13px;
 
-  @include media-breakpoint-down(sm){
+  @include media-breakpoint-down(sm) {
     width: 64px;
     font-size: 11px;
   }
@@ -39,7 +54,7 @@
   flex-grow: 1;
   font-size: 14px;
 
-  @include media-breakpoint-down(md){
+  @include media-breakpoint-down(md) {
     flex-basis: unset;
     width: 100%;
   }
@@ -47,7 +62,7 @@
   &:first-child {
     margin-right: 10px;
 
-    @include media-breakpoint-down(md){
+    @include media-breakpoint-down(md) {
       margin-right: 0;
       margin-bottom: 1rem;
     }
@@ -56,7 +71,7 @@
   &:last-child {
     margin-left: 10px;
 
-    @include media-breakpoint-down(md){
+    @include media-breakpoint-down(md) {
       margin-left: 0;
     }
   }
@@ -84,6 +99,11 @@
   width: 100%;
 }
 
+.migrateButton {
+  @extend .confirmButton;
+  margin-top: 1.25rem;
+}
+
 // ---------- horizontal lines spaces
 .hrMargin {
   margin-top: 18px;
@@ -99,7 +119,7 @@
   padding: 10px 16px;
   white-space: nowrap;
 
-  @include media-breakpoint-down(sm){
+  @include media-breakpoint-down(sm) {
     padding: 10px;
     flex-basis: 80px;
   }
