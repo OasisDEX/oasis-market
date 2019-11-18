@@ -12,6 +12,7 @@ import { account$, networkId$ } from './blockchain/network';
 import { Web3Status, web3Status$ } from './blockchain/web3';
 import { LoadingState } from './landingPage/LandingPage';
 import { Main } from './Main';
+import { Navigation } from './Navigation';
 import { connect } from './utils/connect';
 import { UnreachableCaseError } from './utils/UnreachableCaseError';
 
@@ -91,7 +92,7 @@ if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_SENTRY_DNS) {
   Raven.config(
     process.env.REACT_APP_SENTRY_DNS
   ).install();
-  Raven.context(() => ReactDOM.render(<AppTxRx/>, root));
+  Raven.context(() => ReactDOM.render(<Navigation><AppTxRx/></Navigation>, root));
 } else {
-  ReactDOM.render(<AppTxRx/>, root);
+  ReactDOM.render(<Navigation><AppTxRx/></Navigation>, root);
 }
