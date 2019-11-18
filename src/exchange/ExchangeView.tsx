@@ -4,12 +4,12 @@ import { Redirect, Route, RouteComponentProps, Switch } from 'react-router';
 import { map } from 'rxjs/operators';
 
 import { theAppContext } from '../AppContext';
+import { tradingPairs } from '../blockchain/config';
 import { connect } from '../utils/connect';
 import { FlexLayoutRow } from '../utils/layout/FlexLayoutRow';
 import { Panel } from '../utils/panel/Panel';
 import * as styles from './ExchangeView.scss';
 import { currentTradingPair$, TradingPair } from './tradingPair/tradingPair';
-import {tradingPairs} from "../blockchain/config";
 
 export interface ExchangeViewOwnProps {
   setTradingPair: (tp: TradingPair) => void;
