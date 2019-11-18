@@ -150,17 +150,27 @@ function prepareProceed(
 
     progressSubscription = changes$.subscribe(change => proceedChange$.next(change));
 
-    return changes$;
   }
+
+  const progressChanges$ = new Observable<MigrationFormChange>(subscriber => {
+    const subs = proceedChange$.subscribe(change => subscriber.next(change));
+    return () => {
+      subs.unsubscribe();
+      if (progressSubscription) {
+        progressSubscription.unsubscribe();
+        progressSubscription = undefined;
+      }
+    };
+  });
 
   function halt() {
-    if (progressSubscription) {
-      progressSubscription.unsubscribe();
-      progressSubscription = undefined;
-    }
+    // if (progressSubscription) {
+    //   progressSubscription.unsubscribe();
+    //   progressSubscription = undefined;
+    // }
   }
 
-  return [proceed, halt, proceedChange$];
+  return [proceed, halt, progressChanges$];
 }
 
 function freezeIfInProgress(
@@ -180,7 +190,10 @@ function toBalanceChange(
   balance$: Observable<BigNumber>
 ) {
   return balance$.pipe(
-    map(balance => ({ balance, kind: BalanceChangeKind.balanceChange }))
+    map(balance => ({
+      balance,
+      kind: BalanceChangeKind.balanceChange
+    } as BalanceChange))
   );
 }
 
