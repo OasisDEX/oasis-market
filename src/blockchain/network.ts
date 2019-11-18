@@ -148,22 +148,23 @@ export const tokenPricesInUSD$: Observable<Ticker> = onEveryBlock$.pipe(
     () =>
       forkJoin(
         tradingTokens.map(
-          (token) => ajax({
-            url: `https://api.coinpaprika.com/v1/tickers/${getToken(token).ticker}/`,
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-            },
-          }).pipe(
-            map(({ response }) => ({
-              [response.symbol]: new BigNumber(response.quotes.USD.price)
-            })),
-            catchError((error) => {
-              console.debug(`Error fetching price data: ${error}`);
-              return of({});
-            }),
+          (token) =>
+            ajax({
+              url: `https://api.coinpaprika.com/v1/tickers/${getToken(token).ticker}/`,
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
+              },
+            }).pipe(
+              map(({ response }) => ({
+                [token]: new BigNumber(response.quotes.USD.price)
+              })),
+              catchError((error) => {
+                console.debug(`Error fetching price data: ${error}`);
+                return of({});
+              }),
+            )
           )
-        )
       )
   ),
   map((prices) => prices.reduce((a, e) => ({ ...a, ...e }))),
