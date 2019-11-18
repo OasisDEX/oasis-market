@@ -13,7 +13,7 @@ import { Tab } from '../../pages/Tab';
 import { Trades } from '../../pages/Trades';
 import { TradingPairDropdown } from '../../pages/TradingPairDropdown';
 import { WalletConnection } from '../../pages/WalletConnection';
-import { cypressVisitWithWeb3, tid } from '../../utils';
+import { cypressVisitWithWeb3 } from '../../utils';
 // No point of testing when the user is neither connected nor doesn't have a provider
 // Supposedly there is no way you get to this step in those case.
 describe('Migration Wizard', () => {
