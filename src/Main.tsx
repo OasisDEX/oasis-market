@@ -61,7 +61,8 @@ export class MainContent extends React.Component<RouterProps> {
                 content={
                   <span>
                     {/*tslint:disable*/}
-                    With the launch of Multi-Collateral Dai, we have renamed DAI to SAI. Your balances haven't changed.
+                    With the launch of Multi-Collateral Dai, we have renamed Single-Collateral DAI
+                    to SAI. Your balances haven't changed.
                     <br/>
                     <strong>Check the blog post for more information.</strong>
                   </span>
