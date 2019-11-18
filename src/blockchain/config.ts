@@ -278,7 +278,7 @@ const protoMain = {
     return load(instantMigrationProxyActions, '0x396Ea3C3376cC78864f51ce2FDdb275D3dC0968b');
   },
   oasisDataService: {
-    url: 'https://cache.eth2dai.com/api/v1'
+    url: 'https://staging-cache.eth2dai.com/api/v1'
   },
   etherscan: {
     url: 'https://etherscan.io',
