@@ -150,12 +150,12 @@ export class OrderbookView extends React.Component<Props> {
         <Table align="right" className={styles.orderbookTable}>
           <thead>
           <tr>
-            <th>
+            <th data-test-id="price-col">
               <InfoLabel>Price </InfoLabel>
               <Currency theme="semi-bold"
                         value={this.props.tradingPair && this.props.tradingPair.quote}/>
             </th>
-            <th>
+            <th data-test-id="amount-col">
               <InfoLabel>Amount </InfoLabel>
               <Currency theme="semi-bold"
                         value={this.props.tradingPair && this.props.tradingPair.base}/>

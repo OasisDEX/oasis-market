@@ -36,7 +36,7 @@ describe('Trading pair dropdown', () => {
     TradingPairDropdown.hasMarkets(tradingPairs);
   });
 
-  it.skip('should display price for a given trading pair in the dropdown',  () => {
+  it.skip('should display price for a given trading pair in the dropdown', () => {
     const base = 'BAT';
     TradingPairDropdown.expand();
 
@@ -60,7 +60,7 @@ describe('Trading pair dropdown', () => {
     cy.get(tid('create-order-widget', tid('quote-balance'))).contains('170.0000 DAI');
   });
 
-  it.skip('should display last price and weekly volume for the newly selected pair',  () => {
+  it.skip('should display last price and weekly volume for the newly selected pair', () => {
     // there are two tx and depending on which one went through first
     // the price might be either 300.00 or 300.10
     TradingPairInfo.lastPrice().contains(/300.../);
@@ -78,6 +78,8 @@ describe('Trading pair dropdown', () => {
     const base = 'REP';
 
     selectPair(base, quote);
+
+    Orderbook.waitToLoad(base, quote);
 
     const buyOrders = Orderbook.list(OrderType.BUY);
     buyOrders.countIs(3);

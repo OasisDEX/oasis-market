@@ -139,7 +139,7 @@ describe('New trade', () => {
       trade.resultsInError(`You don't have 200.00 DAI in your wallet`, 'bottom');
     });
 
-    it('should highlight the price impact in the trade details', () => {
+    it.only('should highlight the price impact in the trade details', () => {
       Tab.market();
 
       const price = '50';
@@ -156,6 +156,8 @@ describe('New trade', () => {
       const orders = Orderbook.list(OrderType.BUY);
       orders.countIs(4);
 
+      cy.get(tid('notification-cross')).click();
+
       Tab.instant();
 
       const trade = new Trade();
@@ -163,8 +165,6 @@ describe('New trade', () => {
         .amount('5');
 
       trade.expectPriceImpact(`19.28%`, true);
-
-      cy.get(tid('notification-cross')).click();
 
       cy.wait(500);
       makeScreenshots('price-impact-highlight');

@@ -52,4 +52,9 @@ export class Orderbook {
   public static list(type: OrderType) {
     return new Orders(type);
   }
+
+  public static waitToLoad(base: string, quote: string) {
+    cy.get(tid('price-col')).should('have.text', `Price ${quote}`);
+    cy.get(tid('amount-col')).should('have.text', `Amount ${base}`);
+  }
 }
