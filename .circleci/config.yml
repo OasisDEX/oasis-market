@@ -147,7 +147,7 @@ jobs:
             - v5-dependencies-{{ checksum "package.json" }}
       - run: yarn run deploy:dev
 
-   deploy_prod:
+  deploy_prod:
     docker:
       - image: circleci/node:8.11.2-stretch
     steps:
