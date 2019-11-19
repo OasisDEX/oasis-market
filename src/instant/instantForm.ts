@@ -28,6 +28,7 @@ import {
   TxStatus
 } from '../blockchain/transactions';
 import { User } from '../blockchain/user';
+import { amountFromWei } from '../blockchain/utils';
 import { OfferType } from '../exchange/orderbook/orderbook';
 import { combineAndMerge } from '../utils/combineAndMerge';
 import {
@@ -569,8 +570,8 @@ function getBestPrice(
       calls.otcOffers(offerId).pipe(
         map(([a, _, b]: BigNumber[]) => {
           return daiOrSAI(sellToken) || (eth2weth(sellToken) === 'WETH' && !daiOrSAI(buyToken))
-            ? a.div(b)
-            : b.div(a);
+            ? amountFromWei(a, sellToken).div(amountFromWei(b, buyToken))
+            : amountFromWei(b, buyToken).div(amountFromWei(a, sellToken));
         })
       )
     )
