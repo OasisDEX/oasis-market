@@ -28,6 +28,7 @@ import {
   TxStatus
 } from '../blockchain/transactions';
 import { User } from '../blockchain/user';
+import { amountFromWei } from '../blockchain/utils';
 import { OfferType } from '../exchange/orderbook/orderbook';
 import { combineAndMerge } from '../utils/combineAndMerge';
 import {
@@ -57,7 +58,6 @@ import {
   tradePayWithERC20,
   tradePayWithETH,
 } from './instantTransactions';
-import { amountFromWei } from "../blockchain/utils";
 
 export interface FormResetChange {
   kind: InstantFormChangeKind.formResetChange;
@@ -569,11 +569,9 @@ function getBestPrice(
     flatMap(offerId =>
       calls.otcOffers(offerId).pipe(
         map(([a, _, b]: BigNumber[]) => {
-          console.log(buyToken, sellToken);
           return daiOrSAI(sellToken) || (eth2weth(sellToken) === 'WETH' && !daiOrSAI(buyToken))
-            ? new BigNumber(amountFromWei(a, sellToken).div(amountFromWei(b, buyToken)))
-            : new BigNumber(amountFromWei(b, buyToken).div(amountFromWei(a, sellToken))
-            );
+            ? amountFromWei(a, sellToken).div(amountFromWei(b, buyToken))
+            : amountFromWei(b, buyToken).div(amountFromWei(a, sellToken));
         })
       )
     )
@@ -884,7 +882,6 @@ function calculatePriceAndImpact(state: InstantFormState): InstantFormState {
     : null;
   const price = calculated ? calculated.price : undefined;
   const quotation = calculated ? calculated.quotation : undefined;
-  console.log(price && price.valueOf(), bestPrice && bestPrice.valueOf());
   const priceImpact = price && bestPrice ?
     bestPrice
       .minus(price)
