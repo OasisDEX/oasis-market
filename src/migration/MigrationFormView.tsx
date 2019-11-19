@@ -171,7 +171,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
   }
 
   private initialView = () => {
-    const { fromToken, close } = this.props;
+    const { fromToken } = this.props;
     return (
       <Panel footerBordered={true} className={styles.panel}>
         <PanelHeader bordered={true} className={styles.panelHeader}>
@@ -184,7 +184,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
           <TopRightCorner className={styles.closeBtn}>
             <CloseButton data-test-id="close-button"
                          theme="danger"
-                         onClick={close}/>
+                         onClick={this.close}/>
           </TopRightCorner>
         </PanelHeader>
         <PanelBody paddingVertical={true} className={styles.panelBody}>
@@ -196,14 +196,14 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
   }
 
   private cancelOrders = () => {
-    const { orders, close } = this.props;
+    const { orders } = this.props;
     return <Panel className={styles.panel}>
       <PanelHeader bordered={true} className={styles.panelHeader}>
         Cancel Pending Orders
         <TopRightCorner className={styles.closeBtn}>
           <CloseButton data-test-id="close-button"
                        theme="danger"
-                       onClick={close}/>
+                       onClick={this.close}/>
         </TopRightCorner>
       </PanelHeader>
       <PanelBody paddingVertical={true}
@@ -319,7 +319,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
 
   private migration = () => {
 
-    const { fromToken, amount, progress, close, change } = this.props;
+    const { fromToken, amount, progress, change } = this.props;
     const formattedAmount = formatAmount(amount || new BigNumber(0), fromToken);
 
     if (!progress) {
@@ -337,7 +337,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
         <TopRightCorner className={styles.closeBtn}>
           <CloseButton data-test-id="close-button"
                        theme="danger"
-                       onClick={close}/>
+                       onClick={this.close}/>
         </TopRightCorner>
       </PanelHeader>
       <PanelBody paddingVertical={true}
@@ -468,7 +468,7 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
                      }
                      btnLabel={
                        balance.eq(zero) &&
-                       <SvgImage image={tickSvg}  data-test-id="step-completed"/> ||
+                       <SvgImage image={tickSvg} data-test-id="step-completed"/> ||
                        `${fromToken === 'SAI' ? 'Upgrade' : 'Swap'} ${fromToken}`
                      }
                      btnDisabled={!readyToProceed}
@@ -610,6 +610,10 @@ export class MigrationModal extends React.Component<MigrationFormState & ModalPr
       default:
         return <></>;
     }
+  }
+
+  private close = () => {
+    this.props.close();
   }
 
   private cancel = (order: TradeWithStatus) => {
