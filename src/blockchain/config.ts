@@ -12,6 +12,7 @@ import ethCircleSvg from '../icons/coins/eth-circle.svg';
 import ethColorSvg from '../icons/coins/eth-color.svg';
 // import ethInverseSvg from '../icons/coins/eth-inverse.svg';
 import ethSvg from '../icons/coins/eth.svg';
+import mkrSvg from '../icons/coins/mkr.svg';
 import repCircleSvg from '../icons/coins/rep-circle.svg';
 import repColorSvg from '../icons/coins/rep-color.svg';
 import repSvg from '../icons/coins/rep.svg';
@@ -41,11 +42,11 @@ import * as saiTub from './abi/sai-tub.abi.json';
 import { web3 } from './web3';
 
 export const tradingPairs: TradingPair[] = [
-  { base: 'WETH', quote: 'DAI' },
-  { base: 'REP', quote: 'DAI' },
-  { base: 'ZRX', quote: 'DAI' },
-  { base: 'BAT', quote: 'DAI' },
-  { base: 'DAI', quote: 'USDC' },
+  // { base: 'WETH', quote: 'DAI' },
+  // { base: 'REP', quote: 'DAI' },
+  // { base: 'ZRX', quote: 'DAI' },
+  // { base: 'BAT', quote: 'DAI' },
+  // { base: 'DAI', quote: 'USDC' },
   { base: 'SAI', quote: 'USDC' },
   { base: 'REP', quote: 'WETH' },
   { base: 'ZRX', quote: 'WETH' },
@@ -54,6 +55,7 @@ export const tradingPairs: TradingPair[] = [
   { base: 'REP', quote: 'SAI' },
   { base: 'ZRX', quote: 'SAI' },
   { base: 'BAT', quote: 'SAI' },
+  { base: 'MKR', quote: 'SAI' },
 ];
 
 function asMap<D>(key: string, data: D[]): { [key: string]: D } {
@@ -86,6 +88,19 @@ const tokens = asMap('symbol', [
     iconCircle: SvgImageSimple(ethCircleSvg),
     iconColor: SvgImageSimple(ethCircleSvg),
     ticker: 'eth-ethereum'
+  },
+  {
+    symbol: 'MKR',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 3,
+    maxSell: '10000000',
+    name: 'Maker',
+    icon: SvgImageSimple(mkrSvg),
+    // iconInverse: SvgImageSimple(ethCircleSvg),
+    iconCircle: SvgImageSimple(mkrSvg),
+    iconColor: SvgImageSimple(mkrSvg),
+    ticker: 'mkr-maker'
   },
   {
     symbol: 'SAI',
@@ -254,6 +269,8 @@ const protoMain = {
       loadToken('ZRX', erc20, '0xe41d2489571d322189246dafa5ebde1f4699f498'),
       loadToken('BAT', erc20, '0x0d8775f648430679a709e98d2b0cb6250d2887ef'),
       loadToken('USDC', erc20, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
+      loadToken('MKR', erc20, '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'),
+
     ]);
   },
   get otcSupportMethods() {
@@ -319,6 +336,7 @@ const kovan: NetworkConfig = {
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
       loadToken('USDC', erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
+      loadToken('MKR', erc20, '0xaaf64bfcc32d0f15873a02163e7e500671a4ffcd'),
     ]);
   },
   get otcSupportMethods() {
@@ -376,7 +394,7 @@ const localnet: NetworkConfig =   {
       loadToken('WETH', eth, '0x200938Bf7fF25EcF2eB7BC08e18b0892ED34c846'),
       loadToken('SAI', erc20, '0xF64fc1CDdAD37e61d4558B59693cD6b049cA5F60'),
       loadToken('DAI', erc20, '0xafAA69DE13bd8766D9d47c9205439B9B06e533C6'),
-      // loadToken('MKR', erc20, '0x3a21aB4539e11f0C06b583796F3F0FD274eFC369'),
+      loadToken('MKR', erc20, '0x3a21aB4539e11f0C06b583796F3F0FD274eFC369'),
       // loadToken('DGD', erc20, '0x76c37E57A1438E2a0ac7Fec8a552CDD569b2CAfB'),
       loadToken('ZRX', erc20, '0x2c60CF08c07C212e21e6E2ee4626c478BACe092a'),
       loadToken('BAT', erc20, '0xd80110E3C107Eb206B556871cFe2532eC7D05E47'),
