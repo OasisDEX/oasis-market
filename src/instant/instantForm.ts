@@ -57,6 +57,7 @@ import {
   tradePayWithERC20,
   tradePayWithETH,
 } from './instantTransactions';
+import { amountFromWei } from "../blockchain/utils";
 
 export interface FormResetChange {
   kind: InstantFormChangeKind.formResetChange;
@@ -568,9 +569,11 @@ function getBestPrice(
     flatMap(offerId =>
       calls.otcOffers(offerId).pipe(
         map(([a, _, b]: BigNumber[]) => {
+          console.log(buyToken, sellToken);
           return daiOrSAI(sellToken) || (eth2weth(sellToken) === 'WETH' && !daiOrSAI(buyToken))
-            ? a.div(b)
-            : b.div(a);
+            ? new BigNumber(amountFromWei(a, sellToken).div(amountFromWei(b, buyToken)))
+            : new BigNumber(amountFromWei(b, buyToken).div(amountFromWei(a, sellToken))
+            );
         })
       )
     )
@@ -881,6 +884,7 @@ function calculatePriceAndImpact(state: InstantFormState): InstantFormState {
     : null;
   const price = calculated ? calculated.price : undefined;
   const quotation = calculated ? calculated.quotation : undefined;
+  console.log(price && price.valueOf(), bestPrice && bestPrice.valueOf());
   const priceImpact = price && bestPrice ?
     bestPrice
       .minus(price)
