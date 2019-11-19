@@ -304,7 +304,7 @@ export const getBuyAmount: CallDef<GetBuyAmountData, BigNumber> = {
       amountToWei(amount, sellToken).toFixed(0)
     ];
   },
-  postprocess: (result, { sellToken }) => amountFromWei(result, sellToken),
+  postprocess: (result, { buyToken }) => amountFromWei(result, buyToken),
 };
 
 export interface GetPayAmountData {
