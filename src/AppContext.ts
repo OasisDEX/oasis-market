@@ -414,6 +414,7 @@ export function setupAppContext() {
   );
 
   const sai2DAIMigrationForm$ = createMigrationForm$(
+    context$,
     saiBalance$,
     MigrationFormKind.sai2dai,
     sai2DAIMigration$,
@@ -422,6 +423,7 @@ export function setupAppContext() {
   );
 
   const dai2SAIMigrationForm$ = createMigrationForm$(
+    context$,
     daiBalance$,
     MigrationFormKind.dai2sai,
     dai2SAIMigration$,

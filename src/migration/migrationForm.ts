@@ -1,9 +1,12 @@
 import { BigNumber } from 'bignumber.js';
-import { concat, merge, Observable, of, Subject } from 'rxjs';
+import { concat, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { filter, first, map, scan, switchMap } from 'rxjs/operators';
 import { Calls$ } from '../blockchain/calls/calls';
 import { CancelData } from '../blockchain/calls/offerMake';
+import { NetworkConfig } from '../blockchain/config';
+import { EtherscanConfig } from '../blockchain/etherscan';
 import { TradeWithStatus } from '../exchange/myTrades/openTrades';
+import { ContextChange, InstantFormChangeKind } from '../instant/instantForm';
 import { combineAndMerge } from '../utils/combineAndMerge';
 import { AmountFieldChange, FormChangeKind, OrdersChange, toOrdersChange, } from '../utils/form';
 import { zero } from '../utils/zero';
@@ -34,7 +37,7 @@ interface BalanceChange {
   balance: BigNumber;
 }
 
-type EnvironmentChange = BalanceChange | OrdersChange;
+type EnvironmentChange = BalanceChange | OrdersChange | ContextChange;
 
 export interface ProgressChange {
   kind: FormChangeKind.progress;
@@ -44,6 +47,7 @@ export interface ProgressChange {
 type MigrationFormChange = ManualChange | EnvironmentChange | ProgressChange;
 
 export interface MigrationFormState {
+  etherscan?: EtherscanConfig;
   kind: MigrationFormKind;
   fromToken: string;
   balance: BigNumber;
@@ -65,11 +69,13 @@ function applyChange(
     case BalanceChangeKind.balanceChange:
       return { ...state, balance: change.balance };
     case FormChangeKind.amountFieldChange:
-      return { ...state, amount: change.value  };
+      return { ...state, amount: change.value };
     case FormChangeKind.progress:
       return { ...state, progress: change.progress };
     case FormChangeKind.ordersChange:
       return { ...state, orders: change.orders };
+    case InstantFormChangeKind.contextChange:
+      return { ...state, etherscan: change.context.etherscan };
   }
   return state;
 }
@@ -109,6 +115,8 @@ function prepareProceed(
 
   const proceedChange$ = new Subject<MigrationFormChange>();
 
+  let progressSubscription: Subscription | undefined;
+
   function proceed(state: MigrationFormState) {
 
     const amount = state.amount;
@@ -145,12 +153,22 @@ function prepareProceed(
       )
     );
 
-    changes$.subscribe(change => proceedChange$.next(change));
+    progressSubscription = changes$.subscribe(change => proceedChange$.next(change));
 
-    return changes$;
   }
 
-  return [proceed, proceedChange$];
+  const progressChanges$ = new Observable<MigrationFormChange>(subscriber => {
+    const subs = proceedChange$.subscribe(change => subscriber.next(change));
+    return () => {
+      subs.unsubscribe();
+      if (progressSubscription) {
+        progressSubscription.unsubscribe();
+        progressSubscription = undefined;
+      }
+    };
+  });
+
+  return [proceed, progressChanges$];
 }
 
 function freezeIfInProgress(
@@ -170,11 +188,23 @@ function toBalanceChange(
   balance$: Observable<BigNumber>
 ) {
   return balance$.pipe(
-    map(balance => ({ balance, kind: BalanceChangeKind.balanceChange }))
+    map(balance => ({
+      balance,
+      kind: BalanceChangeKind.balanceChange
+    } as BalanceChange))
+  );
+}
+
+function toContextChange(
+  context$: Observable<NetworkConfig>
+) {
+  return context$.pipe(
+    map(context => ({  context, kind: InstantFormChangeKind.contextChange }))
   );
 }
 
 export function createMigrationForm$(
+  context$: Observable<NetworkConfig>,
   balance$: Observable<BigNumber>,
   kind: MigrationFormKind,
   migrate$: (amount: BigNumber) => Observable<ExchangeMigrationState>,
@@ -188,6 +218,7 @@ export function createMigrationForm$(
 
   const environmentChange$ = combineAndMerge(
     balanceChange$,
+    toContextChange(context$),
     toOrdersChange(orders$)
   );
 
