@@ -323,11 +323,11 @@ export const getPayAmount: CallDef<GetPayAmountData, BigNumber> = {
     return [
       context.tokens[sellToken].address,
       context.tokens[buyToken].address,
-      amountToWei(amount, sellToken).toFixed(0)
+      amountToWei(amount, buyToken).toFixed(0)
     ];
   },
-  postprocess: (result: BigNumber, { buyToken }: GetPayAmountData) =>
-    amountFromWei(result, eth2weth(buyToken)),
+  postprocess: (result: BigNumber, { sellToken }: GetPayAmountData) =>
+    amountFromWei(result, eth2weth(sellToken)),
 };
 
 export interface GetOffersAmountData {
