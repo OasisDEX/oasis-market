@@ -192,16 +192,19 @@ $sm: 400px;
     padding: 7px 0;
     width: 100%;
     background-color: white;
+    font-size: 14px;
+
+    @include media-breakpoint-down($sm) {
+      font-size: 12px;
+    }
 
     &:hover {
       background-color: $background-on-hover;
       cursor: pointer;
     }
 
-    font-size: 14px;
-
     @include media-breakpoint-down($sm) {
-      padding: 7px 8px;
+      padding: 4px 8px;
       line-height: 1.5;
     }
 
@@ -232,7 +235,7 @@ $sm: 400px;
       width: 58px;
 
       @include media-breakpoint-down($sm) {
-        width: 54px;
+        width: 48px;
       }
     }
 
@@ -251,7 +254,7 @@ $sm: 400px;
       }
 
       @include media-breakpoint-down($sm){
-        width: 74px;
+        width: 90px;
       }
     }
 
