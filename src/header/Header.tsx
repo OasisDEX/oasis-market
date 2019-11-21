@@ -194,7 +194,7 @@ class WalletConnectionStatus extends React.Component<WalletConnectionStatusProps
                         onClick={open}
                         data-test-id="new-connection"
                         className={classnames(styles.login, styles.connectWalletButton)}>
-                  <MediaQuery minWidth={800}>
+                  <MediaQuery minWidth={880}>
                     {(matches) => {
                       if (matches) {
                         return (
