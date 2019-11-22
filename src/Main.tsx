@@ -77,12 +77,12 @@ export class MainContent extends React.Component<RouterProps> {
               <br/>
               <strong>
                 <a target="_blank"
-                   href={'https://dex.ag/'}
-                >dex.ag</a>
+                   href={'https://uniswap.exchange/swap'}
+                >uniswap.exchange</a>
                 <span> - </span>
                 <a target="_blank"
-                   href={'https://uniswap.exchange/swap'}
-                >uniswap.io</a>
+                   href={'https://dex.ag/'}
+                >dex.ag</a>
                 <span> - </span>
                 <a target="_blank"
                    href={'https://dexindex.io/?symbol=SAI&amount=1&action=buy'}
