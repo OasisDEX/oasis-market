@@ -10,7 +10,7 @@ import { SvgImage } from '../utils/icons/utils';
 import * as styles from './Banner.scss';
 
 interface BannerProps {
-  buttonLabel: string | React.ReactNode;
+  buttonLabel?: string | React.ReactNode;
   content: string | React.ReactNode;
   continue: () => any;
 }
@@ -29,14 +29,14 @@ export class Banner extends React.Component<BannerProps> {
               {content}
             </div>
           </div>
-          <div className={styles.btnPlaceholder}>
+          {buttonLabel && <div className={styles.btnPlaceholder}>
             <Button data-test-id="continue-with-new-contract"
                     size="md"
                     className={styles.btn}
                     onClick={onContinue}>
               {buttonLabel}
             </Button>
-          </div>
+          </div>}
         </div>
       </section>
     );

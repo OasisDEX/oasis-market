@@ -70,6 +70,28 @@ export class MainContent extends React.Component<RouterProps> {
                 continue={
                   () => false
                 }/>
+        <Banner
+          content={
+            <span>
+              If you want to trade Sai, please check one of the sites below:
+              <br/>
+              <strong>
+                <a target="_blank"
+                   href={'https://uniswap.exchange/swap'}
+                >uniswap.exchange</a>
+                <span> - </span>
+                <a target="_blank"
+                   href={'https://dex.ag/'}
+                >dex.ag</a>
+                <span> - </span>
+                <a target="_blank"
+                   href={'https://dexindex.io/?symbol=SAI&amount=1&action=buy'}
+                >dexindex.io</a>
+              </strong>
+            </span>
+          }
+          continue={ () => false }
+        />
         <div className={styles.container}>
           <theAppContext.Consumer>
             {({ TransactionNotifierTxRx }) =>
