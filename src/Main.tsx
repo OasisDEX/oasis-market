@@ -76,11 +76,17 @@ export class MainContent extends React.Component<RouterProps> {
               If you want to trade Sai, please check one of the sites below:
               <br/>
               <strong>
-                <a href={'https://dex.ag/'}>dex.ag</a>
+                <a target="_blank"
+                   href={'https://dex.ag/'}
+                >dex.ag</a>
                 <span> - </span>
-                <a href={'https://uniswap.exchange/swap'}>uniswap.io</a>
+                <a target="_blank"
+                   href={'https://uniswap.exchange/swap'}
+                >uniswap.io</a>
                 <span> - </span>
-                <a href={'https://dexindex.io/?symbol=SAI&amount=1&action=buy'}>dexindex.io</a>
+                <a target="_blank"
+                   href={'https://dexindex.io/?symbol=SAI&amount=1&action=buy'}
+                >dexindex.io</a>
               </strong>
             </span>
           }
