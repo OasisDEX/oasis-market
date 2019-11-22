@@ -16,24 +16,6 @@
     font-weight: 500;
   }
 
-  a {
-    color: inherit;
-    padding: 12px .833em;
-    display: inline-flex;
-    height: 100%;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-
-    &:hover {
-      background-color: inherit;
-    }
-
-    &:active {
-      color: inherit;
-    }
-  }
-
   hr {
     border: none;
     border-top: 1px solid #3c3c46;
@@ -104,6 +86,24 @@
     bg-hover: #2DC1B1,
     border-color-hover: #2DC1B1,
   ));
+
+  a {
+    color: inherit;
+    padding: 12px .833em;
+    display: inline-flex;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: inherit;
+    }
+
+    &:active {
+      color: inherit;
+    }
+  }
 }
 
 .warningIcon {
