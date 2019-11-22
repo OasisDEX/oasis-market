@@ -73,7 +73,7 @@ export class MainContent extends React.Component<RouterProps> {
         <Banner
           content={
             <span>
-              If you want to trade Sai, please check on the sites below:
+              If you want to trade Sai, please check one of the sites below:
               <br/>
               <strong>
                 <a href={'https://dex.ag/'}>dex.ag</a>
