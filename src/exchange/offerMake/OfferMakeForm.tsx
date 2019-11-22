@@ -110,7 +110,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
   }
 
   public render() {
-    const isSaiMarket = this.props.quoteToken === 'SAI' && isDAIEnabled();
+    const isSaiMarket = false; // this.props.quoteToken === 'SAI' && isDAIEnabled();
     return this.props.pickerOpen ?
       this.orderTypePicker() :
       isSaiMarket ?
