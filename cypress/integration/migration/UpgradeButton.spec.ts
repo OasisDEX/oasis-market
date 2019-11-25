@@ -67,7 +67,7 @@ describe('Upgrade button', () => {
         .headerIs(ViewHeaders.updateSai);
     });
 
-    it('to swap back in the account page should display Swap Wizard when clicked', () => {
+    it.skip('to swap back in the account page should display Swap Wizard when clicked', () => {
       Tab.balances();
       MigrationWizardModal
         .openFrom(swapBtnInAccount)

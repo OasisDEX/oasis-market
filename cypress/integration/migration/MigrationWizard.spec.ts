@@ -207,7 +207,7 @@ describe('Migration Wizard', () => {
     });
   });
 
-  context('swapping', () => {
+  context.skip('swapping', () => {
     beforeEach(() => {
       Tab.balances();
     });
