@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import * as React from 'react';
 import { eth2weth } from '../../blockchain/calls/instant';
 import { tradingPairs, tradingTokens } from '../../blockchain/config';
-import { Offer, OfferType } from '../../exchange/orderbook/orderbook';
+import { OfferType } from '../../exchange/orderbook/orderbook';
 import { CloseButton } from '../../utils/forms/Buttons';
 import { marketsOf } from '../../utils/markets';
 import * as panelStyling from '../../utils/panel/Panel.scss';
