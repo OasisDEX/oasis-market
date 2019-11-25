@@ -110,6 +110,17 @@ class Migration {
 
     return this;
   }
+
+  public shouldSwap = (amount: string, token: string) => {
+    cy.get(tid('migration-wizard', tid('migration'))).within(
+      () => {
+        cy.get(tid('upgrade', tid('label'))).contains(`Swap`);
+        cy.get(tid('upgrade', tid('value'))).contains(`${amount} ${token}`);
+      }
+    );
+
+    return this;
+  }
 }
 
 class MigrationWizard {
@@ -117,6 +128,11 @@ class MigrationWizard {
     cy.get(tid('migration-wizard', tid('panel-header'))).contains(text);
 
     return this;
+  }
+
+  public shouldContainOnlySwap = () => {
+    cy.get(tid('migration-wizard', tid('cfa-cancel-orders')), timeout(0))
+      .should('not.exist');
   }
 
   public ordersToCancelIs = (count: number) => {

@@ -171,18 +171,6 @@ export class AssetsOverviewViewInternal
                   }
                 </theAppContext.Consumer>
               }
-              {
-                combinedBalance.name === 'DAI' &&
-                <theAppContext.Consumer>
-                  {({ DAI2SAIMigrationTxRx }) =>
-                    // @ts-ignore
-                    <DAI2SAIMigrationTxRx label={ 'Swap for Sai' }
-                                          tid="swap-btn-account"
-                                          className={styles.redeemBtn}
-                    />
-                  }
-                </theAppContext.Consumer>
-              }
             </td>
             <td data-test-id={`${combinedBalance.name}-balance`}
                 className={styles.amount}

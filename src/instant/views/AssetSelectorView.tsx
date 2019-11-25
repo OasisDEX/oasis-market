@@ -13,7 +13,7 @@ import * as instantStyles from '../Instant.scss';
 import { InstantFormChangeKind, InstantFormState, ViewKind } from '../instantForm';
 import * as styles from './AssetSelectorView.scss';
 
-class AssetSelectorView extends React.Component<InstantFormState & {side: OfferType}> {
+class AssetSelectorView extends React.Component<InstantFormState & { side: OfferType }> {
   public render() {
     const { balances, user } = this.props;
     return (
@@ -77,6 +77,10 @@ class AssetSelectorView extends React.Component<InstantFormState & {side: OfferT
       ? marketsOf(buyToken, tradingPairs)
       : marketsOf(sellToken, tradingPairs);
 
+    if (side === OfferType.buy) {
+      markets.delete('SAI');
+    }
+
     /* A given asset is NOT locked when:
      * 1) is part of market
      * 2) is the opposing asset
@@ -86,10 +90,7 @@ class AssetSelectorView extends React.Component<InstantFormState & {side: OfferT
      * */
 
     return !markets.has(eth2weth(asset))
-      && asset !== sellToken
-      && asset !== eth2weth(sellToken)
-      && asset !== buyToken
-      && asset !== eth2weth(buyToken);
+      && asset !== eth2weth(side === OfferType.sell ? sellToken : buyToken);
   }
 }
 

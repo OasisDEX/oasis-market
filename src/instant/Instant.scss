@@ -139,12 +139,21 @@
 }
 
 
-.swapIcon {
+.swapBtn {
   position: relative;
   bottom: 1.5rem;
   margin: auto .5rem;
+  border: 0;
 
-  cursor: pointer;
+  &:hover, :active {
+    background: none !important;
+  }
+
+  &:disabled {
+    :global(.swap-icon) {
+      fill: $disabled;
+    }
+  }
 }
 
 .cornerIcon {
@@ -161,7 +170,7 @@
     fill: transparent;
   }
 
-  &:hover:not(:disabled){
+  &:hover:not(:disabled) {
     :global(.account-icon-background) {
       fill: white;
     }
@@ -176,7 +185,7 @@
   background: white;
   border-color: $element-border;
 
-  :global(.cog-wheel-icon), :global(.back-icon),  :global(.account-icon-body) {
+  :global(.cog-wheel-icon), :global(.back-icon), :global(.account-icon-body) {
     fill: $info-label-color;
   }
 
@@ -184,7 +193,7 @@
     border-color: #708390;
     background-color: white !important;
 
-    :global(.cog-wheel-icon), :global(.back-icon),  :global(.account-icon-body) {
+    :global(.cog-wheel-icon), :global(.back-icon), :global(.account-icon-body) {
       fill: #708390;
     }
   }
@@ -192,7 +201,7 @@
   &:disabled {
     border-color: #D1DEE6;
 
-    :global(.cog-wheel-icon), :global(.back-icon),  :global(.account-icon-body) {
+    :global(.cog-wheel-icon), :global(.back-icon), :global(.account-icon-body) {
       fill: #D1DEE6;
     }
   }

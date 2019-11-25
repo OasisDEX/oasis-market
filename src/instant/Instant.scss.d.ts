@@ -11,7 +11,7 @@ export const errors: string;
 export const warnings: string;
 export const hidden: string;
 export const tradingSide: string;
-export const swapIcon: string;
+export const swapBtn: string;
 export const cornerIcon: string;
 export const accountIcon: string;
 export const settingsIcon: string;
