@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import * as React from 'react';
 import { eth2weth } from '../../blockchain/calls/instant';
 import { tradingPairs, tradingTokens } from '../../blockchain/config';
-import { OfferType } from '../../exchange/orderbook/orderbook';
+import { Offer, OfferType } from '../../exchange/orderbook/orderbook';
 import { CloseButton } from '../../utils/forms/Buttons';
 import { marketsOf } from '../../utils/markets';
 import * as panelStyling from '../../utils/panel/Panel.scss';
@@ -13,7 +13,7 @@ import * as instantStyles from '../Instant.scss';
 import { InstantFormChangeKind, InstantFormState, ViewKind } from '../instantForm';
 import * as styles from './AssetSelectorView.scss';
 
-class AssetSelectorView extends React.Component<InstantFormState & {side: OfferType}> {
+class AssetSelectorView extends React.Component<InstantFormState & { side: OfferType }> {
   public render() {
     const { balances, user } = this.props;
     return (
@@ -73,9 +73,15 @@ class AssetSelectorView extends React.Component<InstantFormState & {side: OfferT
   private isLocked = (asset: string): boolean => {
     const { side, buyToken, sellToken } = this.props;
 
+    console.log(side);
+
     const markets = side === OfferType.sell
       ? marketsOf(buyToken, tradingPairs)
       : marketsOf(sellToken, tradingPairs);
+
+    if (side === OfferType.buy) {
+      markets.delete('SAI');
+    }
 
     /* A given asset is NOT locked when:
      * 1) is part of market
