@@ -17,9 +17,30 @@ const input = (side: 'sellInput' | 'buyInput') => ({
 
 });
 
+export enum TradingSide {
+  BUY = 'buy',
+  SELL = 'sell'
+}
+
 export class Trade {
 
-  public static swapTokens = () => cy.get(tid('swap'), timeout(1000)).click();
+  public static swapTokens = () => cy.get(tid('swap')).click();
+
+  public static shouldHaveSwapDisabled = () => cy.get(tid('swap')).should('be.disabled');
+
+  public static openAssetSelectorFor = (side: TradingSide) => {
+    if (side === TradingSide.BUY) {
+      cy.get(tid('buying-token', tid('balance')))
+        .click();
+    } else {
+      cy.get(tid('selling-token', tid('balance')))
+        .click();
+    }
+  }
+
+  public static expectAssetLocked = (asset: string) => {
+    cy.get(tid(asset.toLowerCase(), tid('asset-button'))).should('be.disabled');
+  }
 
   public expectPriceImpact = (priceImpact: string | RegExp, aboveThreshold: boolean) => {
     cy.get(tid('trade-price-impact', tid('value')))

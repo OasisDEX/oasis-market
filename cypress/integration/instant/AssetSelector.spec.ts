@@ -1,7 +1,7 @@
 import { Tab } from '../../pages/Tab';
-import { Trade } from '../../pages/Trade';
+import { Trade, TradingSide } from '../../pages/Trade';
 import { WalletConnection } from '../../pages/WalletConnection';
-import { cypressVisitWithWeb3, tid, timeout } from '../../utils';
+import { cypressVisitWithWeb3 } from '../../utils';
 
 describe('Selecting an asset', () => {
 
@@ -36,46 +36,48 @@ describe('Selecting an asset', () => {
       trade.expectReceiveToken(receiveIn);
     });
 
-    it('should swap pay and receive token when receive token is the same as pay token', () => {
-      const payIn = 'DAI';
-      const receiveIn = 'ETH';
-
-      const trade = new Trade();
-      trade.sell(payIn);
-
-      trade.expectPayToken(payIn);
-      trade.expectReceiveToken(receiveIn);
-    });
-
-    // tslint:disable-next-line:max-line-length
-    it('should swap pay and receive token when receive token (WETH) is the same as pay token (ETH) ', () => {
-      const payIn = 'DAI';
-      const receiveIn = 'WETH';
-
-      const trade = new Trade();
-      trade.buy(receiveIn);
-
-      trade.expectPayToken(payIn);
-      trade.expectReceiveToken(receiveIn);
-    });
-
     // tslint:disable-next-line:max-line-length
     it('should not be able to select receive token that do not form a market with the deposit one', () => {
       // change from BAT because we introduced WETH markets so BAT/WETH or BAT/ETH is available
       const token = 'USDC';
 
-      cy.get(tid('buying-token', tid('balance')), timeout(2000))
-        .click();
+      Trade.openAssetSelectorFor(TradingSide.BUY);
 
-      cy.get(tid(token.toLowerCase(), tid('asset-button'))).should('be.disabled');
+      Trade.expectAssetLocked(token);
+    });
+
+    it('should not be able to select current receive token',  () => {
+      const token = 'DAI';
+
+      Trade.openAssetSelectorFor(TradingSide.SELL);
+
+      Trade.expectAssetLocked(token);
+    });
+
+    it('should not be able to swap token if paying with SAI', () => {
+      const payIn = 'SAI';
+      const receiveIn = 'ETH';
+
+      Trade.swapTokens();
+
+      const trade = new Trade();
+      trade.sell(payIn);
+      trade.buy(receiveIn);
+
+      trade.expectPayToken(payIn);
+      trade.expectReceiveToken(receiveIn);
+
+      Trade.shouldHaveSwapDisabled();
     });
   });
 
   context('for receive token', () => {
     const defaultTokens = () => {
       const trade = new Trade();
-      trade.sell('DAI');
-      trade.buy('ETH');
+      // This assume that initial state was
+      // ETH - DEPOSIT TOKEN
+      // DAI - RECEIVE TOKEN
+      Trade.swapTokens();
 
       trade.expectPayToken('DAI');
       trade.expectReceiveToken('ETH');
@@ -86,36 +88,13 @@ describe('Selecting an asset', () => {
     });
 
     it('should replace only the receive token', () => {
-      const payIn = 'DAI';
-      const receiveIn = 'WETH';
+      const payWith = 'DAI';
+      const receiveIn = 'REP';
 
       const trade = new Trade();
       trade.buy(receiveIn);
 
-      trade.expectPayToken(payIn);
-      trade.expectReceiveToken(receiveIn);
-    });
-
-    it('should swap pay and receive token when receive token is the same as pay token', () => {
-      const payIn = 'ETH';
-      const receiveIn = 'DAI';
-
-      const trade = new Trade();
-      trade.buy(receiveIn);
-
-      trade.expectPayToken(payIn);
-      trade.expectReceiveToken(receiveIn);
-    });
-
-    // tslint:disable-next-line:max-line-length
-    it('should swap pay and receive token when receive token (ETH) is the same as pay token (WETH) ', () => {
-      const payIn = 'WETH';
-      const receiveIn = 'DAI';
-
-      const trade = new Trade();
-      trade.sell(payIn);
-
-      trade.expectPayToken(payIn);
+      trade.expectPayToken(payWith);
       trade.expectReceiveToken(receiveIn);
     });
 
@@ -126,10 +105,27 @@ describe('Selecting an asset', () => {
       const trade = new Trade();
       trade.buy('ZRX');
 
-      cy.get(tid('selling-token', tid('balance')), timeout(2000))
-        .click();
+      Trade.openAssetSelectorFor(TradingSide.SELL);
+      Trade.expectAssetLocked(token);
+    });
 
-      cy.get(tid(token.toLowerCase(), tid('asset-button'))).should('be.disabled');
+    it('should not be able to select current deposit token', () => {
+      const token = 'DAI';
+
+      Trade.openAssetSelectorFor(TradingSide.BUY);
+
+      Trade.expectAssetLocked(token);
+    });
+
+    it('should not be able to select SAI as receive token', () => {
+      const payWith = 'REP';
+      const receive = 'SAI';
+
+      const trade = new Trade();
+      trade.sell(payWith);
+
+      Trade.openAssetSelectorFor(TradingSide.BUY);
+      Trade.expectAssetLocked(receive);
     });
   });
 });

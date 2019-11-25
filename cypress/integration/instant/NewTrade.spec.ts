@@ -139,7 +139,7 @@ describe('New trade', () => {
       trade.resultsInError(`You don't have 200.00 DAI in your wallet`, 'bottom');
     });
 
-    it.only('should highlight the price impact in the trade details', () => {
+    it('should highlight the price impact in the trade details', () => {
       Tab.market();
 
       const price = '50';
