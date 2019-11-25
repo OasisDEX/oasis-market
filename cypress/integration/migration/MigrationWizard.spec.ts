@@ -6,7 +6,7 @@ import {
 import {
   migrationBtnInHeader,
   migrationBtnInMarket,
-  MigrationWizardModal
+  MigrationWizardModal, swapBtnInAccount
 } from '../../pages/Migration';
 import * as Proxy from '../../pages/Proxy';
 import { Tab } from '../../pages/Tab';
@@ -201,6 +201,118 @@ describe('Migration Wizard', () => {
         .shouldCreateProxy()
         .shouldSetAllowanceTo(token)
         .shouldMigrate(amount, token);
+
+      wizard.amountToMigrateIs(balanceAfterMigration);
+      wizard.nothingToMigrate();
+    });
+  });
+
+  context('swapping', () => {
+    beforeEach(() => {
+      Tab.balances();
+    });
+
+    it('should not prompt the user to close his dai orders', () => {
+      const wizard = MigrationWizardModal
+        .openFrom(swapBtnInAccount);
+
+      wizard.shouldContainOnlySwap();
+    });
+
+    it('should have input field populated with amount equal to the balance', () => {
+      const wizard = MigrationWizardModal
+        .openFrom(swapBtnInAccount);
+
+      wizard.amountInTheInputIs('170.0000');
+    });
+
+    // tslint:disable-next-line:max-line-length
+    it('should display an error if the user tries to enter a value bigger than his balance', () => {
+      const wizard = MigrationWizardModal
+        .openFrom(swapBtnInAccount);
+
+      wizard.amountToMigrateIs('170.0000');
+      wizard.typeAmount('220.0000');
+      wizard.shouldHaveAnError('You don\'t have enough funds');
+    });
+
+    it('should swap amount specified from the user', () => {
+      const amount = '20.0000';
+      const token = 'DAI';
+      const balanceAfterMigration = '150.0000';
+      const wizard = MigrationWizardModal
+        .openFrom(swapBtnInAccount);
+
+      wizard.migrate(amount)
+        .shouldCreateProxy()
+        .shouldSetAllowanceTo(token)
+        .shouldSwap(amount, token);
+
+      wizard.amountToMigrateIs(balanceAfterMigration);
+    });
+
+    it('should set allowance and swap if user has proxy', () => {
+      const amount = '20.0000';
+      const token = 'DAI';
+      const balanceAfterMigration = '150.0000';
+
+      Tab.instant();
+      Proxy.settings().click();
+      Proxy.create();
+      Proxy.hasStatus(Proxy.ProxyStatus.ENABLED);
+
+      Tab.balances();
+
+      const wizard = MigrationWizardModal
+        .openFrom(swapBtnInAccount);
+
+      wizard.migrate(amount)
+        .shouldNotCreateProxy()
+        .shouldSetAllowanceTo(token)
+        .shouldSwap(amount, token);
+
+      wizard.amountToMigrateIs(balanceAfterMigration);
+    });
+
+    it('should only swap if user has proxy and allowance', () => {
+      const amount = '20.0000';
+      const token = 'DAI';
+      const balanceAfterMigration = '150.0000';
+
+      Tab.instant();
+      Proxy.settings().click();
+      Proxy.create();
+      Proxy.hasStatus(Proxy.ProxyStatus.ENABLED);
+
+      checkProxyAllowances();
+      setAllowanceOf(token);
+      expectAllowanceStatusFor(token, 'true');
+
+      Tab.balances();
+
+      const wizard = MigrationWizardModal
+        .openFrom(swapBtnInAccount);
+
+      wizard.migrate(amount)
+        .shouldNotCreateProxy()
+        .shouldNotSetAllowance()
+        .shouldSwap(amount, token);
+
+      wizard.amountToMigrateIs(balanceAfterMigration);
+    });
+
+    it('should display to the user that all DAI is swapped', () => {
+      const amount = '170.0000';
+      const token = 'DAI';
+      const balanceAfterMigration = '0.0000';
+
+      const wizard = MigrationWizardModal
+        .openFrom(swapBtnInAccount);
+
+      wizard.migrate()
+        .shouldCreateProxy()
+        .shouldSetAllowanceTo(token)
+        .shouldSwap(amount, token);
 
       wizard.amountToMigrateIs(balanceAfterMigration);
       wizard.nothingToMigrate();
