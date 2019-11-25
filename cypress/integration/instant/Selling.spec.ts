@@ -95,6 +95,8 @@ describe('Selling', () => {
       const willReceive = '0.332';
       const price = '301 ETH/DAI';
 
+      Trade.swapTokens();
+
       const trade = new Trade();
       trade.sell(from).amount(willPay);
 
@@ -141,6 +143,8 @@ describe('Selling', () => {
       const willReceiveMore = '0.664';
       const newPrice = '301 ETH/DAI';
 
+      Trade.swapTokens();
+
       const secondTrade = new Trade();
       secondTrade.buy(from);
       secondTrade.sell(to).amount(willPayMore);
@@ -169,6 +173,8 @@ describe('Selling', () => {
       const to = 'ETH';
       const willPay = '100';
       const price = '301 ETH/DAI';
+
+      Trade.swapTokens();
 
       const trade = new Trade();
       trade.sell(from).amount(willPay);
@@ -205,6 +211,8 @@ describe('Selling', () => {
       const willPay = '5';
       const willReceive = '0.016';
       const price = '301 WETH/DAI';
+
+      Trade.swapTokens();
 
       const trade = new Trade();
       trade.buy(to);
@@ -248,6 +256,7 @@ describe('Selling', () => {
       summary.expectPriceOf(price);
 
       nextTrade();
+      Trade.swapTokens();
 
       const switchTo = 'WETH';
       const switchFrom = 'DAI';
@@ -284,6 +293,8 @@ describe('Selling', () => {
       const willReceive = '0.016';
       const price = '301 WETH/DAI';
 
+      Trade.swapTokens();
+
       const trade = new Trade();
       trade.buy(to);
       trade.sell(from).amount(willPay);
@@ -318,6 +329,8 @@ describe('Selling', () => {
       const willPay = '5';
       const willReceive = '0.016';
       const price = '301 ETH/SAI';
+
+      Trade.swapTokens();
 
       const trade = new Trade();
       trade.buy(to);
@@ -362,6 +375,8 @@ describe('Selling', () => {
 
       nextTrade();
 
+      Trade.swapTokens();
+
       const switchTo = 'ETH';
       const switchFrom = 'SAI';
       const willPayMore = '5';
@@ -396,6 +411,8 @@ describe('Selling', () => {
       const willPay = '5';
       const willReceive = '0.016';
       const price = '301 ETH/SAI';
+
+      Trade.swapTokens();
 
       const trade = new Trade();
       trade.buy(to);

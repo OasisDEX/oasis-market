@@ -94,6 +94,8 @@ describe('Buying', () => {
       const willReceive = '0.123';
       const price = '301 ETH/DAI';
 
+      Trade.swapTokens();
+
       const trade = new Trade();
       trade.buy(to).amount(willReceive);
 
@@ -122,6 +124,8 @@ describe('Buying', () => {
       trade.execute();
 
       nextTrade();
+
+      Trade.swapTokens();
 
       const nextFrom = 'DAI';
       const nextTo = 'ETH';
@@ -158,6 +162,8 @@ describe('Buying', () => {
       const willReceive = '0.123';
       const price = '301 ETH/DAI';
 
+      Trade.swapTokens();
+
       const trade = new Trade();
       trade.sell(from);
       trade.buy(to).amount(willReceive);
@@ -190,6 +196,8 @@ describe('Buying', () => {
       const willReceive = '0.5';
       const price = '301 WETH/DAI';
 
+      Trade.swapTokens();
+
       const trade = new Trade();
       trade.sell(from);
       trade.buy(to).amount(willReceive);
@@ -219,6 +227,8 @@ describe('Buying', () => {
       trade.execute();
 
       nextTrade();
+
+      Trade.swapTokens();
 
       const nextFrom = 'DAI';
       const nextTo = 'WETH';
@@ -252,6 +262,8 @@ describe('Buying', () => {
       const to = 'WETH';
       const willReceive = '0.3';
       const price = '301 WETH/DAI';
+
+      Trade.swapTokens();
 
       const trade = new Trade();
       trade.sell(from);
@@ -364,7 +376,6 @@ describe('Buying', () => {
       nextTrade();
 
       const newTrade = new Trade();
-      Trade.swapTokens();
       trade.sell(from);
       trade.buy(to).amount(willReceive);
 

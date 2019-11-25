@@ -89,6 +89,8 @@ describe('Trade Settings', () => {
 
       TradeData.expectSlippageLimit('3.00');
 
+      Trade.swapTokens();
+
       new Trade().buy('WETH').amount('1');
 
       TradeData.expectSlippageLimit('5.00');
