@@ -73,8 +73,6 @@ class AssetSelectorView extends React.Component<InstantFormState & { side: Offer
   private isLocked = (asset: string): boolean => {
     const { side, buyToken, sellToken } = this.props;
 
-    console.log(side);
-
     const markets = side === OfferType.sell
       ? marketsOf(buyToken, tradingPairs)
       : marketsOf(sellToken, tradingPairs);
@@ -92,10 +90,7 @@ class AssetSelectorView extends React.Component<InstantFormState & { side: Offer
      * */
 
     return !markets.has(eth2weth(asset))
-      && asset !== sellToken
-      && asset !== eth2weth(sellToken)
-      && asset !== buyToken
-      && asset !== eth2weth(buyToken);
+      && asset !== eth2weth(side === OfferType.sell ? sellToken : buyToken);
   }
 }
 
