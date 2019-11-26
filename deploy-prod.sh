@@ -1,6 +1,5 @@
 rm -rf ./build
 
-# MAKE THIS TO OASIS.APP
 PUBLIC_URL='https://oasis.app/trade' yarn build
 
 # Push to ghpages branch
