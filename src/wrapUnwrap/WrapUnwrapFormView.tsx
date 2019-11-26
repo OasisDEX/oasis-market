@@ -221,6 +221,8 @@ export class WrapUnwrapFormView
         return `Your ${msg.token} balance is too low`;
       case MessageKind.dustAmount:
         return `Amount is too low`;
+      case MessageKind.cannotPayForGas:
+        return `You will not be able to pay the gas cost`;
     }
   }
 
