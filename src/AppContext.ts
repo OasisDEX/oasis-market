@@ -358,6 +358,7 @@ export function setupAppContext() {
             buy: [] as Offer[],
             sell: [] as Offer[],
             blockNumber: 0,
+            tradingPair: { base: '', quote: '' }
           };
 
           return orderbooks.reduce(

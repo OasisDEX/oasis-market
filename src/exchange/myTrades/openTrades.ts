@@ -9,7 +9,6 @@ import {
   TxState,
   TxStatus
 } from '../../blockchain/transactions';
-import { Omit } from '../../utils/omit';
 import { Offer, OfferType, Orderbook } from '../orderbook/orderbook';
 import { compareTrades, Trade, TradeRole } from '../trades';
 import { TradingPair } from '../tradingPair/tradingPair';
@@ -37,6 +36,12 @@ function txnEarlierThan(txn: TxState, blockNumber: number) {
   }
 
   return true;
+}
+
+function txnPerOrderbook(txn: TxState, pair: TradingPair) {
+  const { buyToken, sellToken } = txn.meta.args;
+  return (buyToken === pair.quote || buyToken === pair.base)
+    && (sellToken === pair.base || sellToken === pair.quote);
 }
 
 function isBeingCancelled(offer: Offer, transactions: TxState[]): boolean {
@@ -97,7 +102,7 @@ function offerToTrade(tnxs: TxState[]): (offer: Offer) => TradeWithStatus {
 }
 
 export function createMyOpenTrades$(
-  orderbook$: Observable<Omit<Orderbook, 'tradingPair'>>,
+  orderbook$: Observable<Orderbook>,
   account$: Observable<string | undefined>,
   transactions$: Observable<TxState[]>,
   // the usage with memoizeTradingPair just killed my enthusiasm to figure out how to remove it
@@ -109,6 +114,7 @@ export function createMyOpenTrades$(
 
       return txns
         .filter(txn =>
+          txnPerOrderbook(txn, orderbook.tradingPair) &&
           txnMetaOfKind(TxMetaKind.offerMake)(txn) &&
           txnInProgress(txn) &&
           txnEarlierThan(txn, orderbook.blockNumber))
