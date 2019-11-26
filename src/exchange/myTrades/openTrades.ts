@@ -5,10 +5,12 @@ import { map, shareReplay } from 'rxjs/operators';
 import { BigNumber } from 'bignumber.js';
 import { Error } from 'tslint/lib/error';
 import { TxMetaKind } from '../../blockchain/calls/txMeta';
+import { tradingPairs } from '../../blockchain/config';
 import {
   TxState,
   TxStatus
 } from '../../blockchain/transactions';
+import { Omit } from '../../utils/omit';
 import { Offer, OfferType, Orderbook } from '../orderbook/orderbook';
 import { compareTrades, Trade, TradeRole } from '../trades';
 import { TradingPair } from '../tradingPair/tradingPair';
@@ -38,8 +40,13 @@ function txnEarlierThan(txn: TxState, blockNumber: number) {
   return true;
 }
 
-function txnPerOrderbook(txn: TxState, pair: TradingPair) {
+function txnPerOrderbook(txn: TxState, pair?: TradingPair) {
   const { buyToken, sellToken } = txn.meta.args;
+
+  if (!pair) {
+    return txn;
+  }
+
   return (buyToken === pair.quote || buyToken === pair.base)
     && (sellToken === pair.base || sellToken === pair.quote);
 }
@@ -102,19 +109,19 @@ function offerToTrade(tnxs: TxState[]): (offer: Offer) => TradeWithStatus {
 }
 
 export function createMyOpenTrades$(
-  orderbook$: Observable<Orderbook>,
+  orderbook$: Observable<Omit<Orderbook, 'tradingPair'>>,
   account$: Observable<string | undefined>,
   transactions$: Observable<TxState[]>,
   // the usage with memoizeTradingPair just killed my enthusiasm to figure out how to remove it
-  _: TradingPair,
+  tradingPair?: TradingPair,
 ): Observable<TradeWithStatus[]> {
   return combineLatest(orderbook$, account$, transactions$).pipe(
     map(([orderbook, account, txns]) => {
       const myOffer = (o: Offer) => o.ownerId === account;
-
+      console.log(tradingPair);
       return txns
         .filter(txn =>
-          txnPerOrderbook(txn, orderbook.tradingPair) &&
+          txnPerOrderbook(txn, tradingPair) &&
           txnMetaOfKind(TxMetaKind.offerMake)(txn) &&
           txnInProgress(txn) &&
           txnEarlierThan(txn, orderbook.blockNumber))
@@ -128,4 +135,37 @@ export function createMyOpenTrades$(
     }),
     shareReplay(1),
   );
+}
+
+export function aggregateMyOpenTradesFor$(
+  market: 'SAI' | 'DAI' | 'WETH',
+  account$: Observable<string | undefined>,
+  txns$: Observable<TxState[]>,
+  loadOrderbook: (pair: TradingPair) => Observable<Orderbook>
+) {
+  const aggregatedOrderbook = combineLatest(...tradingPairs
+    .filter(pair => pair.quote === market)
+    .map(pair => loadOrderbook(pair))
+  )
+    .pipe(
+      map((orderbooks) => {
+        const orderbook = {
+          buy: [] as Offer[],
+          sell: [] as Offer[],
+          blockNumber: 0,
+        };
+
+        return orderbooks.reduce(
+          (aggregate, currentOrderbook) => {
+            aggregate.buy = [...aggregate.buy, ...currentOrderbook.buy];
+            aggregate.sell = [...aggregate.sell, ...currentOrderbook.sell];
+            // the blockNumber is the same for all of them
+            aggregate.blockNumber = currentOrderbook.blockNumber;
+            return aggregate;
+          },
+          orderbook
+        );
+      }));
+
+  return createMyOpenTrades$(aggregatedOrderbook, account$, txns$);
 }

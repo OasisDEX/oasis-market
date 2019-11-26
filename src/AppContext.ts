@@ -43,20 +43,17 @@ import {
   tokenPricesInUSD$
 } from './blockchain/network';
 import { user$ } from './blockchain/user';
-import { loadOrderbook$, Offer, Orderbook } from './exchange/orderbook/orderbook';
+import { loadOrderbook$, Orderbook } from './exchange/orderbook/orderbook';
 import {
   createTradingPair$,
   currentTradingPair$,
   loadablifyPlusTradingPair,
   memoizeTradingPair,
-  TradingPair,
 } from './exchange/tradingPair/tradingPair';
 
 import { BigNumber } from 'bignumber.js';
 import * as mixpanel from 'mixpanel-browser';
 import { of } from 'rxjs/index';
-import { TxMetaKind } from './blockchain/calls/txMeta';
-import { tradingPairs } from './blockchain/config';
 import { transactions$, TxState } from './blockchain/transactions';
 import {
   createAllTrades$,
@@ -84,7 +81,7 @@ import {
   createMyTradesKind$,
 } from './exchange/myTrades/myTrades';
 import { MyTrades } from './exchange/myTrades/MyTradesView';
-import { createMyOpenTrades$ } from './exchange/myTrades/openTrades';
+import { aggregateMyOpenTradesFor$, createMyOpenTrades$ } from './exchange/myTrades/openTrades';
 import { createFormController$, OfferFormState } from './exchange/offerMake/offerMake';
 import { OfferMakePanel } from './exchange/offerMake/OfferMakePanel';
 import {
@@ -130,7 +127,6 @@ import { inject } from './utils/inject';
 import { Loadable, LoadableWithTradingPair, loadablifyLight, } from './utils/loadable';
 import { withModal } from './utils/modal';
 import { createWrapUnwrapForm$ } from './wrapUnwrap/wrapUnwrapForm';
-
 export function setupAppContext() {
 
   const NetworkTxRx = connect(Network, context$);
@@ -347,39 +343,6 @@ export function setupAppContext() {
     export: () => createTaxExport$(context$, initializedAccount$)
   });
 
-  const aggregatedOpenOrders$ = (token: 'SAI' | 'DAI') => createMyOpenTrades$(
-    combineLatest(...tradingPairs
-      .filter(pair => pair.quote === token)
-      .map(pair => loadOrderbook(pair))
-    )
-      .pipe(
-        map((orderbooks) => {
-          const aggregatedOrderbook = {
-            buy: [] as Offer[],
-            sell: [] as Offer[],
-            blockNumber: 0,
-            tradingPair: { base: '', quote: '' }
-          };
-
-          return orderbooks.reduce(
-            (aggregate, currentOrderbook) => {
-              aggregate.buy = [...aggregate.buy, ...currentOrderbook.buy];
-              aggregate.sell = [...aggregate.sell, ...currentOrderbook.sell];
-              // the blockNumber is the same for all of them
-              aggregate.blockNumber = currentOrderbook.blockNumber;
-              return aggregate;
-            },
-            aggregatedOrderbook
-          );
-        })),
-    account$,
-    transactions$.pipe(
-      map((transactions: TxState[]) => transactions
-        .filter(tx => tx.meta.kind === TxMetaKind.cancel)),
-    ),
-    {} as TradingPair
-  );
-
   const sai2DAIOps$ = curry(createMigrationOps$)(
     'SAI',
     createProxyAllowances$(
@@ -420,7 +383,7 @@ export function setupAppContext() {
     MigrationFormKind.sai2dai,
     sai2DAIMigration$,
     calls$,
-    aggregatedOpenOrders$('SAI')
+    aggregateMyOpenTradesFor$('SAI', account$, transactions$, loadOrderbook)
   );
 
   const dai2SAIMigrationForm$ = createMigrationForm$(
@@ -429,7 +392,7 @@ export function setupAppContext() {
     MigrationFormKind.dai2sai,
     dai2SAIMigration$,
     calls$,
-    aggregatedOpenOrders$('DAI')
+    aggregateMyOpenTradesFor$('DAI', account$, transactions$, loadOrderbook)
   );
 
   const SAI2DAIMigrationTxRx =
