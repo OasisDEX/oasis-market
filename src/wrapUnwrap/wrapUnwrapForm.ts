@@ -101,7 +101,7 @@ function validate(state: WrapUnwrapFormState) {
   const messages: Message[] = [];
 
   const balance = ((kind: WrapUnwrapFormKind) => {
-    switch (kind){
+    switch (kind) {
       case WrapUnwrapFormKind.wrap:
         return state.ethBalance;
       case WrapUnwrapFormKind.unwrap:
@@ -127,21 +127,6 @@ function validate(state: WrapUnwrapFormState) {
     });
   }
 
-  const wrapDelta = state.gasEstimationEth && balance
-    ? balance.minus(state.gasEstimationEth)
-    : new BigNumber(0.001);
-
-  if (balance
-    && state.amount
-    && state.kind === WrapUnwrapFormKind.wrap
-    && state.amount.gte(wrapDelta)
-    && state.amount.lt(balance)
-  ) {
-    messages.push({
-      kind: MessageKind.cannotPayForGas
-    });
-  }
-
   return {
     ...state,
     messages,
@@ -153,7 +138,7 @@ function estimateGasPrice(
 ): Observable<WrapUnwrapFormState> {
   return doGasEstimation(calls$, undefined, state, (calls: Calls) => {
 
-    if (!state.amount || !state.gasPrice) {
+    if (!state.amount || !state.gasPrice || state.messages.length > 0) {
 
       return undefined;
     }
@@ -170,6 +155,34 @@ function estimateGasPrice(
     const args: any = { amount: state.amount, gasPrice: state.gasPrice };
     return call(args);
   });
+}
+
+function checkIfCanPayGas(state: WrapUnwrapFormState) {
+  const { kind, messages, ethBalance: balance, amount, gasEstimationEth } = state;
+
+  if (!gasEstimationEth) {
+    return state;
+  }
+
+  const wrapDelta = gasEstimationEth && balance
+    ? balance.minus(gasEstimationEth)
+    : new BigNumber(0.001);
+
+  if (balance
+    && amount
+    && kind === WrapUnwrapFormKind.wrap
+    && amount.gte(wrapDelta)
+    && amount.lt(balance)
+  ) {
+    messages.push({
+      kind: MessageKind.cannotPayForGas
+    });
+  }
+
+  return {
+    ...state,
+    messages
+  };
 }
 
 function checkIfIsReadyToProceed(state: WrapUnwrapFormState) {
@@ -309,8 +322,9 @@ export function createWrapUnwrapForm$(
     proceedProgressChange$
   ).pipe(
     scan(applyChange, initialState),
-    switchMap(curry(estimateGasPrice)(calls$)),
     map(validate),
+    switchMap(curry(estimateGasPrice)(calls$)),
+    map(checkIfCanPayGas),
     map(checkIfIsReadyToProceed),
     scan(freezeIfInProgress),
     firstOfOrTrue(s => s.gasEstimationStatus === GasEstimationStatus.calculating)
