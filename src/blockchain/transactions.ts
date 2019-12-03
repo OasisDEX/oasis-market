@@ -1,16 +1,17 @@
 import * as _ from 'lodash';
 import { fromPairs } from 'ramda';
-import { bindNodeCallback, combineLatest, interval, Observable, of, Subject } from 'rxjs';
+import { bindNodeCallback, combineLatest, Observable, of, Subject, timer } from 'rxjs';
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
 import { ajax } from 'rxjs/ajax';
 import {
-  catchError, distinctUntilChanged,
+  catchError,
   filter,
   first,
   map,
   mergeMap,
   scan,
-  shareReplay, startWith,
+  shareReplay,
+  startWith,
   switchMap,
 } from 'rxjs/operators';
 
@@ -201,34 +202,14 @@ export function send(
   }
 
   const result: Observable<TxState> = bindNodeCallback(method)(...args).pipe(
-    mergeMap((txHash: string) => {
-      const broadcastedAt = new Date();
-      return interval(500).pipe(
+    map((txHash: string) => [txHash, new Date()]),
+    mergeMap(([txHash, broadcastedAt]: [string, Date]) =>
+      timer(0, 1000).pipe(
         switchMap(() => bindNodeCallback(web3.eth.getTransaction as GetTransaction)(txHash)),
-        takeWhileInclusive(transaction => !transaction
-          || (transaction && !transaction.blockHash)
-        ),
-        distinctUntilChanged(),
-        mergeMap((transaction) => {
-          if (!transaction) {
-            return of({
-              ...common,
-              broadcastedAt,
-              txHash,
-              status: TxStatus.Propagating,
-            } as TxState);
-          }
-
-          if (transaction && !transaction.blockHash) {
-            return of({
-              ...common,
-              broadcastedAt,
-              txHash,
-              status: TxStatus.WaitingForConfirmation,
-            } as TxState);
-          }
-
-          return txRebroadcastStatus(transaction).pipe(
+        filter(transaction => !!transaction),
+        first(),
+        mergeMap((transaction: TransactionLike) =>
+          txRebroadcastStatus(transaction).pipe(
             switchMap(([hash, rebroadcast]) =>
               bindNodeCallback(web3.eth.getTransactionReceipt as GetTransactionReceipt)(hash).pipe(
                 filter(receipt => receipt && !!receipt.blockNumber),
@@ -238,6 +219,12 @@ export function send(
               )
             ),
             first(),
+            startWith({
+              ...common,
+              broadcastedAt,
+              txHash,
+              status: TxStatus.WaitingForConfirmation,
+            } as TxState),
             catchError(error => {
               return of({
                 ...common,
@@ -248,16 +235,16 @@ export function send(
                 status: TxStatus.Error,
               } as TxState);
             }),
-          ) as any as Observable<TxState>;
-        }),
+          ) as any as Observable<TxState>
+        ),
         startWith({
           ...common,
           broadcastedAt,
           txHash,
           status: TxStatus.Propagating,
         } as TxState),
-      );
-    }),
+      )
+    ),
     startWith({
       ...common,
       status: TxStatus.WaitingForApproval,
