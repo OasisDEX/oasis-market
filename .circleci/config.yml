@@ -210,7 +210,7 @@ workflows:
       - deploy_prod:
           requires:
             - test
-            - test-e2e
+#            - test-e2e
           filters:
             branches:
               only: master
