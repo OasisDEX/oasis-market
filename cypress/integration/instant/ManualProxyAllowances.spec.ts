@@ -6,6 +6,7 @@ import {
 } from '../../pages/Allowance';
 import * as Proxy from '../../pages/Proxy';
 import { Tab } from '../../pages/Tab';
+import { instantForm } from '../../pages/Trade';
 import { WalletConnection } from '../../pages/WalletConnection';
 import { cypressVisitWithWeb3, tid } from '../../utils';
 
@@ -20,6 +21,7 @@ describe('Proxy Allowance', () => {
     WalletConnection.connect();
     WalletConnection.isConnected();
     Tab.instant();
+    instantForm();
     Proxy.settings().click();
     Proxy.create();
   });

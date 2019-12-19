@@ -22,6 +22,8 @@ export enum TradingSide {
   SELL = 'sell'
 }
 
+export  const instantForm = () => cy.get(tid('instant-form'));
+
 export class Trade {
 
   public static swapTokens = () => cy.get(tid('swap')).click();

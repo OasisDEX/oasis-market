@@ -1,7 +1,7 @@
 import { Order } from '../../pages/Order';
 import { Orderbook, OrderType } from '../../pages/Orderbook';
 import { Tab } from '../../pages/Tab';
-import { Trade } from '../../pages/Trade';
+import { instantForm, Trade } from '../../pages/Trade';
 import { TradeData } from '../../pages/TradeData';
 import { WalletConnection } from '../../pages/WalletConnection';
 import { cypressVisitWithWeb3, multiply, tid, timeout } from '../../utils';
@@ -9,8 +9,8 @@ import { makeScreenshots } from '../../utils/makeScreenshots';
 
 const waitForBalancesToLoad = () => {
   cy.wait(1000);
-  cy.get(tid('selling-token', tid('balance')), timeout()).contains(/8,999.../);
-  cy.get(tid('buying-token', tid('balance')), timeout()).contains(/170.../);
+  cy.get(tid('selling-token', tid('balance'))).contains(/8,999.../);
+  cy.get(tid('buying-token', tid('balance'))).contains(/170.../);
 };
 
 describe('New trade', () => {
@@ -27,6 +27,7 @@ describe('New trade', () => {
       cypressVisitWithWeb3();
       WalletConnection.connect();
       Tab.instant();
+      instantForm();
       waitForBalancesToLoad();
     });
 
@@ -131,12 +132,14 @@ describe('New trade', () => {
     });
 
     it('should display error if balance is too low', () => {
+      const token = 'SAI';
+
       Trade.swapTokens();
 
       const trade = new Trade();
-      trade.sell().amount('200');
+      trade.sell(token).amount('230');
       // Find a way to evaluate the error content returned from the mapping ( no hardcoded values )
-      trade.resultsInError(`You don't have 200.00 DAI in your wallet`, 'bottom');
+      trade.resultsInError(`You don't have 230.00 SAI in your wallet`, 'bottom');
     });
 
     it('should highlight the price impact in the trade details', () => {
@@ -276,6 +279,7 @@ describe('New trade', () => {
     beforeEach(() => {
       cypressVisitWithWeb3();
       Tab.instant();
+      instantForm();
     });
 
     it('should display not connected warning and display trade details', () => {

@@ -1,5 +1,5 @@
 import { Tab } from '../../pages/Tab';
-import { Trade } from '../../pages/Trade';
+import { instantForm, Trade } from '../../pages/Trade';
 import { WalletConnection } from '../../pages/WalletConnection';
 import { cypressVisitWithWeb3, tid } from '../../utils';
 
@@ -11,7 +11,9 @@ describe('Selling', () => {
   beforeEach(() => {
     cypressVisitWithWeb3();
     WalletConnection.connect();
+    WalletConnection.isConnected();
     Tab.instant();
+    instantForm();
   });
 
   context('ETH for ERC20 ', () => {

@@ -1,5 +1,5 @@
 import { Tab } from '../../pages/Tab';
-import { Trade } from '../../pages/Trade';
+import { instantForm, Trade } from '../../pages/Trade';
 import { TradeData } from '../../pages/TradeData';
 import { TradeSettings } from '../../pages/TradeSettings';
 import { WalletConnection } from '../../pages/WalletConnection';
@@ -15,7 +15,9 @@ describe('Trade Settings', () => {
   beforeEach(() => {
     cypressVisitWithWeb3();
     WalletConnection.connect();
+    WalletConnection.isConnected();
     Tab.instant();
+    instantForm();
   });
 
   it('should be disabled', () => {

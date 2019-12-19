@@ -41,8 +41,8 @@ export class Order {
     return this;
   }
 
-  public total = (total: string) => {
-    cy.get(tid('type-total')).contains('span', total, { timeout: 5000 });
+  public total = (total: string | RegExp) => {
+    cy.get(tid('type-total')).contains('span', total);
     return this;
   }
 
