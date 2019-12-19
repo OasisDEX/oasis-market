@@ -12,7 +12,7 @@ yarn
 yarn start
 ```
 
-## Development
+## Staging
 
 [dev branch](https://staging.oasis.app/trade/)
 
@@ -82,3 +82,9 @@ REACT_APP_TAX_EXPORTER_ENABLED
 ```
 
 Enables Tax Exporter button on Account page. Feature allows user to export trade history into CSV format.
+
+```
+REACT_APP_MARKET_CLOSED
+```
+
+Disables the possibility to place new offers on the market.

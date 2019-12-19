@@ -292,15 +292,13 @@ describe('Migration Wizard', () => {
   });
 
   // tslint:disable-next-line:max-line-length
-  it('should not display the progress if migration is ongoing by user closed modal but should update changes', () => {
+  it.skip('should not display the progress if migration is ongoing by user closed modal but should update changes', () => {
     const token = 'SAI';
     const amount = '220.0000';
     const wizard = MigrationWizardModal
       .openFrom(migrationBtnInHeader);
 
     wizard.migrate();
-
-    cy.wait(1000);
 
     wizard.close();
 

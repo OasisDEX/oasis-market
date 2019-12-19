@@ -53,29 +53,29 @@ describe('Wrapping ETH', () => {
   // tslint:disable-next-line:max-line-length
   it('should not proceed when trying to wrap ETH and gas cost amount',  () => {
     const gasCost = 0.00092;
-    const amountToWrap = 8999.94262 - gasCost + 0.00001 ;
+    const amountToWrap = 8999.96703 - gasCost + 0.00001 ;
 
     Tab.balances();
 
-    Balance.of('ETH').shouldBe(/8,999\.94262/);
+    Balance.of('ETH').shouldBe(/8,999\.96703/);
     Balance.of('WETH').shouldBe(/1,001.../);
 
     wrapping(`${amountToWrap}`).shouldFailWith(`You will not be able to pay the gas cost`);
 
-    Balance.of('ETH').shouldBe(/8,999\.94262/);
+    Balance.of('ETH').shouldBe(/8,999\.96703/);
     Balance.of('WETH').shouldBe(/1,001.../);
   });
 
   it('should not proceed when trying to wrap exact ETH balance',  () => {
-    const amountToWrap = 8999.94262;
+    const amountToWrap = 8999.96703;
     Tab.balances();
 
-    Balance.of('ETH').shouldBe(/8,999\.94262/);
+    Balance.of('ETH').shouldBe(/8,999\.96703/);
     Balance.of('WETH').shouldBe(/1,001.../);
 
     wrapping(`${amountToWrap}`).shouldFailWith(`You will not be able to pay the gas cost`);
 
-    Balance.of('ETH').shouldBe(/8,999\.94262/);
+    Balance.of('ETH').shouldBe(/8,999\.96703/);
     Balance.of('WETH').shouldBe(/1,001.../);
   });
 });

@@ -1,5 +1,5 @@
 import { Tab } from '../../pages/Tab';
-import { Trade, TradingSide } from '../../pages/Trade';
+import { instantForm, Trade, TradingSide } from '../../pages/Trade';
 import { WalletConnection } from '../../pages/WalletConnection';
 import { cypressVisitWithWeb3 } from '../../utils';
 
@@ -8,7 +8,9 @@ describe('Selecting an asset', () => {
   beforeEach(() => {
     cypressVisitWithWeb3();
     WalletConnection.connect();
+    WalletConnection.isConnected();
     Tab.instant();
+    instantForm();
   });
 
   context('for pay token', () => {
