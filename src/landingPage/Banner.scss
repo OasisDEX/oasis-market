@@ -1,6 +1,22 @@
 @import '../utils/Variables.scss';
 @import '../utils/Mixins.scss';
 @import '../utils/forms/Buttons.scss';
+
+$successBackground:#FFF9ED;
+$successBorder: #2DC1B1;
+$successColor: #44655E;
+
+$warningBackground:#FFF9ED;
+$warningBorder: #FFBCC5;
+$warningColor: #826318;
+
+$dangerBackground:#FDEDE8;
+$dangerBorder: #F77249;
+$dangerColor: #994126;
+
+$btnBorder: #9FAFB9;
+$btnColor: #708390;
+
 .section {
   display: flex;
   justify-content: center;
@@ -27,36 +43,35 @@
 
   font-size: 14px;
 }
-.contentPlaceholder {
-  display: flex;
-  width: 100%;
+
+.success {
+  background-color: $successBackground;
+  border: 1px solid $successBorder;
+  color: $successColor;
 }
 
-.content {
-  line-height: 1.5;
-  display: inline-block;
-  text-align: left;
-  width: 90%;
+.warning {
+  background-color: $warningBackground;
+  border: 1px solid $warningBorder;
+  color: $warningColor;
 }
 
-.pre {
-  margin: .5rem;
-  font-family: Montserrat, sans-serif;
-  font-weight: 500;
+.danger {
+  background-color: $dangerBackground;
+  border: 1px solid $dangerBorder;
+  color: $dangerColor;
 }
 
 .panel {
   display: flex;
-  color: #48495F;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
   max-width: 932px;
-  font-size: 12px;
+  font-size: 14px;
   padding: 5px 10px;
-  background-color: white;
-
-  border: 1px solid #D4D9E1;
+  line-height: 22px;
+  
   box-sizing: border-box;
   border-radius: 6px;
 
@@ -65,56 +80,24 @@
   }
 }
 
-.headline {
-  font-size: 120%;
-}
-
-.btnPlaceholder {
-  display: inline-flex;
-  width: 20%;
-  justify-content: flex-end;
-}
-
 .btn {
+  display: inline-flex;
   font-size: 11px;
+  line-height: 12px;
   font-weight: 600;
   max-width: 140px;
-  padding: 0;
+  margin-left: 16px;
+  padding: 0px 8px;
 
   @include button((
-    color: $white,
-    bg: $green,
-    border-color: $green,
-
-    color-hover: $white,
-    bg-hover: #2DC1B1,
-    border-color-hover: #2DC1B1,
+    color: $btnColor,
+    bg: $white,
+    border-color: $btnBorder,
   ));
 
   a {
+    text-decoration: none;
     color: inherit;
-    padding: 12px .833em;
-    display: inline-flex;
-    height: 100%;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-
-    &:hover {
-      background-color: inherit;
-    }
-
-    &:active {
-      color: inherit;
-    }
   }
 }
 
-.warningIcon {
-  width: 24px;
-  display: inline-flex;
-  margin-right: 10px;
-  :global(.warning-icon) {
-    fill: #F77249;
-  }
-}
