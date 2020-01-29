@@ -196,6 +196,8 @@ export function isSAIEnabled() {
   return tradingTokens.indexOf('SAI') >= 0;
 }
 
+export const isMarketClosed = process.env.REACT_APP_MARKET_CLOSED === '1';
+
 export function getToken(token: string) {
   return tokens[token];
 }
