@@ -48,7 +48,7 @@ export class MainContent extends React.Component<RouterProps> {
          <Banner content={
                   <span>
                     {/*tslint:disable*/}
-                    The current OasisDEX contract used by Oasis Trade will be closing on 08.02.2020 and replaced with a new contract. 
+                    The current OasisDEX contract used by Oasis Trade will be closing on February 2nd, 2020 and replaced with a new contract. 
                     <br/>
                     <strong> Please see <a 
                       href="https://www.reddit.com/r/MakerDAO/comments/euplem/oasisdex_contract_will_be_upgraded_on_8th_feb_2020/" 
