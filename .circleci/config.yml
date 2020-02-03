@@ -214,4 +214,5 @@ workflows:
 #            - test-e2e
           filters:
             branches:
-              only: master
+              only:
+                - release/old-trade
