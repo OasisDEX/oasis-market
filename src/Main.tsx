@@ -2,6 +2,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import * as React from 'react';
 import { Redirect, Route, Router, Switch } from 'react-router';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { isMarketClosed } from './blockchain/config';
 
 import * as mixpanel from 'mixpanel-browser';
 import { map } from 'rxjs/operators';
@@ -45,20 +46,42 @@ export class MainContent extends React.Component<RouterProps> {
   public render() {
     return (
       <routerContext.Provider value={{ rootUrl: this.props.match.url }}>
-         <Banner content={
-                  <span>
-                    {/*tslint:disable*/}
-                    The current OasisDEX contract used by Oasis Trade will be closing on February 8th, 2020 and replaced with a new contract. 
-                    <br/>
-                    <strong> Please see <a 
-                      href="https://www.reddit.com/r/MakerDAO/comments/euplem/oasisdex_contract_will_be_upgraded_on_8th_feb_2020/" 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >this announcement</a> for more details</strong>
-                  </span>
-                }
-                theme='warning'
-           />
+        {
+          isMarketClosed
+          ? <Banner content={
+              <span>
+                {/*tslint:disable*/}
+                This version of the UI uses an OasisDEX contract which expired on February 8, 2020.
+                <br/>
+                <strong> You should cancel any open orders you have and move your liquidity to the new contract.<br/>
+                You can find the latest contract and markets at { ' ' }
+                <a 
+                  href="https://oasis.app/trade" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >Oasis.app/trade</a>.</strong>
+              </span>
+            }
+            theme='warning'/>
+          : <Banner content={
+              <span>
+                {/*tslint:disable*/}
+                The current OasisDEX contract used by Oasis Trade will be closing on February 8, 2020 and replaced with a new contract. 
+                <br/>
+                <strong> Please see { ' ' }
+                  <a href="https://www.reddit.com/r/MakerDAO/comments/euplem/oasisdex_contract_will_be_upgraded_on_8th_feb_2020/" 
+                     target="_blank"
+                     rel="noopener noreferrer"
+                  >
+                    this announcement
+                  </a> 
+                  { ' ' }
+                  for more details
+                </strong>
+                </span>
+              }
+            theme='warning'/>
+        }
         <div className={styles.container}>
           <theAppContext.Consumer>
             {({ TransactionNotifierTxRx }) =>
