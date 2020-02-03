@@ -1,6 +1,6 @@
 rm -rf ./build
 
-PUBLIC_URL='https://staging.oasis.app//expired/trade' yarn build
+PUBLIC_URL='https://staging.oasis.app/expired/trade' yarn build
 
 # Deploy to AWS
 sudo apt update
