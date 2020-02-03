@@ -279,7 +279,16 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
             </a>
           </strong>
           . {' '}
-          You can read more information about this contract and why it has now closed here.
+          You can read more information about this contract and why it has now closed {' '} 
+          <strong>
+            <a href="https://www.reddit.com/r/MakerDAO/comments/euplem/oasisdex_contract_will_be_upgraded_on_8th_feb_2020/"
+               target="_blank"
+               rel="noopener noreferrer"
+               style={{ textDecoration: 'underline' }}
+            >
+              here
+            </a>
+          </strong>.
         </p>
       </div>
     </PanelBody>
