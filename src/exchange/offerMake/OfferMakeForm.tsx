@@ -271,7 +271,6 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
           You can find the latest contract and markets at {' '}
           <strong>
             <a href="https://oasis.app/trade"
-               target="_blank"
                rel="noopener noreferrer"
                style={{ textDecoration: 'underline' }}
             >

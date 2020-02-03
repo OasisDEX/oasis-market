@@ -56,8 +56,7 @@ export class MainContent extends React.Component<RouterProps> {
                 <strong> You should cancel any open orders you have and move your liquidity to the new contract.<br/>
                 You can find the latest contract and markets at { ' ' }
                 <a 
-                  href="https://oasis.app/trade" 
-                  target="_blank"
+                  href="https://oasis.app/trade"
                   rel="noopener noreferrer"
                 >Oasis.app/trade</a>.</strong>
               </span>
