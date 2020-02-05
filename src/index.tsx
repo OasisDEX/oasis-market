@@ -12,7 +12,6 @@ import { account$, networkId$ } from './blockchain/network';
 import { Web3Status, web3Status$ } from './blockchain/web3';
 import { LoadingState } from './landingPage/LandingPage';
 import { Main } from './Main';
-import { NavigationTxRx } from './Navigation';
 import { connect } from './utils/connect';
 import { UnreachableCaseError } from './utils/UnreachableCaseError';
 
@@ -38,25 +37,7 @@ class App extends React.Component<Props> {
         if (this.props.network !== undefined && !networks[this.props.network]) {
           return LoadingState.UNSUPPORTED;
         }
-
-        /*
-        * The way to present announcement before loading the app is:
-        * <Announcement
-        *     // shouldn't change with each component rendering
-        *     id="<unique_id">
-        *     // how many times it will be displayed
-        *     visibility="always | once"
-        *     //heading of the announcement
-        *     headline="string"
-        *     //the label of the button that user clicks to continue to next view
-        *     buttonLabel="string"
-        *     //this is the announcement itself
-        *     content={ string | React.ReactNode }
-        *     //what will be rendered after announcement being dismissed
-        *     nextView={<Main/>}
-        *     />
-        * */
-        return <NavigationTxRx><Main/></NavigationTxRx>;
+        return <Main/>;
       default:
         throw new UnreachableCaseError(this.props.status);
     }
