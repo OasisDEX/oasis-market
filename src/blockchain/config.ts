@@ -245,7 +245,7 @@ const protoMain = {
   safeConfirmations: 0,
   avgBlocksPerDay: 5760 * 1.05,
   startingBlock: 4751582,
-  get otc() { return load(otc, '0x39755357759ce0d7f32dc8dc45414cca409ae24e'); },
+  get otc() { return load(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'); },
   get saiTub() { return load(saiTub, '0x448a5065aebb8e423f0896e6c5d525c040f59af3'); },
   get tokens() {
     return asMap('token', [
