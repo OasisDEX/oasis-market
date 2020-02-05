@@ -6,7 +6,7 @@ import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons';
 
 import * as mixpanel from 'mixpanel-browser';
 import { theAppContext } from '../../AppContext';
-import { getToken, isDAIEnabled, isMarketClosed } from '../../blockchain/config';
+import { getToken, isDAIEnabled } from '../../blockchain/config';
 import { routerContext } from '../../Main';
 import { BigNumberInput, lessThanOrEqual } from '../../utils/bigNumberInput/BigNumberInput';
 import { FormChangeKind, OfferMatchType } from '../../utils/form';
@@ -115,12 +115,10 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
       // this.props.baseToken !== 'WETH' &&
       isDAIEnabled();
     return this.props.pickerOpen
-      ? this.orderTypePicker()
-      : isMarketClosed
-       ? this.lockedTrading()
-       : isSaiMarket
-        ? this.lockedSaiMarket()
-        : this.formProper();
+    ? this.orderTypePicker()
+    : isSaiMarket
+      ? this.lockedSaiMarket()
+      : this.formProper();
   }
 
   private slippageLimit() {
@@ -250,40 +248,6 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
 
       </PanelBody>
     </div>;
-  }
-
-  private lockedTrading() {
-    return <div data-test-id="create-order-widget">
-    <PanelHeader bordered={true}>
-      Create order
-      {this.headerButtons()}
-    </PanelHeader>
-
-    <PanelBody paddingVertical={true}>
-      {this.balanceButtons(true)}
-      <Hr color="dark" className={styles.hrMargin}/>
-      <div className={styles.migrationDescription}>
-        <p className={styles.text}>
-          This version of the UI uses an OasisDEX contract which expired on 08.02.2020.
-        </p>
-        <p className={styles.text}>
-          You should cancel any open orders you have and move your liquidity to the new contract.
-          You can find the latest contract and markets at {' '}
-          <strong>
-            <a href="https://oasis.app/trade"
-               target="_blank"
-               rel="noopener noreferrer"
-               style={{ textDecoration: 'underline' }}
-            >
-              Oasis.app/trade
-            </a>
-          </strong>
-          . {' '}
-          You can read more information about this contract and why it has now closed here.
-        </p>
-      </div>
-    </PanelBody>
-  </div>;
   }
 
   private headerButtons() {
