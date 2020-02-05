@@ -14,7 +14,7 @@ yarn start
 
 ## Development
 
-[dev branch](http://oasis-market-dev.surge.sh/)
+[dev branch](https://staging.oasis.app/trade/)
 
 ### Local development
 
