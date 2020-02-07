@@ -203,15 +203,14 @@ workflows:
       - deploy_dev:
           requires:
             - test
-#            - test-e2e
           filters:
             branches:
               only:
                 - release/old-trade
-      # - deploy_prod:
-      #     requires:
-      #       - test
-      #     filters:
-      #       branches:
-      #         only:
-      #           - release/old-trade
+      - deploy_prod:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - release/old-trade
