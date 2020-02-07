@@ -48,7 +48,7 @@ export class MainContent extends React.Component<RouterProps> {
         <Banner content={
               <span>
                 {/*tslint:disable*/}
-                The OasisDEX contract used by Oasis Trade was redeployed on February 7th 2020.<br/>
+                The Oasis Trade front-end switched to a new OasisDEX contract on February 7th 2020.<br/>
                 If you had any orders open on the old contract, you will need to close them {' '}
                 <strong>
                   <a href="https://oasis.app/expired/trade"
