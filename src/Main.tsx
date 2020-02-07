@@ -48,7 +48,16 @@ export class MainContent extends React.Component<RouterProps> {
         <Banner content={
               <span>
                 {/*tslint:disable*/}
-                The current OasisDEX contract used by Oasis Trade will be closing on February 8, 2020 and replaced with a new contract. 
+                The Oasis Trade front-end switched to a new OasisDEX contract on February 7th 2020.<br/>
+                If you had any orders open on the old contract, you will need to close them {' '}
+                <strong>
+                  <a href="https://oasis.app/expired/trade"
+                    rel="noopener noreferrer">
+                    here
+                  </a>
+                </strong>
+                {' '} and move liquidity to the new contract. 
+                <br/>
                 <br/>
                 <strong> Please see { ' ' }
                   <a href="https://www.reddit.com/r/MakerDAO/comments/euplem/oasisdex_contract_will_be_upgraded_on_8th_feb_2020/" 
@@ -63,20 +72,6 @@ export class MainContent extends React.Component<RouterProps> {
                 </span>
               }
             theme='warning'/>
-        <Banner content={
-              <span>
-                 On Friday ( Feb. 7th ) at 2PM UTC the UI will switch to a new address {' '}
-                <strong>
-                  <a href="https://etherscan.io/address/0x794e6e91555438afc3ccf1c5076a74f42133d08d"
-                     target="_blank"                     
-                     rel="noopener noreferrer">
-                        0x794e6e91555438afc3ccf1c5076a74f42133d08d
-                  </a>
-                </strong>
-              </span>
-            }
-            theme='warning'
-        />
         <div className={styles.container}>
           <theAppContext.Consumer>
             {({ TransactionNotifierTxRx }) =>
