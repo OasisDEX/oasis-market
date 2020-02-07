@@ -51,7 +51,7 @@ export class MainContent extends React.Component<RouterProps> {
           ? <Banner content={
               <span>
                 {/*tslint:disable*/}
-                This version of the UI uses an OasisDEX contract which expired on February 8, 2020.
+                This version of the UI uses an OasisDEX contract which will expire on February 8, 2020 12:00pm UTC.
                 <br/>
                 <strong> You should cancel any open orders you have and move your liquidity to the new contract.<br/>
                 You can find the latest contract and markets at { ' ' }

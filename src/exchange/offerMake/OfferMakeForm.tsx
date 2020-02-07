@@ -264,7 +264,7 @@ export class OfferMakeForm extends React.Component<OfferFormState> {
       <Hr color="dark" className={styles.hrMargin}/>
       <div className={styles.migrationDescription}>
         <p className={styles.text}>
-          This version of the UI uses an OasisDEX contract which expired on 08.02.2020.
+          This version of the UI uses an OasisDEX contract which will expire on 08.02.2020 12:00pm UTC.
         </p>
         <p className={styles.text}>
           You should cancel any open orders you have and move your liquidity to the new contract.
