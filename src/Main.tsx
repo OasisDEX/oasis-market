@@ -51,7 +51,7 @@ export class MainContent extends React.Component<RouterProps> {
           ? <Banner content={
               <span>
                 {/*tslint:disable*/}
-                This version of the UI uses an OasisDEX contract which will expire on February 8, 2020 12:00pm UTC.
+                This version of the UI uses an OasisDEX contract which expired on February 8, 2020 12:00pm UTC.
                 <br/>
                 <strong> You should cancel any open orders you have and move your liquidity to the new contract.<br/>
                 You can find the latest contract and markets at { ' ' }
@@ -65,7 +65,7 @@ export class MainContent extends React.Component<RouterProps> {
           : <Banner content={
               <span>
                 {/*tslint:disable*/}
-                The current OasisDEX contract used by Oasis Trade will be closing on February 8, 2020 and replaced with a new contract. 
+                The current OasisDEX contract used by Oasis Trade expired on February 8, 2020 and replaced with a new contract. 
                 <br/>
                 <strong> Please see { ' ' }
                   <a href="https://www.reddit.com/r/MakerDAO/comments/euplem/oasisdex_contract_will_be_upgraded_on_8th_feb_2020/" 
