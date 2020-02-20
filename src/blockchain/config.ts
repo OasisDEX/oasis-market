@@ -54,6 +54,8 @@ export const tradingPairs: TradingPair[] = [
   { base: 'REP', quote: 'SAI' },
   { base: 'ZRX', quote: 'SAI' },
   { base: 'BAT', quote: 'SAI' },
+  { base: 'DAI', quote: 'TUSD' },
+  { base: 'DAI', quote: 'PAX' },
 ];
 
 function asMap<D>(key: string, data: D[]): { [key: string]: D } {
@@ -170,6 +172,34 @@ const tokens = asMap('symbol', [
       iconColor: SvgImageSimple(usdcColorSvg),
       ticker: 'usdc-usd-coin'
       // address: 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+    },
+    {
+      symbol: 'TUSD',
+      precision: 18,
+      digits: 5,
+      digitsInstant: 3,
+      safeCollRatio: 1.5,
+      maxSell: '1000000000000000',
+      name: 'True USD',
+      icon: SvgImageSimple(batSvg),
+    // iconInverse: SvgImageSimple(batInverseSvg),
+      iconCircle: SvgImageSimple(batCircleSvg),
+      iconColor: SvgImageSimple(batColorSvg),
+      ticker: 'bat-basic-attention-token'
+    },
+    {
+      symbol: 'PAX',
+      precision: 18,
+      digits: 5,
+      digitsInstant: 3,
+      safeCollRatio: 1.5,
+      maxSell: '1000000000000000',
+      name: 'PAX Standard',
+      icon: SvgImageSimple(batSvg),
+    // iconInverse: SvgImageSimple(batInverseSvg),
+      iconCircle: SvgImageSimple(batCircleSvg),
+      iconColor: SvgImageSimple(batColorSvg),
+      ticker: 'bat-basic-attention-token'
     },
   // {
   //   symbol: 'WBTC',
@@ -319,6 +349,8 @@ const kovan: NetworkConfig = {
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
       loadToken('USDC', erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
+      loadToken('TUSD', erc20, '0x18C06d61007Cbeb072F84C28aB7698F2bfd145B5'),
+      loadToken('PAX', erc20, '0x7ac82C960d70A9f62a645eb57f446985Bf23e224'),
     ]);
   },
   get otcSupportMethods() {
