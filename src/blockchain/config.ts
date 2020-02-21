@@ -185,7 +185,7 @@ const tokens = asMap('symbol', [
     // iconInverse: SvgImageSimple(batInverseSvg),
       iconCircle: SvgImageSimple(batCircleSvg),
       iconColor: SvgImageSimple(batColorSvg),
-      ticker: 'bat-basic-attention-token'
+      ticker: 'true-usd'
     },
     {
       symbol: 'PAX',
@@ -199,7 +199,7 @@ const tokens = asMap('symbol', [
     // iconInverse: SvgImageSimple(batInverseSvg),
       iconCircle: SvgImageSimple(batCircleSvg),
       iconColor: SvgImageSimple(batColorSvg),
-      ticker: 'bat-basic-attention-token'
+      ticker: 'pax'
     },
   // {
   //   symbol: 'WBTC',
@@ -344,7 +344,7 @@ const kovan: NetworkConfig = {
     return asMap('token', [
       loadToken('WETH', eth, '0xd0a1e359811322d97991e03f863a0c30c2cf029c'),
       loadToken('SAI', erc20, '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'),
-      loadToken('DAI', erc20, '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa'),
+      loadToken('DAI', erc20, '0x08ae34860fbfe73e223596e65663683973c72dd3'),
       loadToken('REP', erc20, '0xc7aa227823789e363f29679f23f7e8f6d9904a9b'),
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
