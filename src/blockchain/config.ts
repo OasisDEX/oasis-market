@@ -12,12 +12,18 @@ import ethCircleSvg from '../icons/coins/eth-circle.svg';
 import ethColorSvg from '../icons/coins/eth-color.svg';
 // import ethInverseSvg from '../icons/coins/eth-inverse.svg';
 import ethSvg from '../icons/coins/eth.svg';
+import paxCircleSvg from '../icons/coins/pax-circle.svg';
+import paxColorSvg from '../icons/coins/pax-color.svg';
+import paxSvg from '../icons/coins/pax.svg';
 import repCircleSvg from '../icons/coins/rep-circle.svg';
 import repColorSvg from '../icons/coins/rep-color.svg';
 import repSvg from '../icons/coins/rep.svg';
 import saiCircleSvg from '../icons/coins/sai-circle.svg';
 import saiColorSvg from '../icons/coins/sai-color.svg';
 import saiSvg from '../icons/coins/sai.svg';
+import tusdCircleSvg from '../icons/coins/tusd-circle.svg';
+import tusdColorSvg from '../icons/coins/tusd-color.svg';
+import tusdSvg from '../icons/coins/tusd.svg';
 import usdcCircleSvg from '../icons/coins/usdc-circle.svg';
 import usdcColorSvg from '../icons/coins/usdc-color.svg';
 import usdcSvg from '../icons/coins/usdc.svg';
@@ -54,12 +60,15 @@ export const tradingPairs: TradingPair[] = [
   { base: 'REP', quote: 'SAI' },
   { base: 'ZRX', quote: 'SAI' },
   { base: 'BAT', quote: 'SAI' },
+  { base: 'DAI', quote: 'TUSD' },
+  { base: 'DAI', quote: 'PAX' },
 ];
 
 function asMap<D>(key: string, data: D[]): { [key: string]: D } {
   return fromPairs(zip(data.map((row: D) => (row as any)[key]), data));
 }
 
+// ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
 const tokens = asMap('symbol', [
   {
     symbol: 'ETH',
@@ -171,6 +180,32 @@ const tokens = asMap('symbol', [
       ticker: 'usdc-usd-coin'
       // address: 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
     },
+    {
+      symbol: 'TUSD',
+      precision: 18,
+      digits: 5,
+      digitsInstant: 3,
+      safeCollRatio: 1.5,
+      maxSell: '1000000000000000',
+      name: 'True USD',
+      icon: SvgImageSimple(tusdSvg),
+      iconCircle: SvgImageSimple(tusdCircleSvg),
+      iconColor: SvgImageSimple(tusdColorSvg),
+      ticker: 'tusd-trueusd'
+    },
+    {
+      symbol: 'PAX',
+      precision: 18,
+      digits: 5,
+      digitsInstant: 3,
+      safeCollRatio: 1.5,
+      maxSell: '1000000000000000',
+      name: 'Paxos Standard',
+      icon: SvgImageSimple(paxSvg),
+      iconCircle: SvgImageSimple(paxCircleSvg),
+      iconColor: SvgImageSimple(paxColorSvg),
+      ticker: 'pax-paxos-standard-token'
+    },
   // {
   //   symbol: 'WBTC',
   //   precision: 8,
@@ -254,6 +289,8 @@ const protoMain = {
       loadToken('ZRX', erc20, '0xe41d2489571d322189246dafa5ebde1f4699f498'),
       loadToken('BAT', erc20, '0x0d8775f648430679a709e98d2b0cb6250d2887ef'),
       loadToken('USDC', erc20, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
+      loadToken('TUSD', erc20, '0x0000000000085d4780B73119b644AE5ecd22b376'),
+      loadToken('PAX', erc20, '0x8e870d67f660d95d5be530380d0ec0bd388289e1'),
     ]);
   },
   get otcSupportMethods() {
@@ -314,11 +351,13 @@ const kovan: NetworkConfig = {
     return asMap('token', [
       loadToken('WETH', eth, '0xd0a1e359811322d97991e03f863a0c30c2cf029c'),
       loadToken('SAI', erc20, '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'),
-      loadToken('DAI', erc20, '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa'),
+      loadToken('DAI', erc20, '0x08ae34860fbfe73e223596e65663683973c72dd3'),
       loadToken('REP', erc20, '0xc7aa227823789e363f29679f23f7e8f6d9904a9b'),
       loadToken('ZRX', erc20, '0x18392097549390502069c17700d21403ea3c721a'),
       loadToken('BAT', erc20, '0x9f8cfb61d3b2af62864408dd703f9c3beb55dff7'),
       loadToken('USDC', erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
+      loadToken('TUSD', erc20, '0x18C06d61007Cbeb072F84C28aB7698F2bfd145B5'),
+      loadToken('PAX', erc20, '0x7ac82C960d70A9f62a645eb57f446985Bf23e224'),
     ]);
   },
   get otcSupportMethods() {
@@ -381,7 +420,9 @@ const localnet: NetworkConfig =   {
       loadToken('ZRX', erc20, '0x2c60CF08c07C212e21e6E2ee4626c478BACe092a'),
       loadToken('BAT', erc20, '0xd80110E3C107Eb206B556871cFe2532eC7D05E47'),
       loadToken('REP', erc20, '0xE8d4C2Ab5782c697f06f17610cC03068180d0FaC'),
-      loadToken('USDC', erc20, '0x0000000000000000000000000000000000000000'),
+      loadToken('USDC', erc20, NO_ADDR),
+      loadToken('TUSD', erc20, NO_ADDR),
+      loadToken('PAX', erc20, NO_ADDR),
     ]);
   },
   get otcSupportMethods() {
@@ -417,3 +458,6 @@ const localnet: NetworkConfig =   {
 };
 
 export const networks = asMap('id', [main, kovan, localnet]);
+
+// use when contract is not deployed / not available on a given network
+const NO_ADDR = '0x0000000000000000000000000000000000000000';
