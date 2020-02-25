@@ -12,6 +12,9 @@ import ethCircleSvg from '../icons/coins/eth-circle.svg';
 import ethColorSvg from '../icons/coins/eth-color.svg';
 // import ethInverseSvg from '../icons/coins/eth-inverse.svg';
 import ethSvg from '../icons/coins/eth.svg';
+import linkCircleSvg from '../icons/coins/link-circle.svg';
+import linkColorSvg from '../icons/coins/link-color.svg';
+import linkSvg from '../icons/coins/link.svg';
 import paxCircleSvg from '../icons/coins/pax-circle.svg';
 import paxColorSvg from '../icons/coins/pax-color.svg';
 import paxSvg from '../icons/coins/pax.svg';
@@ -27,9 +30,9 @@ import tusdSvg from '../icons/coins/tusd.svg';
 import usdcCircleSvg from '../icons/coins/usdc-circle.svg';
 import usdcColorSvg from '../icons/coins/usdc-color.svg';
 import usdcSvg from '../icons/coins/usdc.svg';
-// import wbtcCircleSvg from '../icons/coins/wbtc-circle.svg';
-// import wbtcColorSvg from '../icons/coins/wbtc-color.svg';
-// import wbtcSvg from '../icons/coins/wbtc.svg';
+import wbtcCircleSvg from '../icons/coins/wbtc-circle.svg';
+import wbtcColorSvg from '../icons/coins/wbtc-color.svg';
+import wbtcSvg from '../icons/coins/wbtc.svg';
 import zrxCircleSvg from '../icons/coins/zrx-circle.svg';
 import zrxColorSvg from '../icons/coins/zrx-color.svg';
 import zrxSvg from '../icons/coins/zrx.svg';
@@ -62,6 +65,8 @@ export const tradingPairs: TradingPair[] = [
   { base: 'BAT', quote: 'SAI' },
   { base: 'DAI', quote: 'TUSD' },
   { base: 'DAI', quote: 'PAX' },
+  { base: 'LINK', quote: 'DAI' },
+  { base: 'WBTC', quote: 'DAI' },
 ];
 
 function asMap<D>(key: string, data: D[]): { [key: string]: D } {
@@ -195,9 +200,9 @@ const tokens = asMap('symbol', [
     },
     {
       symbol: 'PAX',
-      precision: 18,
-      digits: 5,
-      digitsInstant: 3,
+      precision: 6,
+      digits: 6,
+      digitsInstant: 2,
       safeCollRatio: 1.5,
       maxSell: '1000000000000000',
       name: 'Paxos Standard',
@@ -206,21 +211,32 @@ const tokens = asMap('symbol', [
       iconColor: SvgImageSimple(paxColorSvg),
       ticker: 'pax-paxos-standard-token'
     },
-  // {
-  //   symbol: 'WBTC',
-  //   precision: 8,
-  //   digits: 5,
-  //   digitsInstant: 3,
-  //   safeCollRatio: 1.5,
-  //   maxSell: '1000000000000000',
-  //   name: 'Wrapped Bitcoin',
-  //   icon: SvgImageSimple(wbtcSvg),
-  //   // iconInverse: SvgImageSimple(wbtcInverseSvg),
-  //   iconCircle: SvgImageSimple(wbtcCircleSvg),
-  //   iconColor: SvgImageSimple(wbtcColorSvg),
-  //   ticker: 'wbtc-wrapped-bitcoin'
-  //   // address: 0x2260fac5e5542a773aa44fbcfedf7c193bc2c599
-  // }
+    {
+      symbol: 'LINK',
+      precision: 18,
+      digits: 5,
+      digitsInstant: 3,
+      safeCollRatio: 1.5,
+      maxSell: '1000000000000000',
+      name: 'Chainlink',
+      icon: SvgImageSimple(linkSvg),
+      iconCircle: SvgImageSimple(linkCircleSvg),
+      iconColor: SvgImageSimple(linkColorSvg),
+      ticker: 'link-chainlink'
+    },
+    {
+      symbol: 'WBTC',
+      precision: 8,
+      digits: 5,
+      digitsInstant: 3,
+      safeCollRatio: 1.5,
+      maxSell: '1000000000000000',
+      name: 'Wrapped Bitcoin',
+      icon: SvgImageSimple(wbtcSvg),
+      iconCircle: SvgImageSimple(wbtcCircleSvg),
+      iconColor: SvgImageSimple(wbtcColorSvg),
+      ticker: 'wbtc-wrapped-bitcoin'
+    }
   ]]);
 
 export function isDAIEnabled() {
@@ -291,6 +307,8 @@ const protoMain = {
       loadToken('USDC', erc20, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
       loadToken('TUSD', erc20, '0x0000000000085d4780B73119b644AE5ecd22b376'),
       loadToken('PAX', erc20, '0x8e870d67f660d95d5be530380d0ec0bd388289e1'),
+      loadToken('LINK', erc20, '0x514910771af9ca656af840dff83e8264ecf986ca'),
+      loadToken('WBTC', erc20, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'),
     ]);
   },
   get otcSupportMethods() {
@@ -358,6 +376,8 @@ const kovan: NetworkConfig = {
       loadToken('USDC', erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
       loadToken('TUSD', erc20, '0x18C06d61007Cbeb072F84C28aB7698F2bfd145B5'),
       loadToken('PAX', erc20, '0x7ac82C960d70A9f62a645eb57f446985Bf23e224'),
+      loadToken('LINK', erc20, '0x046acb204091d5296461c66cfd911114de5c6a4c'),
+      loadToken('WBTC', erc20, '0xA08d982C2deBa0DbE433a9C6177a219E96CeE656'),
     ]);
   },
   get otcSupportMethods() {
@@ -423,6 +443,8 @@ const localnet: NetworkConfig =   {
       loadToken('USDC', erc20, NO_ADDR),
       loadToken('TUSD', erc20, NO_ADDR),
       loadToken('PAX', erc20, NO_ADDR),
+      loadToken('LINK', erc20, NO_ADDR),
+      loadToken('WBTC', erc20, NO_ADDR),
     ]);
   },
   get otcSupportMethods() {
