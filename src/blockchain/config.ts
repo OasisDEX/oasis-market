@@ -200,9 +200,9 @@ const tokens = asMap('symbol', [
     },
     {
       symbol: 'PAX',
-      precision: 6,
-      digits: 6,
-      digitsInstant: 2,
+      precision: 18,
+      digits: 5,
+      digitsInstant: 3,
       safeCollRatio: 1.5,
       maxSell: '1000000000000000',
       name: 'Paxos Standard',
