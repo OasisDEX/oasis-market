@@ -138,15 +138,23 @@ export function createMyOpenTrades$(
 }
 
 export function aggregateMyOpenTradesFor$(
-  market: 'SAI' | 'DAI' | 'WETH',
+  market: 'SAI' | 'DAI',
   account$: Observable<string | undefined>,
   txns$: Observable<TxState[]>,
   loadOrderbook: (pair: TradingPair) => Observable<Orderbook>
 ) {
-  const aggregatedOrderbook = combineLatest(...tradingPairs
-    .filter(pair => pair.quote === market)
-    .map(pair => loadOrderbook(pair))
-  )
+  // since removing SAI markets from the market picker we use hardcoded list here
+  const matchingPairs = market === 'SAI' ? [
+    { base: 'WETH', quote: 'SAI' },
+    { base: 'REP', quote: 'SAI' },
+    { base: 'ZRX', quote: 'SAI' },
+    { base: 'BAT', quote: 'SAI' },
+  ] : tradingPairs
+    .filter(pair => pair.quote === market);
+
+  const matchingOrderbooks = matchingPairs.map(pair => loadOrderbook(pair));
+
+  const aggregatedOrderbook = combineLatest(...matchingOrderbooks)
     .pipe(
       map((orderbooks) => {
         const orderbook = {
