@@ -53,22 +53,6 @@ describe('Selecting an asset', () => {
 
       Trade.expectAssetLocked(token);
     });
-
-    it('should not be able to swap token if paying with SAI', () => {
-      const payIn = 'SAI';
-      const receiveIn = 'ETH';
-
-      Trade.swapTokens();
-
-      const trade = new Trade();
-      trade.sell(payIn);
-      trade.buy(receiveIn);
-
-      trade.expectPayToken(payIn);
-      trade.expectReceiveToken(receiveIn);
-
-      Trade.shouldHaveSwapDisabled();
-    });
   });
 
   context('for receive token', () => {
@@ -115,17 +99,6 @@ describe('Selecting an asset', () => {
       Trade.openAssetSelectorFor(TradingSide.BUY);
 
       Trade.expectAssetLocked(token);
-    });
-
-    it('should not be able to select SAI as receive token', () => {
-      const payWith = 'REP';
-      const receive = 'SAI';
-
-      const trade = new Trade();
-      trade.sell(payWith);
-
-      Trade.openAssetSelectorFor(TradingSide.BUY);
-      Trade.expectAssetLocked(receive);
     });
   });
 });
