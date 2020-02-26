@@ -107,6 +107,8 @@ export const FormatQuoteToken = (props: { token: string }) => {
     DAI: '#FFAC13',
     WETH: '#B15DFF',
     USDC: 'green',
+    TUSD: 'darkblue',
+    PAX: 'lightblue',
   };
   return <span style={{ color: colors[props.token] }}>{props.token}</span>;
 };
