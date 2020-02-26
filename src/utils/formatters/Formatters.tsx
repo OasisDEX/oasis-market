@@ -106,9 +106,10 @@ export const FormatQuoteToken = (props: { token: string }) => {
     SAI: 'darkgrey',
     DAI: '#FFAC13',
     WETH: '#B15DFF',
+    // treat pegcoins in the same way
     USDC: 'green',
-    TUSD: 'darkblue',
-    PAX: 'lightblue',
+    TUSD: 'green',
+    PAX: 'green',
   };
   return <span style={{ color: colors[props.token] }}>{props.token}</span>;
 };
