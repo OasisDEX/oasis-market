@@ -79,10 +79,6 @@ describe('Upgrade button', () => {
       wizard.close();
 
       migrationBtnInHeader().should('not.exist');
-
-      Tab.market();
-      TradingPairDropdown.select({ base: 'WETH', quote: 'SAI' });
-      migrationBtnInMarket().should('not.exist');
     });
   });
 });
