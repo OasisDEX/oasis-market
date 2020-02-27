@@ -5,13 +5,10 @@ import {
 } from '../../pages/Allowance';
 import {
   migrationBtnInHeader,
-  migrationBtnInMarket,
   MigrationWizardModal, swapBtnInAccount
 } from '../../pages/Migration';
 import * as Proxy from '../../pages/Proxy';
 import { Tab } from '../../pages/Tab';
-import { Trades } from '../../pages/Trades';
-import { TradingPairDropdown } from '../../pages/TradingPairDropdown';
 import { WalletConnection } from '../../pages/WalletConnection';
 import { cypressVisitWithWeb3 } from '../../utils';
 // No point of testing when the user is neither connected nor doesn't have a provider
@@ -339,27 +336,5 @@ describe('Migration Wizard', () => {
       .shouldMigrate(amount, token);
 
     wizard.nothingToMigrate();
-  });
-
-  context('external changes', () => {
-    it(`should update open orders count and the amount of SAI that needs to be migrated
-    when user cancels an order from my trades widget under market tab`,
-       () => {
-         Tab.market();
-         TradingPairDropdown.select({ base: 'WETH', quote: 'SAI' });
-
-         MigrationWizardModal
-          .openFrom(migrationBtnInMarket)
-          .ordersToCancelIs(4)
-          .amountToMigrateIs('220')
-          .close();
-
-         Trades.first().cancel();
-
-         MigrationWizardModal
-          .openFrom(migrationBtnInMarket)
-          .ordersToCancelIs(3)
-          .amountToMigrateIs('520');
-       });
   });
 });
