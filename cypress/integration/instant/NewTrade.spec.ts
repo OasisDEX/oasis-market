@@ -131,17 +131,6 @@ describe('New trade', () => {
       trade.expectToReceive(willReceive);
     });
 
-    it('should display error if balance is too low', () => {
-      const token = 'SAI';
-
-      Trade.swapTokens();
-
-      const trade = new Trade();
-      trade.sell(token).amount('230');
-      // Find a way to evaluate the error content returned from the mapping ( no hardcoded values )
-      trade.resultsInError(`You don't have 230.00 SAI in your wallet`, 'bottom');
-    });
-
     it('should highlight the price impact in the trade details', () => {
       Tab.market();
 
