@@ -161,31 +161,6 @@ describe('Migration Wizard', () => {
       wizard.amountToMigrateIs(balanceAfterMigration);
     });
 
-    it('should only migrate if user has proxy and allowance', () => {
-      const amount = '20.0000';
-      const token = 'SAI';
-      const balanceAfterMigration = '200.0000';
-
-      Tab.instant();
-      Proxy.settings().click();
-      Proxy.create();
-      Proxy.hasStatus(Proxy.ProxyStatus.ENABLED);
-
-      checkProxyAllowances();
-      setAllowanceOf('SAI');
-      expectAllowanceStatusFor('SAI', 'true');
-
-      const wizard = MigrationWizardModal
-        .openFrom(migrationBtnInHeader);
-
-      wizard.migrate(amount)
-        .shouldNotCreateProxy()
-        .shouldNotSetAllowance()
-        .shouldMigrate(amount, token);
-
-      wizard.amountToMigrateIs(balanceAfterMigration);
-    });
-
     it('should display to the user that all SAI is migrated', () => {
       const amount = '20.0000';
       const token = 'SAI';
