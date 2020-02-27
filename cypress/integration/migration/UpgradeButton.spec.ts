@@ -1,5 +1,4 @@
 import {
-  migrationBtnInAccount,
   migrationBtnInHeader,
   migrationBtnInMarket, MigrationWizardModal,
   swapBtnInAccount, ViewHeaders
@@ -47,13 +46,6 @@ describe('Upgrade button', () => {
       makeScreenshots('migration-wizard');
     });
 
-    it('in the account page should display Migration Wizard when clicked', () => {
-      Tab.balances();
-      MigrationWizardModal
-        .openFrom(migrationBtnInAccount)
-        .headerIs(ViewHeaders.updateSai);
-    });
-
     it.skip('to swap back in the account page should display Swap Wizard when clicked', () => {
       Tab.balances();
       MigrationWizardModal
@@ -87,9 +79,6 @@ describe('Upgrade button', () => {
       wizard.close();
 
       migrationBtnInHeader().should('not.exist');
-
-      Tab.balances();
-      migrationBtnInAccount().should('not.exist');
 
       Tab.market();
       TradingPairDropdown.select({ base: 'WETH', quote: 'SAI' });

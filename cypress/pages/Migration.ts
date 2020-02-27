@@ -3,7 +3,6 @@ import { Trades } from './Trades';
 
 export const migrationBtnInHeader = () => cy.get(tid('update-btn-header'));
 export const migrationBtnInMarket = () => cy.get(tid('update-btn-market'));
-export const migrationBtnInAccount = () => cy.get(tid('update-btn-account'));
 export const swapBtnInAccount = () => cy.get(tid('swap-btn-account'));
 export const cancelOrders = () => cy.get(
   tid('migration-wizard',
