@@ -1,10 +1,8 @@
 import {
-  migrationBtnInHeader,
-  migrationBtnInMarket, MigrationWizardModal,
+  migrationBtnInHeader, MigrationWizardModal,
   swapBtnInAccount, ViewHeaders
 } from '../../pages/Migration';
 import { Tab } from '../../pages/Tab';
-import { TradingPairDropdown } from '../../pages/TradingPairDropdown';
 import { WalletConnection } from '../../pages/WalletConnection';
 import { cypressVisitWithoutProvider, cypressVisitWithWeb3 } from '../../utils';
 import { makeScreenshots } from '../../utils/makeScreenshots';
