@@ -5,13 +5,10 @@ import {
 } from '../../pages/Allowance';
 import {
   migrationBtnInHeader,
-  migrationBtnInMarket,
   MigrationWizardModal, swapBtnInAccount
 } from '../../pages/Migration';
 import * as Proxy from '../../pages/Proxy';
 import { Tab } from '../../pages/Tab';
-import { Trades } from '../../pages/Trades';
-import { TradingPairDropdown } from '../../pages/TradingPairDropdown';
 import { WalletConnection } from '../../pages/WalletConnection';
 import { cypressVisitWithWeb3 } from '../../utils';
 // No point of testing when the user is neither connected nor doesn't have a provider
@@ -164,31 +161,6 @@ describe('Migration Wizard', () => {
       wizard.amountToMigrateIs(balanceAfterMigration);
     });
 
-    it('should only migrate if user has proxy and allowance', () => {
-      const amount = '20.0000';
-      const token = 'SAI';
-      const balanceAfterMigration = '200.0000';
-
-      Tab.instant();
-      Proxy.settings().click();
-      Proxy.create();
-      Proxy.hasStatus(Proxy.ProxyStatus.ENABLED);
-
-      checkProxyAllowances();
-      setAllowanceOf('SAI');
-      expectAllowanceStatusFor('SAI', 'true');
-
-      const wizard = MigrationWizardModal
-        .openFrom(migrationBtnInHeader);
-
-      wizard.migrate(amount)
-        .shouldNotCreateProxy()
-        .shouldNotSetAllowance()
-        .shouldMigrate(amount, token);
-
-      wizard.amountToMigrateIs(balanceAfterMigration);
-    });
-
     it('should display to the user that all SAI is migrated', () => {
       const amount = '20.0000';
       const token = 'SAI';
@@ -320,15 +292,13 @@ describe('Migration Wizard', () => {
   });
 
   // tslint:disable-next-line:max-line-length
-  it('should not display the progress if migration is ongoing by user closed modal but should update changes', () => {
+  it.skip('should not display the progress if migration is ongoing by user closed modal but should update changes', () => {
     const token = 'SAI';
     const amount = '220.0000';
     const wizard = MigrationWizardModal
       .openFrom(migrationBtnInHeader);
 
     wizard.migrate();
-
-    cy.wait(1000);
 
     wizard.close();
 
@@ -339,27 +309,5 @@ describe('Migration Wizard', () => {
       .shouldMigrate(amount, token);
 
     wizard.nothingToMigrate();
-  });
-
-  context('external changes', () => {
-    it(`should update open orders count and the amount of SAI that needs to be migrated
-    when user cancels an order from my trades widget under market tab`,
-       () => {
-         Tab.market();
-         TradingPairDropdown.select({ base: 'WETH', quote: 'SAI' });
-
-         MigrationWizardModal
-          .openFrom(migrationBtnInMarket)
-          .ordersToCancelIs(4)
-          .amountToMigrateIs('220')
-          .close();
-
-         Trades.first().cancel();
-
-         MigrationWizardModal
-          .openFrom(migrationBtnInMarket)
-          .ordersToCancelIs(3)
-          .amountToMigrateIs('520');
-       });
   });
 });

@@ -16,9 +16,11 @@ import { shareReplay } from 'rxjs/internal/operators';
 import { GasPrice$, Ticker } from 'src/blockchain/network';
 import { Calls$ } from '../blockchain/calls/calls';
 import { TxMetaKind } from '../blockchain/calls/txMeta';
-import { NetworkConfig, tradingTokens } from '../blockchain/config';
+import { NetworkConfig, tradingTokens as _tradingTokens } from '../blockchain/config';
 import { TxState, TxStatus } from '../blockchain/transactions';
 import { amountFromWei } from '../blockchain/utils';
+
+const tradingTokens = [..._tradingTokens, 'SAI'];
 
 export interface Balances {
   [token: string]: BigNumber;

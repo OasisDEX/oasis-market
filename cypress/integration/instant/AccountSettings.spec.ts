@@ -1,5 +1,6 @@
 import { clear, create, hasStatus, ProxyStatus, settings } from '../../pages/Proxy';
 import { Tab } from '../../pages/Tab';
+import { instantForm } from '../../pages/Trade';
 import { WalletConnection } from '../../pages/WalletConnection';
 import { cypressVisitWithWeb3, tid } from '../../utils';
 
@@ -8,6 +9,7 @@ describe('Account Settings', () => {
     beforeEach(() => {
       cypressVisitWithWeb3();
       Tab.instant();
+      instantForm();
     });
 
     it('should disable account settings', () => {
@@ -21,6 +23,7 @@ describe('Account Settings', () => {
       WalletConnection.connect();
       WalletConnection.isConnected();
       Tab.instant();
+      instantForm();
     });
 
     it('should create new proxy', () => {

@@ -1,5 +1,5 @@
 import { Tab } from '../../pages/Tab';
-import { Trade, TradingSide } from '../../pages/Trade';
+import { instantForm, Trade, TradingSide } from '../../pages/Trade';
 import { WalletConnection } from '../../pages/WalletConnection';
 import { cypressVisitWithWeb3 } from '../../utils';
 
@@ -8,7 +8,9 @@ describe('Selecting an asset', () => {
   beforeEach(() => {
     cypressVisitWithWeb3();
     WalletConnection.connect();
+    WalletConnection.isConnected();
     Tab.instant();
+    instantForm();
   });
 
   context('for pay token', () => {
@@ -52,22 +54,6 @@ describe('Selecting an asset', () => {
       Trade.openAssetSelectorFor(TradingSide.SELL);
 
       Trade.expectAssetLocked(token);
-    });
-
-    it('should not be able to swap token if paying with SAI', () => {
-      const payIn = 'SAI';
-      const receiveIn = 'ETH';
-
-      Trade.swapTokens();
-
-      const trade = new Trade();
-      trade.sell(payIn);
-      trade.buy(receiveIn);
-
-      trade.expectPayToken(payIn);
-      trade.expectReceiveToken(receiveIn);
-
-      Trade.shouldHaveSwapDisabled();
     });
   });
 
@@ -115,17 +101,6 @@ describe('Selecting an asset', () => {
       Trade.openAssetSelectorFor(TradingSide.BUY);
 
       Trade.expectAssetLocked(token);
-    });
-
-    it('should not be able to select SAI as receive token', () => {
-      const payWith = 'REP';
-      const receive = 'SAI';
-
-      const trade = new Trade();
-      trade.sell(payWith);
-
-      Trade.openAssetSelectorFor(TradingSide.BUY);
-      Trade.expectAssetLocked(receive);
     });
   });
 });
