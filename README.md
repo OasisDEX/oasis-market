@@ -1,3 +1,5 @@
+# NOTE: THIS IS NOT USED ANY MORE
+
 # Oasis Trade
 
 [![CircleCI](https://circleci.com/gh/OasisDEX/oasis-market.svg?style=svg)](https://circleci.com/gh/OasisDEX/oasis-market)
